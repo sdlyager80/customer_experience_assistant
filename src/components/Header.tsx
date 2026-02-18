@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import {
   AppBar, Toolbar, Box, Typography, InputBase, IconButton,
-  Menu, MenuItem, Divider, Badge, Avatar, Paper, Chip,
+  Menu, MenuItem, Badge, Avatar, Paper,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import BloomLogo from './BloomLogo';
@@ -73,25 +72,27 @@ export default function Header({ activeScenario, onScenarioChange, onSwitchToAge
         </Box>
 
         {/* Right controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
           {/* Scenario Selector */}
           <Box
             onClick={(e) => setScenarioAnchor(e.currentTarget)}
             sx={{
-              display: 'flex', alignItems: 'center', gap: 1,
-              px: 2, py: 1,
+              display: 'flex', alignItems: 'center', gap: 0.75,
+              px: 1.5, py: 0.875,
               borderRadius: '6px',
               bgcolor: BLOOM.blue, color: '#fff',
               fontSize: '0.75rem', fontWeight: 600,
               cursor: 'pointer', userSelect: 'none',
               transition: 'background 0.15s',
               '&:hover': { bgcolor: BLOOM.blueLight },
-              whiteSpace: 'nowrap',
+              whiteSpace: 'nowrap', maxWidth: 200,
             }}
           >
-            <GridViewOutlinedIcon sx={{ fontSize: 16 }} />
-            <span>{activeScenarioMeta.icon} {activeScenarioMeta.label}</span>
-            <KeyboardArrowDownIcon sx={{ fontSize: 16 }} />
+            <GridViewOutlinedIcon sx={{ fontSize: 15, flexShrink: 0 }} />
+            <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {activeScenarioMeta.icon} {activeScenarioMeta.label}
+            </Box>
+            <KeyboardArrowDownIcon sx={{ fontSize: 15, flexShrink: 0 }} />
           </Box>
 
           <Menu
@@ -158,11 +159,6 @@ export default function Header({ activeScenario, onScenarioChange, onSwitchToAge
           >
             🖥 Agent Desktop
           </Box>
-
-          {/* Settings */}
-          <IconButton size="small" sx={{ border: `1px solid ${BLOOM.border}`, borderRadius: '6px', width: 36, height: 36 }}>
-            <SettingsOutlinedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-          </IconButton>
 
           {/* User */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 1.25, borderLeft: `1px solid ${BLOOM.border}`, ml: 0.5 }}>
