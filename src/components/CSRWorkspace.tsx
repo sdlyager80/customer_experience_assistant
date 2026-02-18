@@ -26,7 +26,7 @@ const STATUS_STYLES: Record<string, { bgcolor: string; color: string }> = {
 
 function DataRow({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.75, borderBottom: `1px solid ${BLOOM.canvas}`, '&:last-child': { border: 'none' } }}>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5, borderBottom: `1px solid ${BLOOM.canvas}`, '&:last-child': { border: 'none' } }}>
       <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', fontWeight: 500 }}>{label}</Typography>
       <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: valueColor || 'text.primary' }}>{value}</Typography>
     </Box>
@@ -35,8 +35,8 @@ function DataRow({ label, value, valueColor }: { label: string; value: React.Rea
 
 function WidgetCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Paper sx={{ p: 2.5 }}>
-      <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'text.secondary', mb: 1.5 }}>{title}</Typography>
+    <Paper sx={{ p: 2 }}>
+      <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'text.secondary', mb: 1 }}>{title}</Typography>
       {children}
     </Paper>
   );
@@ -129,11 +129,11 @@ export default function CSRWorkspace({ activeScenario, callTime }: CSRWorkspaceP
         </Box>
 
         {/* Tab content */}
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2.5 }}>
           {activeTab === 0 && (
             <>
               {/* Top widget grid */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5, mb: 1.5 }}>
                 <WidgetCard title="Policy Details">
                   <DataRow label="Policy" value={data.policy.policyNumber} />
                   <DataRow label="Product" value={data.policy.product} />
@@ -169,19 +169,16 @@ export default function CSRWorkspace({ activeScenario, callTime }: CSRWorkspaceP
               </Box>
 
               {/* Quick Actions */}
-              <Box sx={{ mb: 2.5 }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: 'text.secondary', mb: 1.5 }}>Quick Actions</Typography>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  <Button variant="contained" size="small" startIcon={<DescriptionOutlinedIcon />} disableElevation>View Claim</Button>
-                  <Button variant="outlined" size="small" startIcon={<EmailOutlinedIcon />}>Send Update</Button>
-                  <Button variant="outlined" size="small" startIcon={<ReportProblemOutlinedIcon />}>Escalate</Button>
-                  <Button variant="text" size="small" startIcon={<AddOutlinedIcon />} sx={{ color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Add Note</Button>
-                  <Button variant="text" size="small" startIcon={<PhoneCallbackOutlinedIcon />} sx={{ color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Schedule Callback</Button>
-                </Box>
+              <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Button variant="contained" size="small" startIcon={<DescriptionOutlinedIcon />} disableElevation>View Claim</Button>
+                <Button variant="outlined" size="small" startIcon={<EmailOutlinedIcon />}>Send Update</Button>
+                <Button variant="outlined" size="small" startIcon={<ReportProblemOutlinedIcon />}>Escalate</Button>
+                <Button variant="text" size="small" startIcon={<AddOutlinedIcon />} sx={{ color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Add Note</Button>
+                <Button variant="text" size="small" startIcon={<PhoneCallbackOutlinedIcon />} sx={{ color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Schedule Callback</Button>
               </Box>
 
               {/* Bottom grid */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
                 <WidgetCard title="Recent Activity">
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                     {data.activity.map((item, i) => <ActivityRow key={i} item={item} />)}
@@ -210,10 +207,6 @@ export default function CSRWorkspace({ activeScenario, callTime }: CSRWorkspaceP
         </Box>
       </Box>
 
-      {/* Footer */}
-      <Box sx={{ px: 3, py: 1.25, textAlign: 'center', fontSize: '0.6875rem', color: BLOOM.textTertiary, borderTop: `1px solid ${BLOOM.border}`, bgcolor: 'background.paper', flexShrink: 0 }}>
-        © 2026 Bloom Insurance · Customer Engagement Assistant · AI-Powered Smart App
-      </Box>
     </Box>
   );
 }

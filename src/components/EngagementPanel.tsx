@@ -8,7 +8,7 @@ import type { ScenarioId } from '../data/scenarios';
 
 function SectionLabel({ children, color }: { children: React.ReactNode; color?: string }) {
   return (
-    <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: color || 'text.secondary', mb: 1.25 }}>
+    <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: color || 'text.secondary', mb: 0.875 }}>
       {children}
     </Typography>
   );
@@ -16,7 +16,7 @@ function SectionLabel({ children, color }: { children: React.ReactNode; color?: 
 
 function Card({ children, sx = {} }: { children: React.ReactNode; sx?: object }) {
   return (
-    <Paper sx={{ p: 2.5, mb: 1.5, ...sx }}>
+    <Paper sx={{ p: 2, mb: 1, ...sx }}>
       {children}
     </Paper>
   );
@@ -31,7 +31,7 @@ function AlertCard({ variant, title, children }: { variant: 'red' | 'yellow' | '
   };
   const s = styles[variant];
   return (
-    <Paper sx={{ p: 2.5, mb: 1.5, background: `linear-gradient(135deg, ${s.bg}, #fff)`, border: `1px solid ${s.border}` }}>
+    <Paper sx={{ p: 2, mb: 1, background: `linear-gradient(135deg, ${s.bg}, #fff)`, border: `1px solid ${s.border}` }}>
       <SectionLabel color={s.titleColor}>{title}</SectionLabel>
       <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.6 }}>{children}</Typography>
     </Paper>
@@ -40,12 +40,12 @@ function AlertCard({ variant, title, children }: { variant: 'red' | 'yellow' | '
 
 function StatGrid({ stats, cols = 3 }: { stats: { value: React.ReactNode; label: string; valueColor?: string }[]; cols?: number }) {
   return (
-    <Box sx={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 1, mb: 1.5 }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 0.75, mb: 1 }}>
       {stats.map((s, i) => (
-        <Paper key={i} sx={{ p: 1.25, textAlign: 'center' }}>
-          <Typography sx={{ fontSize: '1.1875rem', fontWeight: 700, lineHeight: 1.2, color: s.valueColor || 'text.primary' }}>{s.value}</Typography>
-          <Typography sx={{ fontSize: '0.625rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px', color: 'text.secondary', mt: 0.5 }}>{s.label}</Typography>
-        </Paper>
+        <Box key={i} sx={{ p: 1, textAlign: 'center', bgcolor: BLOOM.canvas, borderRadius: '6px' }}>
+          <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.2, color: s.valueColor || 'text.primary' }}>{s.value}</Typography>
+          <Typography sx={{ fontSize: '0.5625rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px', color: 'text.secondary', mt: 0.375 }}>{s.label}</Typography>
+        </Box>
       ))}
     </Box>
   );
@@ -100,7 +100,7 @@ function TimelineItem({ icon, iconBg, iconColor, title, detail, time, chip, chip
 
 function RecommendationCard({ title, items }: { title: string; items: string[] }) {
   return (
-    <Paper sx={{ p: 2.5, mb: 1.5, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: `1px solid ${BLOOM.yellowBorder}` }}>
+    <Paper sx={{ p: 2, mb: 1, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: `1px solid ${BLOOM.yellowBorder}` }}>
       <SectionLabel color={BLOOM.amber}>{title}</SectionLabel>
       {items.map((item, i) => (
         <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mt: 0.75, fontSize: '0.8125rem', lineHeight: 1.5 }}>
@@ -122,7 +122,7 @@ function FrictionDetection() {
         <Tab label="🔥 Detection" />
         <Tab label="📊 360°" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="red" title="Friction Alert — High Priority">
@@ -223,7 +223,7 @@ function AdaptiveEngagement() {
         <Tab label="🎯 Routing" />
         <Tab label="💡 Script" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="yellow" title="Adaptive Routing Activated">
@@ -282,7 +282,7 @@ function OmnichannelContinuity() {
         <Tab label="🔗 Journey" />
         <Tab label="💬 Chat" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="blue" title="Omnichannel — Unified Memory">
@@ -363,7 +363,7 @@ function CallbackRecovery() {
         <Tab label="📲 Recovery" />
         <Tab label="⚡ Playbook" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="red" title="Recovery Alert">
@@ -426,7 +426,7 @@ function WorkforceOptimization() {
         <Tab label="👥 Matching" />
         <Tab label="📈 Coaching" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="amber" title="Skill-Based Routing">
@@ -494,7 +494,7 @@ function LifeEventDetection() {
         <Tab label="📋 Detection" />
         <Tab label="🎯 Offers" />
       </Tabs>
-      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, pb: 3 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, pb: 2.5 }}>
         {tab === 0 && (
           <>
             <AlertCard variant="amber" title="Life-Event Signals Detected">
@@ -596,18 +596,13 @@ export default function EngagementPanel({ activeScenario, open, onToggle }: Enga
       </Box>
 
       {/* Panel header */}
-      <Box sx={{ px: 3, pt: 2.5, pb: 0, flexShrink: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 0.5 }}>
-          <Typography sx={{ fontSize: '1.125rem', fontWeight: 700 }}>Engagement Intelligence</Typography>
-          <Box sx={{
-            fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
-            background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
-            color: '#fff', px: 1, py: 0.375, borderRadius: '4px',
-          }}>AI</Box>
-        </Box>
-        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 1.5, fontWeight: 500 }}>
-          <strong style={{ color: BLOOM.textPrimary }}>NLP</strong> · Intent & Sentiment &nbsp;·&nbsp; <strong style={{ color: BLOOM.textPrimary }}>Analytics Engine</strong> · Insights
-        </Typography>
+      <Box sx={{ px: 3, pt: 2, pb: 0, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 1.25, mb: 1.25 }}>
+        <Typography sx={{ fontSize: '1rem', fontWeight: 700 }}>Engagement Intelligence</Typography>
+        <Box sx={{
+          fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
+          background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
+          color: '#fff', px: 1, py: 0.375, borderRadius: '4px',
+        }}>AI</Box>
       </Box>
 
       {/* Scenario content */}
