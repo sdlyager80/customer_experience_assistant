@@ -15,9 +15,10 @@ import { BLOOM } from '../theme';
 interface HeaderProps {
   activeScenario: ScenarioId;
   onScenarioChange: (id: ScenarioId) => void;
+  onSwitchToAgentDesktop: () => void;
 }
 
-export default function Header({ activeScenario, onScenarioChange }: HeaderProps) {
+export default function Header({ activeScenario, onScenarioChange, onSwitchToAgentDesktop }: HeaderProps) {
   const [scenarioAnchor, setScenarioAnchor] = useState<null | HTMLElement>(null);
 
   const activeScenarioMeta = SCENARIO_LIST.find(s => s.id === activeScenario)!;
@@ -144,6 +145,19 @@ export default function Header({ activeScenario, onScenarioChange }: HeaderProps
               <NotificationsOutlinedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
             </Badge>
           </IconButton>
+
+          {/* Agent Desktop switcher */}
+          <Box
+            onClick={onSwitchToAgentDesktop}
+            sx={{
+              px: 1.75, py: 0.875, borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
+              border: `1px solid ${BLOOM.border}`, cursor: 'pointer', color: 'text.secondary',
+              transition: 'all 0.15s', whiteSpace: 'nowrap',
+              '&:hover': { borderColor: BLOOM.blue, color: BLOOM.blue },
+            }}
+          >
+            🖥 Agent Desktop
+          </Box>
 
           {/* Settings */}
           <IconButton size="small" sx={{ border: `1px solid ${BLOOM.border}`, borderRadius: '6px', width: 36, height: 36 }}>
