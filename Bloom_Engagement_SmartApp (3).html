@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Insurance - Customer Engagement Sentiment Smart App</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dk:#0f4c75;--dk2:#1B75BB;--acc:#1B75BB;--acc2:#00ADEE;--orange:#F6921E;--yellow:#E8DE23;--lgreen:#8BC53F;--green:#37A526;
+  --canvas:#F2F7F6;--white:#fff;--mid:#1a1a1a;--t2:#808285;--t3:#a8aaad;--bdr:#e0e5e4;
+  --pos:#2a7a1a;--posbg:#e6f5e0;--cau:#946b0e;--caubg:#fef9c3;--neg:#b91c1c;--negbg:#fee2e2;--inf:#1B75BB;--infbg:#e0f0fc;--rev:#7c5500;--revbg:#fef3d6;
+  --f:'Inter',system-ui,-apple-system,sans-serif;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-6:24px;--sp-8:32px;
+  --r:8px;--rs:6px;--rf:999px;--header-h:60px;--pw:410px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--canvas);color:var(--mid);font-size:14px;font-weight:400;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* HEADER */
+.header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--white);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:300}
+.hdr-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hdr-logo-flower{width:42px;height:42px;flex-shrink:0}
+.hdr-logo-text{display:flex;align-items:baseline;gap:6px}
+.hdr-logo-bloom{font-size:22px;font-weight:700;color:#333;letter-spacing:-0.3px}
+.hdr-logo-ins{font-size:22px;font-weight:400;color:#555;letter-spacing:-0.3px}
+.hdr-center{display:flex;align-items:center;gap:16px}
+.hdr-search{display:flex;align-items:center;gap:8px;background:var(--canvas);border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 14px;min-width:260px;transition:border-color .15s}
+.hdr-search:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px rgba(27,117,187,.12)}
+.hdr-search svg{color:var(--t2);flex-shrink:0}
+.hdr-search input{border:none;outline:none;background:transparent;font-family:var(--f);font-size:13px;color:var(--mid);width:100%}
+.hdr-search input::placeholder{color:var(--t3)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+
+/* Scenario Dropdown */
+.sd-wrap{position:relative}
+.sd-toggle{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:var(--rs);background:var(--acc);color:#fff;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:var(--f);transition:background .15s;white-space:nowrap}
+.sd-toggle:hover{background:var(--acc2)}
+.sd-toggle .arr{transition:transform .2s;font-size:10px}.sd-toggle.open .arr{transform:rotate(180deg)}
+.sd-drop{position:absolute;top:calc(100% + 6px);right:0;width:360px;background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:0 12px 40px rgba(0,0,0,.14);z-index:400;display:none;overflow:hidden}
+.sd-drop.show{display:block}
+.sd-hdr{padding:10px 16px;background:var(--canvas);border-bottom:1px solid var(--bdr);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t2)}
+.sd-i{padding:10px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .12s;border-bottom:1px solid var(--canvas)}
+.sd-i:last-child{border:none}.sd-i:hover{background:var(--infbg)}.sd-i.on{background:var(--acc);color:#fff}
+.sd-i .ic{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.sd-i .tx{flex:1}.sd-i .tt{font-weight:600;font-size:12.5px}.sd-i .ds{font-size:11px;opacity:.7;margin-top:1px}
+
+.hdr-icon-btn{width:36px;height:36px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:all .15s;position:relative}
+.hdr-icon-btn:hover{background:var(--canvas);color:var(--mid)}
+.hdr-icon-btn svg{width:18px;height:18px}
+.hdr-notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:var(--rf);background:#ef4444;border:2px solid var(--white)}
+.hdr-user{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid var(--bdr);margin-left:4px}
+.hdr-avatar{width:32px;height:32px;border-radius:var(--rf);background:var(--orange);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.hdr-user-name{font-size:12px;font-weight:600;color:var(--mid)}.hdr-user-role{font-size:10px;color:var(--t2)}
+
+/* MAIN */
+.main-wrap{margin-top:var(--header-h);min-height:calc(100vh - var(--header-h));display:flex;flex-direction:column}
+.app-layout{display:flex;flex:1}
+
+/* AI PANEL */
+.aip{width:var(--pw);background:var(--white);border-right:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;position:relative;z-index:10;transition:margin-left .3s ease}
+.aip.shut{margin-left:calc(var(--pw) * -1 + 40px)}
+.aip-tog{position:absolute;top:14px;right:-14px;width:28px;height:28px;background:var(--acc);border:3px solid var(--canvas);border-radius:var(--rf);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:20;color:#fff;font-size:13px;font-weight:700;transition:transform .3s;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.aip.shut .aip-tog{transform:rotate(180deg)}
+.aip-hdr{padding:20px var(--sp-6) 0;flex-shrink:0}
+.aip-t{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.aip-t h2{font-size:18px;font-weight:700;color:var(--mid)}
+.badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:3px 8px;border-radius:4px}
+.aip-sub{font-size:12px;color:var(--t2);margin-bottom:12px;font-weight:500}.aip-sub b{font-weight:600;color:var(--mid)}
+
+/* Tabs */
+.tabs{display:flex;border-bottom:2px solid var(--bdr);padding:0 var(--sp-6);flex-shrink:0;overflow-x:auto}
+.tab{padding:10px 14px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--mid)}.tab.on{color:var(--acc);border-bottom-color:var(--acc);font-weight:600}
+.aip-body{flex:1;overflow-y:auto;padding:var(--sp-3) var(--sp-6)}
+.aip-body::-webkit-scrollbar{width:4px}.aip-body::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+.sp{display:none}.sp.on{display:block}.tp{display:none}.tp.on{display:block}
+
+/* CSR */
+.csr{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--canvas)}
+.csr-ban{background:#f9fafb;color:var(--mid);padding:var(--sp-3) var(--sp-6);display:flex;align-items:center;justify-content:space-between;font-size:13px;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--bdr)}
+.csr-ban .lb{font-weight:500;color:var(--t2);margin-right:4px;font-size:12px}.csr-ban .vl{font-weight:600;color:var(--mid)}
+.abg{display:inline-flex;align-items:center;gap:4px;background:var(--posbg);border:1px solid #bbf7d0;padding:4px 10px;border-radius:var(--rf);font-size:11px;font-weight:600;color:var(--pos)}
+.cbg{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--rf);font-size:11px;font-weight:600;background:#eef2f7;border:1px solid #d5dce6;color:#475569}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;color:var(--acc);background:var(--infbg);padding:4px 12px;border-radius:var(--rs)}
+.csr-p{flex:1;padding:var(--sp-6);overflow-y:auto;background:var(--canvas)}
+.csr-tabs{display:flex;gap:2px;margin-bottom:var(--sp-4);border-bottom:2px solid var(--bdr)}
+.ct{padding:10px 16px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.ct:hover{color:var(--mid)}.ct.on{color:var(--acc);border-bottom-color:var(--acc);font-weight:600}
+
+/* Widgets */
+.wg{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)}.wc{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:var(--sp-6)}
+.wt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-bottom:12px}
+.dr{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--canvas)}.dr:last-child{border:none}
+.dl{color:var(--t2);font-weight:500}.dv{font-weight:600}
+.csr-ft{padding:var(--sp-3) var(--sp-6);text-align:center;font-size:11px;color:var(--t3);border-top:1px solid var(--bdr);background:var(--white);flex-shrink:0}
+
+/* SHARED */
+.sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-bottom:10px}
+.cd{background:var(--white);border-radius:var(--r);padding:var(--sp-6);margin-bottom:var(--sp-3);border:1px solid var(--bdr)}
+.pill{display:inline-flex;padding:4px 8px;border-radius:var(--rf);font-size:12px;font-weight:500}
+.pg{background:var(--posbg);color:var(--pos)}.pr{background:var(--negbg);color:var(--neg)}.py{background:var(--caubg);color:var(--cau)}.pb{background:var(--infbg);color:var(--inf)}.pp{background:var(--revbg);color:var(--rev)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--rs);font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--f);transition:all .15s;line-height:1.4}
+.btn:hover{transform:translateY(-1px)}.btn-sm{padding:4px 10px;font-size:12px}
+.bp{background:var(--acc);color:#fff}.bp:hover{background:var(--acc2)}.bo{background:var(--white);color:var(--acc);border:1px solid var(--acc)}.bs{background:var(--pos);color:#fff}
+.btn-secondary{background:var(--canvas);color:var(--mid);border:1px solid var(--bdr)}
+
+/* Gauge */
+.sg{display:flex;align-items:center;gap:12px}.sgt{flex:1;height:8px;background:var(--canvas);border-radius:10px;overflow:hidden}.sgf{height:100%;border-radius:10px}
+.sgl{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-top:4px}.sgv{display:flex;flex-direction:column;align-items:center;min-width:60px}
+.sge{font-size:24px;line-height:1}.sgtx{font-size:11px;font-weight:700;text-transform:uppercase;margin-top:2px}
+
+/* Stats */
+.sts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:var(--sp-3)}.sts.c4{grid-template-columns:repeat(4,1fr)}
+.st{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 8px;text-align:center}
+.sn{font-size:20px;font-weight:700;line-height:1.1}.slb{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-top:4px}
+
+/* Rec */
+.rec{background:linear-gradient(135deg,#fefce8,#fefdf5);border:1px solid #fcd34d;border-radius:var(--r);padding:var(--sp-6);margin-bottom:var(--sp-3)}
+.ri{display:flex;align-items:flex-start;gap:8px;margin-top:6px;font-size:13px;line-height:1.5}.rb{color:var(--orange);font-size:14px;line-height:1.2;flex-shrink:0}
+
+/* Alert */
+.alc{border-radius:var(--r);padding:var(--sp-6);margin-bottom:var(--sp-3);border:1px solid}
+.alr{background:linear-gradient(135deg,#fef2f2,#fff5f5);border-color:#fca5a5}
+.aly{background:linear-gradient(135deg,#fefce8,#fffef5);border-color:#fcd34d}
+.alb{background:linear-gradient(135deg,#eff6ff,#f5f9ff);border-color:#93bbfd}
+.alp{background:linear-gradient(135deg,#fef7e6,#fefcf0);border-color:#f6c66a}
+
+/* Timeline */
+.tl{display:flex;gap:12px;padding:10px 0;position:relative}
+.tl:not(:last-child)::after{content:'';position:absolute;left:14px;top:38px;bottom:-4px;width:2px;background:var(--bdr)}
+.tli{width:30px;height:30px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1;border:2px solid var(--white)}
+.tlb{flex:1}.tlt{font-size:13px;font-weight:600}.tld{font-size:12px;color:var(--t2);margin-top:2px;line-height:1.5}.tlm{font-size:10px;color:var(--t3);margin-top:2px}
+
+/* Transcript */
+.ts{font-size:13px;line-height:1.6;padding:var(--sp-3);background:var(--canvas);border-radius:var(--rs);border-left:3px solid var(--acc)}
+.ts .hl{background:rgba(27,117,187,.1);padding:2px 4px;border-radius:3px;font-weight:600}
+
+/* Bars */
+.xr{display:flex;align-items:center;gap:12px;margin-bottom:8px}.xl{font-size:11px;font-weight:600;min-width:68px;color:var(--t2)}.xv{font-size:11px;font-weight:600;min-width:52px}
+
+/* Chat */
+.chb{background:var(--white);border-radius:var(--r);border:1px solid var(--bdr);overflow:hidden;margin-bottom:var(--sp-3)}
+.chh{padding:10px var(--sp-3);background:var(--canvas);border-bottom:1px solid var(--bdr);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2)}
+.chm{padding:var(--sp-3);max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.cm{display:flex;gap:6px;max-width:88%}.cm.b{align-self:flex-start}.cm.u{align-self:flex-end;flex-direction:row-reverse}.cm.a{align-self:flex-start}
+.ca{width:24px;height:24px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.cm.b .ca{background:var(--acc);color:#fff}.cm.u .ca{background:var(--orange);color:var(--white)}.cm.a .ca{background:var(--inf);color:#fff}
+.cb{padding:8px 12px;border-radius:var(--r);font-size:12px;line-height:1.5}
+.cm.b .cb{background:var(--canvas);border:1px solid var(--bdr)}.cm.u .cb{background:var(--acc);color:#fff}.cm.a .cb{background:var(--infbg);border:1px solid #93bbfd}
+.csys{text-align:center;font-size:10px;color:var(--t3);padding:4px 0;display:flex;align-items:center;gap:8px;justify-content:center}
+.csys::before,.csys::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* Agent */
+.ac{display:flex;align-items:center;gap:12px;padding:var(--sp-3);background:var(--canvas);border-radius:var(--rs);margin-bottom:8px}
+.aav{width:36px;height:36px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.ai{flex:1}.an2{font-size:13px;font-weight:600}.am{font-size:11px;color:var(--t2)}.asc{font-size:18px;font-weight:700;color:var(--acc)}
+
+/* Skill */
+.skb{display:flex;align-items:center;gap:10px;margin-bottom:6px}.skn{font-size:11px;font-weight:600;min-width:80px;color:var(--t2)}
+.skt{flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden}.skf{height:100%;border-radius:10px}
+.skp{font-size:11px;font-weight:700;min-width:34px;text-align:right}
+
+/* Life Event */
+.leb{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--rs);font-size:12px;font-weight:600;margin-right:6px;margin-bottom:6px}
+
+/* Anim */
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:fu .3s ease forwards}.d1{animation-delay:.05s;opacity:0}.d2{animation-delay:.1s;opacity:0}.d3{animation-delay:.15s;opacity:0}.d4{animation-delay:.2s;opacity:0}.d5{animation-delay:.25s;opacity:0}
+
+@media(max-width:900px){
+  .aip{position:fixed;left:0;top:var(--header-h);height:calc(100vh - var(--header-h));z-index:150;box-shadow:4px 0 20px rgba(0,0,0,.1)}
+  .wg{grid-template-columns:1fr}.hdr-search{min-width:160px}.hdr-user-name,.hdr-user-role{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="hdr-logo">
+    <svg class="hdr-logo-flower" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 16 C90 16,68 38,68 62 C68 78,78 90,100 100 C122 90,132 78,132 62 C132 38,110 16,100 16Z" fill="#00ADEE"/>
+      <path d="M184 100 C184 90,162 68,138 68 C122 68,110 78,100 100 C110 122,122 132,138 132 C162 132,184 110,184 100Z" fill="#37A526"/>
+      <path d="M100 184 C110 184,132 162,132 138 C132 122,122 110,100 100 C78 110,68 122,68 138 C68 162,90 184,100 184Z" fill="#8BC53F"/>
+      <path d="M16 100 C16 110,38 132,62 132 C78 132,90 122,100 100 C90 78,78 68,62 68 C38 68,16 90,16 100Z" fill="#1B75BB"/>
+      <path d="M156 20 C148 20,126 36,118 56 C112 70,114 84,100 100 C116 100,130 96,144 88 C160 78,170 54,168 42 C166 30,160 20,156 20Z" fill="#E8DE23"/>
+      <path d="M44 180 C52 180,74 164,82 144 C88 130,86 116,100 100 C84 100,70 104,56 112 C40 122,30 146,32 158 C34 170,40 180,44 180Z" fill="#F6921E"/>
+      <circle cx="100" cy="100" r="10" fill="#E8DE23"/>
+    </svg>
+    <div class="hdr-logo-text"><span class="hdr-logo-bloom">Bloom</span> <span class="hdr-logo-ins">Insurance</span></div>
+  </div>
+  <div class="hdr-center">
+    <div class="hdr-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search policies, claims, customers...">
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="sd-wrap">
+      <button class="sd-toggle" id="sdT" onclick="togDD()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Scenarios <span class="arr">&#9662;</span>
+      </button>
+      <div class="sd-drop" id="sdD">
+        <div class="sd-hdr">Select Demo Scenario</div>
+        <div class="sd-i on" data-s="friction" onclick="swS(this)"><span class="ic">&#128293;</span><div class="tx"><div class="tt">Friction Detection</div><div class="ds">Repeat caller, escalating sentiment</div></div></div>
+        <div class="sd-i" data-s="adaptive" onclick="swS(this)"><span class="ic">&#127919;</span><div class="tx"><div class="tt">Adaptive Engagement</div><div class="ds">Smart routing, callback offers</div></div></div>
+        <div class="sd-i" data-s="omni" onclick="swS(this)"><span class="ic">&#128279;</span><div class="tx"><div class="tt">Omnichannel Continuity</div><div class="ds">Cross-channel memory</div></div></div>
+        <div class="sd-i" data-s="callback" onclick="swS(this)"><span class="ic">&#128242;</span><div class="tx"><div class="tt">Callback &amp; Recovery</div><div class="ds">Sentiment drop, supervisor alerts</div></div></div>
+        <div class="sd-i" data-s="workforce" onclick="swS(this)"><span class="ic">&#128101;</span><div class="tx"><div class="tt">Workforce Optimization</div><div class="ds">Skill matching, coaching</div></div></div>
+        <div class="sd-i" data-s="lifeevent" onclick="swS(this)"><span class="ic">&#128141;</span><div class="tx"><div class="tt">Life-Event Detection</div><div class="ds">Marriage, retirement triggers</div></div></div>
+      </div>
+    </div>
+    <div class="hdr-icon-btn" title="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="hdr-notif-dot"></span>
+    </div>
+    <div class="hdr-icon-btn" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+    <div class="hdr-user"><div class="hdr-avatar">SM</div><div><div class="hdr-user-name">Sarah Mitchell</div><div class="hdr-user-role">CSR</div></div></div>
+  </div>
+</header>
+
+<div class="main-wrap">
+<div class="app-layout">
+<div class="aip" id="aip">
+  <div class="aip-tog" onclick="document.getElementById('aip').classList.toggle('shut')" title="Toggle Panel">&#8249;</div>
+  <div class="aip-hdr">
+    <div class="aip-t"><h2>Engagement Intelligence</h2><span class="badge">AI</span></div>
+    <div class="aip-sub"><b>NLP</b> &middot; Intent &amp; Sentiment &nbsp;&middot;&nbsp; <b>Analytics Engine</b> &middot; Insights</div>
+  </div>
+  <div class="sp on" id="s-friction">
+    <div class="tabs" data-g="f"><div class="tab on" data-t="f1">&#128293; Detection</div><div class="tab" data-t="f2">&#128202; 360</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="f1">
+        <div class="alc alr an d1"><div class="sl" style="color:var(--neg)">Friction Alert &mdash; High Priority</div><div style="font-size:13px;line-height:1.6"><strong>Margaret Torres</strong> has called <strong>3 times in 5 days</strong> about claim #CLM-2026-4491. Sentiment declined Neutral &rarr; Negative. Handle time increasing (6:20 &rarr; 11:45 &rarr; 18:02). Escalation language: <em>&quot;no one is helping me,&quot; &quot;this is unacceptable.&quot;</em></div></div>
+        <div class="cd an d2"><div class="sl">Sentiment Trajectory</div><div class="sg"><div style="flex:1"><div class="sgt"><div class="sgf" style="width:22%;background:linear-gradient(90deg,#ef4444,#fca5a5)"></div></div><div class="sgl"><span>Negative</span><span>Neutral</span><span>Positive</span></div></div><div class="sgv"><div class="sge">&#128548;</div><div class="sgtx" style="color:var(--neg)">Frustrated</div></div></div><div style="margin-top:10px"><div class="xr"><span class="xl">Call 1 (Feb 5)</span><div class="sgt" style="flex:1"><div class="sgf" style="width:50%;background:var(--orange)"></div></div><span class="xv" style="color:var(--orange)">Neutral</span></div><div class="xr"><span class="xl">Call 2 (Feb 8)</span><div class="sgt" style="flex:1"><div class="sgf" style="width:32%;background:#f97316"></div></div><span class="xv" style="color:#f97316">Declining</span></div><div class="xr"><span class="xl">Call 3 (Today)</span><div class="sgt" style="flex:1"><div class="sgf" style="width:22%;background:#ef4444"></div></div><span class="xv" style="color:var(--neg)">Negative</span></div></div></div>
+        <div class="sts c4 an d3"><div class="st"><div class="sn" style="color:var(--neg)">3</div><div class="slb">Calls/5d</div></div><div class="st"><div class="sn" style="color:var(--neg)">&darr;38%</div><div class="slb">Sent Drop</div></div><div class="st"><div class="sn">18:02</div><div class="slb">Handle</div></div><div class="st"><div class="sn" style="color:var(--neg)">1</div><div class="slb">Open Case</div></div></div>
+        <div class="cd an d4"><div class="sl">Correlated Unresolved Case</div><div style="font-size:13px;line-height:1.6;padding:10px;background:var(--negbg);border-radius:var(--rs);border-left:3px solid #ef4444"><strong>Claim #CLM-2026-4491</strong> &mdash; Water damage, filed 01/29. Status: Under Review (14 days). Adjuster assigned, no inspection scheduled. Docs submitted 02/02 &mdash; no ack sent. <span class="pill pr">Overdue SLA</span></div></div>
+        <div class="rec an d5"><div class="sl" style="color:var(--cau)">Recommended Actions</div><div class="ri"><span class="rb">&#9656;</span><span><strong>Escalate immediately</strong> &mdash; senior adjuster, inspection within 48h.</span></div><div class="ri"><span class="rb">&#9656;</span><span>Send <strong>proactive status update</strong> acknowledging docs received.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Supervisor follow-up</strong> within 24h to prevent churn.</span></div></div>
+      </div>
+      <div class="tp" id="f2">
+        <div class="cd an d1"><div class="sl">Caller Profile</div><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:50%;background:var(--neg);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">MT</div><div><div style="font-size:14px;font-weight:700">Margaret Torres</div><div style="font-size:12px;color:var(--t2)">Owner &middot; HO-2024-88312 &middot; Homeowners &middot; Since 2022</div></div></div><div style="font-size:13px;line-height:1.6;padding:10px;background:var(--canvas);border-radius:var(--rs);border-left:3px solid #ef4444"><strong>Risk:</strong> High-friction. 3 contacts/5 days, increasing handle time. Unresolved claim 14 days, SLA breached. <strong>Churn probability: 72%.</strong></div></div>
+        <div class="sts an d2"><div class="st"><div class="sn">5</div><div class="slb">Contacts/30d</div></div><div class="st"><div class="sn">12:42</div><div class="slb">Avg Handle</div></div><div class="st"><div class="sn" style="color:var(--neg)">28%</div><div class="slb">Pos Sent</div></div></div>
+        <div class="cd an d3"><div class="sl">Escalation Language</div><div style="font-size:12px;color:var(--t2);line-height:1.6"><div style="padding:6px 8px;background:var(--negbg);border-radius:var(--rs);margin-bottom:4px"><strong>Feb 12:</strong> <em>&quot;No one is helping me&quot;</em></div><div style="padding:6px 8px;background:var(--caubg);border-radius:var(--rs);margin-bottom:4px"><strong>Feb 8:</strong> <em>&quot;I already sent the documents&quot;</em></div><div style="padding:6px 8px;background:var(--canvas);border-radius:var(--rs)"><strong>Feb 5:</strong> <em>&quot;Just checking on status&quot;</em> (neutral)</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sp" id="s-adaptive">
+    <div class="tabs" data-g="a"><div class="tab on" data-t="a1">&#127919; Routing</div><div class="tab" data-t="a2">&#128161; Script</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="a1">
+        <div class="alc aly an d1"><div class="sl" style="color:var(--cau)">Adaptive Routing Activated</div><div style="font-size:13px;line-height:1.6"><strong>David Park</strong> &mdash; repeat caller (2nd today). IVR bypassed, voice slowed, routed to senior agent. Callback offered during 3:20 hold.</div></div>
+        <div class="cd an d2"><div class="sl">Routing Timeline</div><div class="tl"><div class="tli" style="background:var(--caubg);color:var(--cau)">&#128222;</div><div class="tlb"><div class="tlt">Repeat Call Detected</div><div class="tld">2nd today, 4th this week. Claim #CLM-2026-5102.</div><div class="tlm">2:14 PM</div></div></div><div class="tl"><div class="tli" style="background:var(--revbg);color:var(--rev)">&#129302;</div><div class="tlb"><div class="tlt">IVR Adapted</div><div class="tld">Menu skipped. Voice -15%.</div><div class="tlm">Automatic</div></div></div><div class="tl"><div class="tli" style="background:var(--infbg);color:var(--inf)">&#9201;</div><div class="tlb"><div class="tlt">Callback Offered &amp; Accepted</div><div class="tld">Hold est: 3:20.</div><div class="tlm">2:15 PM</div></div></div><div class="tl"><div class="tli" style="background:var(--posbg);color:var(--pos)">&#128100;</div><div class="tlb"><div class="tlt">Agent Connected <span class="pill pg" style="font-size:10px;margin-left:4px">Active</span></div><div class="tld">Lisa Tran (Senior).</div><div class="tlm">2:22 PM</div></div></div></div>
+        <div class="sts c4 an d3"><div class="st"><div class="sn">4</div><div class="slb">Calls/Wk</div></div><div class="st"><div class="sn" style="color:var(--pos)">&#10003;</div><div class="slb">Callback</div></div><div class="st"><div class="sn">0:00</div><div class="slb">Hold</div></div><div class="st"><div class="sn" style="color:var(--pos)">&uarr;</div><div class="slb">Sentiment</div></div></div>
+      </div>
+      <div class="tp" id="a2">
+        <div class="cd an d1"><div class="sl">Personalized Script</div><div class="ts"><span class="hl">Opening:</span> &quot;Hi David, I see you called about your auto claim twice this week. Let me get this resolved today.&quot;<br><br><span class="hl">Context:</span> &quot;I have your full history &mdash; the estimate was submitted Feb 8 and reviewed.&quot;<br><br><span class="hl">Close:</span> &quot;I will follow up by Friday. You will get a text confirmation.&quot;</div></div>
+        <div class="rec an d2"><div class="sl" style="color:var(--cau)">Adaptations Applied</div><div class="ri"><span class="rb">&#9656;</span><span><strong>IVR bypass</strong> &mdash; skipped 4-step menu.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Voice rate -15%</strong> &mdash; reduces frustration.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Callback</strong> &mdash; eliminated 3:20 hold.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Senior agent</strong> &mdash; skill-matched for escalation.</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sp" id="s-omni">
+    <div class="tabs" data-g="o"><div class="tab on" data-t="o1">&#128279; Journey</div><div class="tab" data-t="o2">&#128172; Chat</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="o1">
+        <div class="alc alb an d1"><div class="sl" style="color:var(--inf)">Omnichannel &mdash; Unified Memory</div><div style="font-size:13px;line-height:1.6"><strong>Robert Chen</strong> &mdash; portal &rarr; chatbot &rarr; agent chat &rarr; phone. <strong>Zero info repeated.</strong></div></div>
+        <div class="cd an d2"><div class="sl">Cross-Channel Timeline</div><div class="tl"><div class="tli" style="background:var(--infbg);color:var(--inf)">&#127760;</div><div class="tlb"><div class="tlt">Self-Service Portal</div><div class="tld">Browsed beneficiaries, downloaded change form.</div><div class="tlm">10:14 AM</div></div></div><div class="tl"><div class="tli" style="background:var(--revbg);color:var(--rev)">&#129302;</div><div class="tlb"><div class="tlt">Chatbot</div><div class="tld">Intent: BeneficiaryChange (88%). Escalated on minor question.</div><div class="tlm">10:19 AM</div></div></div><div class="tl"><div class="tli" style="background:var(--posbg);color:var(--pos)">&#128100;</div><div class="tlb"><div class="tlt">Agent Chat</div><div class="tld">Guided UTMA custodian requirements.</div><div class="tlm">10:24 AM</div></div></div><div class="tl"><div class="tli" style="background:var(--caubg);color:var(--cau)">&#128222;</div><div class="tlb"><div class="tlt">Phone <span class="pill pg" style="font-size:10px;margin-left:4px">Active</span></div><div class="tld">All context carried. No repeat info needed.</div><div class="tlm">10:31 AM</div></div></div></div>
+        <div class="cd an d3"><div class="sl">Cross-Channel Sentiment</div><div class="xr"><span class="xl">Portal</span><div class="sgt" style="flex:1"><div class="sgf" style="width:50%;background:var(--orange)"></div></div><span class="xv" style="color:var(--orange)">Neutral</span></div><div class="xr"><span class="xl">Chatbot</span><div class="sgt" style="flex:1"><div class="sgf" style="width:58%;background:linear-gradient(90deg,var(--orange),#8BC53F)"></div></div><span class="xv" style="color:var(--orange)">Neutral+</span></div><div class="xr"><span class="xl">Agent Chat</span><div class="sgt" style="flex:1"><div class="sgf" style="width:72%;background:#37A526"></div></div><span class="xv" style="color:#37A526">Positive</span></div><div class="xr"><span class="xl">Call (live)</span><div class="sgt" style="flex:1"><div class="sgf" style="width:75%;background:#37A526"></div></div><span class="xv" style="color:#37A526">Positive</span></div><div style="font-size:12px;color:var(--t2);margin-top:6px;padding:6px;background:var(--canvas);border-radius:var(--rs)">Sentiment <strong>improving</strong> across channels.</div></div>
+      </div>
+      <div class="tp" id="o2">
+        <div class="chb an d1"><div class="chh">Chat Transcript &mdash; Bene Change</div><div class="chm"><div class="cm b"><div class="ca">AI</div><div><div class="cb">Hi Robert! I see you are viewing beneficiaries. How can I help?</div></div></div><div class="cm u"><div class="ca">RC</div><div><div class="cb">I need to add my daughter as contingent beneficiary</div></div></div><div class="cm b"><div class="ca">AI</div><div><div class="cb">Current primary: <strong>Lisa M. Chen (Spouse, 100%)</strong>. Daughter's name and DOB?</div></div></div><div class="cm u"><div class="ca">RC</div><div><div class="cb">Emily Rose Chen, April 15, 2008</div></div></div><div class="cm b"><div class="ca">AI</div><div><div class="cb">Emily is a minor. UTMA custodian required. Connecting you with an agent.</div></div></div><div class="csys">Agent Sarah Mitchell joined</div><div class="cm a"><div class="ca">SM</div><div><div class="cb">Hi Robert &mdash; I have the details. Would Lisa serve as UTMA custodian?</div></div></div><div class="cm u"><div class="ca">RC</div><div><div class="cb">Yes, can we do a call to finalize?</div></div></div><div class="csys">Escalated to phone &mdash; context transferred</div></div></div>
+        <div class="sts c4 an d2"><div class="st"><div class="sn">14</div><div class="slb">Messages</div></div><div class="st"><div class="sn">88%</div><div class="slb">Intent</div></div><div class="st"><div class="sn">8:21</div><div class="slb">Duration</div></div><div class="st"><div class="sn" style="color:var(--pos)">0</div><div class="slb">Repeats</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sp" id="s-callback">
+    <div class="tabs" data-g="c"><div class="tab on" data-t="c1">&#128242; Recovery</div><div class="tab" data-t="c2">&#9889; Playbook</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="c1">
+        <div class="alc alr an d1"><div class="sl" style="color:var(--neg)">Recovery Alert</div><div style="font-size:13px;line-height:1.6"><strong>Karen Williams</strong> &mdash; sentiment drop (Positive &rarr; Negative). Hold 8:42, then disconnected. <strong>Automated recovery initiated.</strong></div></div>
+        <div class="sts c4 an d2"><div class="st"><div class="sn" style="color:var(--neg)">&minus;54%</div><div class="slb">Sent Drop</div></div><div class="st"><div class="sn">8:42</div><div class="slb">Hold</div></div><div class="st"><div class="sn" style="color:var(--neg)">3</div><div class="slb">Attempts</div></div><div class="st"><div class="sn" style="color:var(--neg)">DC</div><div class="slb">Disconn</div></div></div>
+        <div class="cd an d3"><div class="sl">Automated Recovery Actions</div><div class="tl"><div class="tli" style="background:var(--negbg);color:var(--neg)">&#9888;</div><div class="tlb"><div class="tlt">Supervisor Alert</div><div class="tld">Mike Rodriguez notified. Priority: High.</div><div class="tlm">2:48 PM</div></div></div><div class="tl"><div class="tli" style="background:var(--infbg);color:var(--inf)">&#128241;</div><div class="tlb"><div class="tlt">SMS Follow-Up</div><div class="tld">&quot;Hi Karen, we apologize. A senior agent will call within 30 min.&quot;</div><div class="tlm">2:49 PM</div></div></div><div class="tl"><div class="tli" style="background:var(--caubg);color:var(--cau)">&#128222;</div><div class="tlb"><div class="tlt">Priority Callback Queued</div><div class="tld">Lisa Tran (Senior). Queue position: 1.</div><div class="tlm">2:50 PM</div></div></div><div class="tl"><div class="tli" style="background:var(--revbg);color:var(--rev)">&#128231;</div><div class="tlb"><div class="tlt">Email Drafted</div><div class="tld">Personalized apology + claim status.</div><div class="tlm">Pending</div></div></div></div>
+      </div>
+      <div class="tp" id="c2">
+        <div class="cd an d1"><div class="sl">Recovery Playbook</div><div class="ts" style="border-left-color:#ef4444"><span class="hl">Opening:</span> &quot;Karen, I am sorry about the wait and disconnection.&quot;<br><br><span class="hl">Empathy:</span> Acknowledge all 3 attempts. Do NOT ask to repeat info.<br><br><span class="hl">Resolution:</span> Specific timeline + direct callback number.</div></div>
+        <div class="rec an d2"><div class="sl" style="color:var(--cau)">Recovery KPIs</div><div class="ri"><span class="rb">&#9656;</span><span>Restore sentiment to <strong>Neutral+</strong> this interaction.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Specific dates</strong> for next steps &mdash; no vague promises.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Proactive follow-up in 48h</strong> scheduled before call ends.</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sp" id="s-workforce">
+    <div class="tabs" data-g="w"><div class="tab on" data-t="w1">&#128101; Matching</div><div class="tab" data-t="w2">&#128200; Coaching</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="w1">
+        <div class="alc alp an d1"><div class="sl" style="color:var(--rev)">Skill-Based Routing</div><div style="font-size:13px;line-height:1.6">Incoming: <strong>Complex Claims Escalation</strong> (High). Matching caller history, complexity, and expertise to agents.</div></div>
+        <div class="cd an d2"><div class="sl">Agent Match Scores</div><div class="ac" style="border:2px solid var(--acc)"><div class="aav" style="background:var(--acc);color:#fff">LT</div><div class="ai"><div class="an2">Lisa Tran <span class="pill pg" style="font-size:10px;margin-left:4px">Best Match</span></div><div class="am">Senior CSR &middot; Claims &middot; 4.8 rating &middot; Available</div></div><div class="asc">96</div></div><div class="ac"><div class="aav" style="background:var(--inf);color:#fff">JR</div><div class="ai"><div class="an2">James Rivera</div><div class="am">CSR II &middot; General Claims &middot; 4.5 &middot; 3 min</div></div><div class="asc" style="color:var(--t2)">78</div></div><div class="ac"><div class="aav" style="background:var(--orange);color:var(--dk)">SM</div><div class="ai"><div class="an2">Sarah Mitchell</div><div class="am">CSR II &middot; Life &amp; Annuity &middot; 4.6 &middot; Available</div></div><div class="asc" style="color:var(--t3)">61</div></div></div>
+        <div class="cd an d3"><div class="sl">Match Criteria</div><div class="skb"><span class="skn">Claims Exp</span><div class="skt"><div class="skf" style="width:95%;background:var(--acc)"></div></div><span class="skp" style="color:var(--acc)">95%</span></div><div class="skb"><span class="skn">Escalation</span><div class="skt"><div class="skf" style="width:88%;background:var(--acc)"></div></div><span class="skp" style="color:var(--acc)">88%</span></div><div class="skb"><span class="skn">Empathy</span><div class="skt"><div class="skf" style="width:92%;background:#37A526"></div></div><span class="skp" style="color:#37A526">92%</span></div><div class="skb"><span class="skn">Resolution</span><div class="skt"><div class="skf" style="width:91%;background:#37A526"></div></div><span class="skp" style="color:#37A526">91%</span></div></div>
+      </div>
+      <div class="tp" id="w2">
+        <div class="cd an d1"><div class="sl">Coaching Opportunities</div><div class="ac" style="border-left:3px solid #f97316"><div class="aav" style="background:#f97316;color:#fff">JR</div><div class="ai"><div class="an2">James Rivera</div><div class="am">Handle time &uarr;22%. Empathy phrases &darr; in escalated calls.</div></div></div><div class="ac" style="border-left:3px solid var(--orange)"><div class="aav" style="background:var(--orange);color:var(--dk)">KP</div><div class="ai"><div class="an2">Kim Patel</div><div class="am">FCR &darr;15%. Frequent billing transfers.</div></div></div></div>
+        <div class="rec an d2"><div class="sl" style="color:var(--cau)">Script Improvements</div><div class="ri"><span class="rb">&#9656;</span><span>Escalation calls: <strong>empathy within 30s</strong> &rarr; +18% sentiment.</span></div><div class="ri"><span class="rb">&#9656;</span><span>Billing: <strong>proactive due-date</strong> &rarr; -23% repeat calls.</span></div><div class="ri"><span class="rb">&#9656;</span><span>Holds: replace &quot;please hold&quot; with <strong>est. wait + reason</strong> &rarr; -31% neg sentiment.</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sp" id="s-lifeevent">
+    <div class="tabs" data-g="l"><div class="tab on" data-t="l1">&#128141; Detection</div><div class="tab" data-t="l2">&#127919; Offers</div></div>
+    <div class="aip-body">
+      <div class="tp on" id="l1">
+        <div class="alc alp an d1"><div class="sl" style="color:var(--rev)">Life-Event Signals Detected</div><div style="font-size:13px;line-height:1.6">Analysis of <strong>James &amp; Patricia Nguyen</strong> interactions identified life events requiring coverage review.</div></div>
+        <div class="cd an d2"><div class="sl">Detected Events</div><div style="margin-bottom:10px"><span class="leb" style="background:var(--revbg);color:var(--rev)">&#128141; Marriage</span><span class="leb" style="background:var(--infbg);color:var(--inf)">&#127968; New Home</span><span class="leb" style="background:var(--posbg);color:var(--pos)">&#128118; New Dependent</span></div><div style="font-size:12px;line-height:1.6;color:var(--t2)"><div style="padding:8px;background:var(--canvas);border-radius:var(--rs);margin-bottom:4px"><strong>Signal 1:</strong> Name change (Williams &rarr; Nguyen) + joint residence. <em>94% confidence.</em></div><div style="padding:8px;background:var(--canvas);border-radius:var(--rs);margin-bottom:4px"><strong>Signal 2:</strong> Homeowners inquiry Feb 3 + new property. <em>91%.</em></div><div style="padding:8px;background:var(--canvas);border-radius:var(--rs)"><strong>Signal 3:</strong> Called to add dependent, mentioned &quot;new baby.&quot; <em>97%.</em></div></div></div>
+        <div class="sts an d3"><div class="st"><div class="sn">3</div><div class="slb">Events</div></div><div class="st"><div class="sn" style="color:var(--acc)">94%</div><div class="slb">Confidence</div></div><div class="st"><div class="sn" style="color:var(--pos)">High</div><div class="slb">Opportunity</div></div></div>
+      </div>
+      <div class="tp" id="l2">
+        <div class="cd an d1"><div class="sl">Coverage Triggers</div><div class="tl"><div class="tli" style="background:var(--revbg);color:var(--rev)">&#128141;</div><div class="tlb"><div class="tlt">Marriage &mdash; Bene Update</div><div class="tld">Add spouse Patricia as primary.</div></div></div><div class="tl"><div class="tli" style="background:var(--infbg);color:var(--inf)">&#127968;</div><div class="tlb"><div class="tlt">New Home &mdash; Coverage Gap</div><div class="tld">No homeowners policy. Bundle with auto for 12% discount.</div></div></div><div class="tl"><div class="tli" style="background:var(--posbg);color:var(--pos)">&#128118;</div><div class="tlb"><div class="tlt">New Dependent &mdash; Life Coverage</div><div class="tld">$350K term may be low. Offer child rider ($15K, ~$4/mo).</div></div></div></div>
+        <div class="rec an d2"><div class="sl" style="color:var(--cau)">Conversation Points</div><div class="ri"><span class="rb">&#9656;</span><span><strong>Congratulations</strong> approach &mdash; acknowledge events before coverage.</span></div><div class="ri"><span class="rb">&#9656;</span><span>Offer <strong>prefilled bene update form</strong> with spouse name.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Bundled homeowners quote</strong> &mdash; est. savings $340/yr.</span></div><div class="ri"><span class="rb">&#9656;</span><span><strong>Child rider + coverage increase</strong> &mdash; &quot;Most new parents go to 10x income.&quot;</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="csr" id="csrM">
+  <div class="csr-ban" id="cBan"><div class="csr-banner-left" id="bL"><div><span class="lb">Policy</span><span class="vl">HO-2024-88312</span></div><div><span class="lb">Owner</span><span class="vl">Margaret Torres</span></div><div><span class="lb">Product</span><span class="vl">Homeowners</span></div><div><span class="lb">Status</span><span class="vl">Active</span></div><span class="abg">Authenticated</span><span class="cbg">IVR &rarr; Agent (3rd call)</span></div><div class="timer" id="tmr">03:14</div></div>
+  <div class="csr-p">
+    <div class="csr-tabs"><div class="ct on">Policy</div><div class="ct">Billing</div><div class="ct">Claims</div><div class="ct">Values</div><div class="ct">Notes</div><div class="ct">History</div></div>
+    <div class="wg" id="wgs"><div class="wc"><div class="wt">Policy Details</div><div class="dr"><span class="dl">Policy</span><span class="dv">HO-2024-88312</span></div><div class="dr"><span class="dl">Product</span><span class="dv">Homeowners</span></div><div class="dr"><span class="dl">Status</span><span class="dv" style="color:var(--pos)">Active</span></div><div class="dr"><span class="dl">Issue Date</span><span class="dv">04/10/2022</span></div><div class="dr"><span class="dl">State</span><span class="dv">FL</span></div></div><div class="wc"><div class="wt">Billing</div><div class="dr"><span class="dl">Paid To</span><span class="dv">01/10/2026</span></div><div class="dr"><span class="dl">Method</span><span class="dv">Direct Bill</span></div><div class="dr"><span class="dl">Frequency</span><span class="dv">Annual</span></div><div class="dr"><span class="dl">Premium</span><span class="dv">$2,840.00</span></div></div><div class="wc"><div class="wt">Current Claim / Issue</div><div class="dr"><span class="dl">Reference</span><span class="dv">CLM-2026-4491</span></div><div class="dr"><span class="dl">Type</span><span class="dv">Water Damage</span></div><div class="dr"><span class="dl">Filed</span><span class="dv">01/29/2026</span></div><div class="dr"><span class="dl">Status</span><span class="dv"><span class="pill py">Under Review</span></span></div></div><div class="wc"><div class="wt">Contact Summary</div><div class="dr"><span class="dl">Contacts (30d)</span><span class="dv">5</span></div><div class="dr"><span class="dl">Last Contact</span><span class="dv">Feb 12, 2026</span></div><div class="dr"><span class="dl">Channel</span><span class="dv">Phone</span></div><div class="dr"><span class="dl">Sentiment</span><span class="dv" style="color:var(--neg)">Declining</span></div></div></div>
+    <div style="margin-top:var(--sp-4)"><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-bottom:var(--sp-3)">Quick Actions</div><div style="display:flex;gap:var(--sp-2);flex-wrap:wrap"><button class="btn bp btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> View Claim</button><button class="btn bo btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Send Update</button><button class="btn bo btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Escalate</button><button class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Note</button><button class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Schedule Callback</button></div></div>
+    <div class="wg" style="margin-top:var(--sp-4)"><div class="wc"><div class="wt">Recent Activity</div><div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:flex-start;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--negbg);color:var(--neg);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">&#128222;</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Inbound Call &mdash; Claim Status</div><div style="font-size:11px;color:var(--t2)">Today, 2:48 PM &middot; 18:02 duration</div></div><span class="pill pr" style="font-size:10px;flex-shrink:0">Negative</span></div><div style="display:flex;align-items:flex-start;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--caubg);color:var(--cau);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">&#128222;</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Inbound Call &mdash; Document Follow-Up</div><div style="font-size:11px;color:var(--t2)">Feb 8, 2026 &middot; 11:45 duration</div></div><span class="pill py" style="font-size:10px;flex-shrink:0">Declining</span></div><div style="display:flex;align-items:flex-start;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--infbg);color:var(--inf);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">&#128196;</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Documents Submitted</div><div style="font-size:11px;color:var(--t2)">Feb 2, 2026 &middot; Photos, estimate, police report</div></div><span class="pill pb" style="font-size:10px;flex-shrink:0">Received</span></div><div style="display:flex;align-items:flex-start;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:var(--posbg);color:var(--pos);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">&#128222;</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Inbound Call &mdash; Initial Inquiry</div><div style="font-size:11px;color:var(--t2)">Feb 5, 2026 &middot; 6:20 duration</div></div><span class="pill pg" style="font-size:10px;flex-shrink:0">Neutral</span></div></div></div><div class="wc"><div class="wt">Coverage Summary</div><div class="dr"><span class="dl">Dwelling (A)</span><span class="dv">$385,000</span></div><div class="dr"><span class="dl">Other Structures (B)</span><span class="dv">$38,500</span></div><div class="dr"><span class="dl">Personal Property (C)</span><span class="dv">$192,500</span></div><div class="dr"><span class="dl">Loss of Use (D)</span><span class="dv">$77,000</span></div><div class="dr"><span class="dl">Personal Liability (E)</span><span class="dv">$300,000</span></div><div class="dr"><span class="dl">Deductible</span><span class="dv">$2,500</span></div><div class="dr"><span class="dl">Wind/Hail Deductible</span><span class="dv">2% Dwelling</span></div><div style="margin-top:var(--sp-3);padding:8px;background:var(--caubg);border-radius:var(--rs);font-size:12px;color:var(--cau)"><strong>Note:</strong> Water damage claim filed 01/29. Pending adjuster inspection. Est: $18,400.</div></div></div>
+  </div>
+  <div class="csr-ft">&copy; 2026 Bloom Insurance &middot; Engagement Intelligence Smart App &middot; Prototype</div>
+</div>
+</div></div>
+
+<script>
+var banners={friction:'<div><span class="lb">Policy</span><span class="vl">HO-2024-88312</span></div><div><span class="lb">Owner</span><span class="vl">Margaret Torres</span></div><div><span class="lb">Product</span><span class="vl">Homeowners</span></div><span class="abg">Authenticated</span><span class="cbg">IVR &rarr; Agent (3rd call)</span>',adaptive:'<div><span class="lb">Policy</span><span class="vl">AU-2023-55190</span></div><div><span class="lb">Owner</span><span class="vl">David Park</span></div><div><span class="lb">Product</span><span class="vl">Auto</span></div><span class="abg">IVR Auth</span><span class="cbg">Callback (Adaptive)</span>',omni:'<div><span class="lb">Policy</span><span class="vl">440387261UL</span></div><div><span class="lb">Owner</span><span class="vl">Robert A. Chen</span></div><div><span class="lb">Product</span><span class="vl">Universal Life</span></div><span class="abg">Portal SSO</span><span class="cbg">Portal &rarr; Chat &rarr; Call</span>',callback:'<div><span class="lb">Policy</span><span class="vl">HO-2025-71034</span></div><div><span class="lb">Owner</span><span class="vl">Karen Williams</span></div><div><span class="lb">Product</span><span class="vl">Homeowners</span></div><span class="abg">Verified</span><span class="cbg">Recovery Callback</span>',workforce:'<div><span class="lb">Queue</span><span class="vl">Claims Escalation</span></div><div><span class="lb">Complexity</span><span class="vl">High</span></div><div><span class="lb">Agents</span><span class="vl">3 Available</span></div><span class="cbg">Skill Routing</span>',lifeevent:'<div><span class="lb">Policy</span><span class="vl">TL-2021-33847</span></div><div><span class="lb">Owner</span><span class="vl">James Nguyen</span></div><div><span class="lb">Product</span><span class="vl">Term Life</span></div><span class="abg">Authenticated</span><span class="cbg">Life-Event Detected</span>'};
+function togDD(){document.getElementById('sdT').classList.toggle('open');document.getElementById('sdD').classList.toggle('show')}
+document.addEventListener('click',function(e){if(!e.target.closest('.sd-toggle')&&!e.target.closest('.sd-drop')){document.getElementById('sdT').classList.remove('open');document.getElementById('sdD').classList.remove('show')}});
+function swS(el){var s=el.dataset.s;document.querySelectorAll('.sd-i').forEach(function(i){i.classList.remove('on')});el.classList.add('on');document.querySelectorAll('.aip > .sp').forEach(function(p){p.classList.remove('on')});var pane=document.getElementById('s-'+s);pane.classList.add('on');pane.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('on',i===0)});pane.querySelectorAll('.tp').forEach(function(t,i){t.classList.toggle('on',i===0)});pane.querySelectorAll('.an').forEach(function(e){e.style.animation='none';e.offsetHeight;e.style.animation=''});if(banners[s])document.getElementById('bL').innerHTML=banners[s];document.getElementById('sdT').classList.remove('open');document.getElementById('sdD').classList.remove('show')}
+document.addEventListener('click',function(e){var t=e.target.closest('.tab');if(!t)return;var tabs=t.closest('.tabs');tabs.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});t.classList.add('on');var body=tabs.nextElementSibling;body.querySelectorAll('.tp').forEach(function(p){p.classList.remove('on')});var tgt=body.querySelector('#'+t.dataset.t);tgt.classList.add('on');tgt.querySelectorAll('.an').forEach(function(e){e.style.animation='none';e.offsetHeight;e.style.animation=''})});
+var sec=194;setInterval(function(){sec++;document.getElementById('tmr').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')},1000);
+</script>
+</body>
+</html>

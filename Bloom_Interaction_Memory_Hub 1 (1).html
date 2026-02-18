@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Insurance - Interaction Memory Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dk:#0f4c75;--acc:#1B75BB;--acc2:#00ADEE;--orange:#F6921E;--yellow:#E8DE23;--lgreen:#8BC53F;--green:#37A526;
+  --canvas:#F2F7F6;--white:#fff;--mid:#1a1a1a;--t2:#808285;--t3:#a8aaad;--bdr:#e0e5e4;
+  --pos:#2a7a1a;--posbg:#e6f5e0;--cau:#946b0e;--caubg:#fef9c3;--neg:#b91c1c;--negbg:#fee2e2;
+  --inf:#1B75BB;--infbg:#e0f0fc;--rev:#7c5500;--revbg:#fef3d6;
+  --f:'Inter',system-ui,-apple-system,sans-serif;
+  --r:8px;--rs:6px;--rf:999px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--canvas);color:var(--mid);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{background:var(--white);border-bottom:1px solid var(--bdr);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:36px;height:36px;flex-shrink:0}
+.hdr-brand{display:flex;align-items:baseline;gap:6px}
+.hdr-brand b{font-size:19px;font-weight:700;color:#333;letter-spacing:-.3px}
+.hdr-brand span{font-size:19px;font-weight:400;color:#555}
+.hdr-sep{width:1px;height:24px;background:var(--bdr);margin:0 12px}
+.hdr-app{display:flex;align-items:center;gap:8px}
+.hdr-app-name{font-size:13px;font-weight:700;color:var(--mid)}
+.badge{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:2px 7px;border-radius:4px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-user{display:flex;align-items:center;gap:8px}
+.hdr-avatar{width:30px;height:30px;border-radius:var(--rf);background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px}
+.hdr-uname{font-size:12px;font-weight:600}.hdr-urole{font-size:10px;color:var(--t2)}
+
+/* POLICY BANNER */
+.pol-ban{background:var(--white);border-bottom:1px solid var(--bdr);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pol-ban .pair{display:flex;align-items:center;gap:4px;font-size:13px}
+.pol-ban .lbl{color:var(--t2);font-weight:500;font-size:12px}
+.pol-ban .val{font-weight:600;color:var(--mid)}
+.pol-pill{display:inline-flex;padding:3px 10px;border-radius:var(--rf);font-size:11px;font-weight:600}
+.pol-pill.active{background:var(--posbg);color:var(--pos);border:1px solid #bbf7d0}
+.pol-pill.auth{background:var(--posbg);color:var(--pos);border:1px solid #bbf7d0}
+
+/* LAYOUT */
+.main{display:flex;gap:0;min-height:calc(100vh - 56px - 50px)}
+.col-left{width:320px;flex-shrink:0;background:var(--white);border-right:1px solid var(--bdr);display:flex;flex-direction:column}
+.col-center{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.col-right{width:300px;flex-shrink:0;background:var(--white);border-left:1px solid var(--bdr);display:flex;flex-direction:column}
+
+/* SECTION HEADERS */
+.sec-hdr{padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);display:flex;align-items:center;gap:6px}
+.sec-title .icon{font-size:14px}
+.sec-count{font-size:10px;font-weight:700;background:var(--acc);color:#fff;padding:1px 7px;border-radius:var(--rf)}
+
+/* FILTER BAR */
+.filter-bar{padding:10px 16px;border-bottom:1px solid var(--bdr);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.fbtn{padding:4px 10px;border-radius:var(--rf);font-size:11px;font-weight:600;border:1px solid var(--bdr);background:var(--white);color:var(--t2);cursor:pointer;transition:all .15s;font-family:var(--f)}
+.fbtn:hover{border-color:var(--acc);color:var(--acc)}
+.fbtn.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* TIMELINE */
+.tl-wrap{flex:1;overflow-y:auto;padding:16px 20px}
+.tl-wrap::-webkit-scrollbar{width:4px}.tl-wrap::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+.tl-date{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.tl-date:first-child{margin-top:0}
+.tl-date::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+.tl-item{display:flex;gap:12px;padding:10px 12px;border-radius:var(--r);margin-bottom:4px;cursor:pointer;transition:background .12s;position:relative}
+.tl-item:hover{background:var(--canvas)}
+.tl-item.selected{background:var(--infbg);border:1px solid #93bbfd}
+
+.tl-icon{width:32px;height:32px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tl-icon.phone{background:var(--infbg);color:var(--inf)}
+.tl-icon.portal{background:var(--revbg);color:var(--rev)}
+.tl-icon.email{background:var(--posbg);color:var(--pos)}
+.tl-icon.chat{background:var(--caubg);color:var(--cau)}
+.tl-icon.mobile{background:#f3e8ff;color:#7c3aed}
+.tl-icon.system{background:var(--canvas);color:var(--t2)}
+
+.tl-body{flex:1;min-width:0}
+.tl-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tl-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-time{font-size:10px;color:var(--t3);flex-shrink:0;font-weight:500}
+.tl-desc{font-size:12px;color:var(--t2);margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tl-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.tl-tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px}
+.tl-tag.sent-pos{background:var(--posbg);color:var(--pos)}
+.tl-tag.sent-neu{background:#f3f4f6;color:var(--t2)}
+.tl-tag.sent-neg{background:var(--negbg);color:var(--neg)}
+.tl-tag.sent-dec{background:var(--caubg);color:var(--cau)}
+.tl-tag.ch{background:var(--infbg);color:var(--inf)}
+.tl-tag.dur{background:var(--canvas);color:var(--t2)}
+
+/* DETAIL PANEL */
+.detail-wrap{flex:1;overflow-y:auto;padding:16px}
+.detail-wrap::-webkit-scrollbar{width:4px}.detail-wrap::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+
+.det-card{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.det-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.det-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--canvas)}
+.det-row:last-child{border:none}
+.det-lbl{color:var(--t2);font-weight:500;font-size:12px}
+.det-val{font-weight:600;font-size:12px;text-align:right}
+
+.det-transcript{font-size:12px;line-height:1.6;padding:10px;background:var(--canvas);border-radius:var(--rs);border-left:3px solid var(--acc);max-height:200px;overflow-y:auto}
+.det-transcript .spk{font-weight:700;color:var(--acc)}
+.det-transcript .spk.cust{color:var(--orange)}
+.det-transcript p{margin-bottom:6px}
+
+.det-note{font-size:12px;line-height:1.5;padding:10px;background:#fefce8;border:1px solid #fcd34d;border-radius:var(--rs)}
+
+/* FRICTION ALERTS (right col) */
+.alert-card{border-radius:var(--r);padding:12px;margin-bottom:10px;border:1px solid}
+.alert-card.high{background:linear-gradient(135deg,#fef2f2,#fff5f5);border-color:#fca5a5}
+.alert-card.med{background:linear-gradient(135deg,#fefce8,#fffef5);border-color:#fcd34d}
+.alert-card.info{background:linear-gradient(135deg,#eff6ff,#f5f9ff);border-color:#93bbfd}
+.alert-card.good{background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border-color:#86efac}
+.alert-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.alert-label.high{color:var(--neg)}.alert-label.med{color:var(--cau)}.alert-label.info{color:var(--inf)}.alert-label.good{color:var(--pos)}
+.alert-text{font-size:12px;line-height:1.5;color:var(--mid)}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-box{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:8px;text-align:center}
+.stat-num{font-size:18px;font-weight:700;line-height:1.1}
+.stat-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-top:2px}
+
+/* CONTEXT ENRICHMENT */
+.ctx-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--canvas);font-size:12px}
+.ctx-item:last-child{border:none}
+.ctx-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.ctx-text{flex:1;line-height:1.4;color:var(--t2)}
+.ctx-text strong{color:var(--mid)}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:var(--t3);text-align:center}
+.empty-state .icon{font-size:32px;margin-bottom:8px;opacity:.5}
+.empty-state p{font-size:12px}
+
+/* FOOTER */
+.ftr{padding:8px 24px;text-align:center;font-size:10px;color:var(--t3);border-top:1px solid var(--bdr);background:var(--white)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .25s ease forwards}
+.d1{animation-delay:.03s;opacity:0}.d2{animation-delay:.06s;opacity:0}.d3{animation-delay:.09s;opacity:0}
+.d4{animation-delay:.12s;opacity:0}.d5{animation-delay:.15s;opacity:0}.d6{animation-delay:.18s;opacity:0}
+
+@media(max-width:1100px){.col-right{display:none}}
+@media(max-width:800px){.col-left{width:260px}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <svg class="hdr-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 16 C90 16,68 38,68 62 C68 78,78 90,100 100 C122 90,132 78,132 62 C132 38,110 16,100 16Z" fill="#00ADEE"/>
+      <path d="M184 100 C184 90,162 68,138 68 C122 68,110 78,100 100 C110 122,122 132,138 132 C162 132,184 110,184 100Z" fill="#37A526"/>
+      <path d="M100 184 C110 184,132 162,132 138 C132 122,122 110,100 100 C78 110,68 122,68 138 C68 162,90 184,100 184Z" fill="#8BC53F"/>
+      <path d="M16 100 C16 110,38 132,62 132 C78 132,90 122,100 100 C90 78,78 68,62 68 C38 68,16 90,16 100Z" fill="#1B75BB"/>
+      <path d="M156 20 C148 20,126 36,118 56 C112 70,114 84,100 100 C116 100,130 96,144 88 C160 78,170 54,168 42 C166 30,160 20,156 20Z" fill="#E8DE23"/>
+      <path d="M44 180 C52 180,74 164,82 144 C88 130,86 116,100 100 C84 100,70 104,56 112 C40 122,30 146,32 158 C34 170,40 180,44 180Z" fill="#F6921E"/>
+      <circle cx="100" cy="100" r="10" fill="#E8DE23"/>
+    </svg>
+    <div class="hdr-brand"><b>Bloom</b> <span>Insurance</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-app">
+      <span class="hdr-app-name">Interaction Memory Hub</span>
+      <span class="badge">Smart App</span>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-user">
+      <div class="hdr-avatar">SM</div>
+      <div><div class="hdr-uname">Sarah Mitchell</div><div class="hdr-urole">CSR &middot; L&amp;A Servicing</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- POLICY BANNER -->
+<div class="pol-ban">
+  <div class="pair"><span class="lbl">Policy</span><span class="val">440387261UL</span></div>
+  <div class="pair"><span class="lbl">Owner</span><span class="val">Robert A. Chen</span></div>
+  <div class="pair"><span class="lbl">Product</span><span class="val">Universal Life &mdash; $500K</span></div>
+  <div class="pair"><span class="lbl">Status</span><span class="pol-pill active">Active</span></div>
+  <div class="pair"><span class="lbl">Issue Date</span><span class="val">06/12/2018</span></div>
+  <div class="pair"><span class="lbl">State</span><span class="val">CA</span></div>
+  <span class="pol-pill auth">&#10003; Authenticated</span>
+</div>
+
+<!-- MAIN 3-COL LAYOUT -->
+<div class="main">
+
+  <!-- LEFT: UNIFIED TIMELINE -->
+  <div class="col-left">
+    <div class="sec-hdr">
+      <div class="sec-title"><span class="icon">&#128337;</span> Interaction Timeline</div>
+      <span class="sec-count">14</span>
+    </div>
+    <div class="filter-bar">
+      <button class="fbtn on" onclick="filterTL(this,'all')">All</button>
+      <button class="fbtn" onclick="filterTL(this,'phone')">&#128222; Phone</button>
+      <button class="fbtn" onclick="filterTL(this,'portal')">&#127760; Portal</button>
+      <button class="fbtn" onclick="filterTL(this,'chat')">&#128172; Chat</button>
+      <button class="fbtn" onclick="filterTL(this,'email')">&#128231; Email</button>
+      <button class="fbtn" onclick="filterTL(this,'mobile')">&#128241; Mobile</button>
+    </div>
+    <div class="tl-wrap" id="tlWrap">
+
+      <div class="tl-date">Today &mdash; Feb 12, 2026</div>
+
+      <div class="tl-item selected anim d1" data-ch="phone" onclick="selectItem(this,0)">
+        <div class="tl-icon phone">&#128222;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Inbound Call &mdash; Policy Loan Finalize</span><span class="tl-time">10:31 AM</span></div>
+          <div class="tl-desc">Finalizing $75K policy loan. Disbursement via EFT. Agent confirmed death benefit impact.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Phone</span><span class="tl-tag dur">12:04</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item anim d2" data-ch="chat" onclick="selectItem(this,1)">
+        <div class="tl-icon chat">&#128172;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Agent Chat &mdash; Loan Options</span><span class="tl-time">10:24 AM</span></div>
+          <div class="tl-desc">Guided through max loanable amount ($168K), fixed vs variable rate, death benefit reduction.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Chat</span><span class="tl-tag dur">8:21</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item anim d3" data-ch="chat" onclick="selectItem(this,2)">
+        <div class="tl-icon chat" style="background:var(--caubg)">&#129302;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Chatbot &mdash; Loan Inquiry</span><span class="tl-time">10:19 AM</span></div>
+          <div class="tl-desc">Intent: PolicyLoan (88%). Provided cash value. Escalated on interest rate question.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Chatbot</span><span class="tl-tag dur">3:12</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item anim d4" data-ch="portal" onclick="selectItem(this,3)">
+        <div class="tl-icon portal">&#127760;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Portal &mdash; Cash Value Lookup</span><span class="tl-time">10:14 AM</span></div>
+          <div class="tl-desc">Logged in via SSO. Viewed cash value, downloaded policy loan request form (PDF).</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Portal</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Feb 10, 2026</div>
+
+      <div class="tl-item anim d5" data-ch="email" onclick="selectItem(this,4)">
+        <div class="tl-icon email">&#128231;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Email &mdash; Annual Statement</span><span class="tl-time">8:00 AM</span></div>
+          <div class="tl-desc">System-generated annual statement delivered. Cash value: $187,420. Death benefit: $500K.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Email</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Feb 3, 2026</div>
+
+      <div class="tl-item anim d6" data-ch="phone" onclick="selectItem(this,5)">
+        <div class="tl-icon phone">&#128222;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Inbound Call &mdash; Bene Change Inquiry</span><span class="tl-time">2:15 PM</span></div>
+          <div class="tl-desc">Asked about adding daughter Emily (minor) as contingent beneficiary. Informed of UTMA custodian requirement.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Phone</span><span class="tl-tag dur">6:42</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Jan 28, 2026</div>
+
+      <div class="tl-item" data-ch="portal" onclick="selectItem(this,6)">
+        <div class="tl-icon portal">&#127760;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Portal &mdash; Billing Viewed</span><span class="tl-time">7:42 PM</span></div>
+          <div class="tl-desc">Logged in. Reviewed premium schedule and billing frequency. No changes made.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Portal</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Jan 15, 2026</div>
+
+      <div class="tl-item" data-ch="email" onclick="selectItem(this,7)">
+        <div class="tl-icon email">&#128231;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Email &mdash; Premium Due Notice</span><span class="tl-time">8:00 AM</span></div>
+          <div class="tl-desc">Monthly premium reminder. $412.50 due 02/01/2026. Auto-pay confirmed.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Email</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Jan 8, 2026</div>
+
+      <div class="tl-item" data-ch="mobile" onclick="selectItem(this,8)">
+        <div class="tl-icon mobile">&#128241;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Mobile App &mdash; ID Card Downloaded</span><span class="tl-time">9:18 AM</span></div>
+          <div class="tl-desc">Accessed mobile app. Downloaded digital policy ID card. Viewed coverage summary.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Mobile</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Dec 12, 2025</div>
+
+      <div class="tl-item" data-ch="phone" onclick="selectItem(this,9)">
+        <div class="tl-icon phone">&#128222;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Inbound Call &mdash; Premium Mode Change</span><span class="tl-time">11:30 AM</span></div>
+          <div class="tl-desc">Changed billing from quarterly to monthly. Updated EFT account. Agent: Lisa Tran.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Phone</span><span class="tl-tag dur">4:55</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Nov 20, 2025</div>
+
+      <div class="tl-item" data-ch="phone" onclick="selectItem(this,10)">
+        <div class="tl-icon phone">&#128222;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Inbound Call &mdash; Address Change</span><span class="tl-time">3:10 PM</span></div>
+          <div class="tl-desc">Updated mailing address. New: 1842 Pacific Ave, San Francisco, CA 94115. Agent: James Rivera.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Phone</span><span class="tl-tag dur">3:28</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Oct 5, 2025</div>
+
+      <div class="tl-item" data-ch="email" onclick="selectItem(this,11)">
+        <div class="tl-icon email">&#128231;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Outbound Email &mdash; Bene Review Reminder</span><span class="tl-time">10:00 AM</span></div>
+          <div class="tl-desc">Annual beneficiary review reminder. Primary: Lisa M. Chen (Spouse, 100%). No contingent on file.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Email</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Sep 15, 2025</div>
+
+      <div class="tl-item" data-ch="portal" onclick="selectItem(this,12)">
+        <div class="tl-icon portal">&#127760;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Portal &mdash; In-Force Illustration</span><span class="tl-time">6:22 PM</span></div>
+          <div class="tl-desc">Generated in-force illustration. Projected cash value at age 65: $312,400. Reviewed loan options page.</div>
+          <div class="tl-tags"><span class="tl-tag sent-neu">Neutral</span><span class="tl-tag ch">Portal</span></div>
+        </div>
+      </div>
+
+      <div class="tl-date">Aug 22, 2025</div>
+
+      <div class="tl-item" data-ch="phone" onclick="selectItem(this,13)">
+        <div class="tl-icon phone">&#128222;</div>
+        <div class="tl-body">
+          <div class="tl-top"><span class="tl-title">Inbound Call &mdash; Coverage Question</span><span class="tl-time">1:45 PM</span></div>
+          <div class="tl-desc">Asked about increasing face amount from $500K to $750K. Quoted additional premium of $189/mo. Declined for now.</div>
+          <div class="tl-tags"><span class="tl-tag sent-pos">Positive</span><span class="tl-tag ch">Phone</span><span class="tl-tag dur">8:12</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CENTER: DETAIL VIEW -->
+  <div class="col-center">
+    <div class="sec-hdr">
+      <div class="sec-title"><span class="icon">&#128196;</span> Interaction Detail</div>
+    </div>
+    <div class="detail-wrap" id="detailWrap">
+
+      <div class="det-card anim d1">
+        <div class="det-card-title">&#128222; Interaction Summary</div>
+        <div class="det-row"><span class="det-lbl">Type</span><span class="det-val">Inbound Call</span></div>
+        <div class="det-row"><span class="det-lbl">Channel</span><span class="det-val">Phone (escalated from Chat)</span></div>
+        <div class="det-row"><span class="det-lbl">Date / Time</span><span class="det-val">Feb 12, 2026 &middot; 10:31 AM</span></div>
+        <div class="det-row"><span class="det-lbl">Duration</span><span class="det-val">12:04</span></div>
+        <div class="det-row"><span class="det-lbl">Agent</span><span class="det-val">Sarah Mitchell (CSR II)</span></div>
+        <div class="det-row"><span class="det-lbl">Sentiment</span><span class="det-val" style="color:var(--pos)">Positive</span></div>
+        <div class="det-row"><span class="det-lbl">Intent</span><span class="det-val">Policy Loan &mdash; Finalization</span></div>
+        <div class="det-row"><span class="det-lbl">Resolution</span><span class="det-val" style="color:var(--pos)">Resolved &mdash; FCR</span></div>
+      </div>
+
+      <div class="det-card anim d2">
+        <div class="det-card-title">&#128172; Conversation Summary</div>
+        <div class="det-transcript">
+          <p><span class="spk">Agent:</span> Hi Robert, I have all the context from your chat session. You'd like to proceed with a $75K policy loan at the 5.25% fixed rate?</p>
+          <p><span class="spk cust">Robert:</span> Yes, that's right. And I want to make sure my net death benefit stays above $400K.</p>
+          <p><span class="spk">Agent:</span> Absolutely. With a $75K loan, your net death benefit would be $425K. The loan accrues interest annually and you can repay anytime without penalty.</p>
+          <p><span class="spk cust">Robert:</span> Perfect. Let's do EFT to my checking account on file.</p>
+          <p><span class="spk">Agent:</span> Done. I've submitted the loan request. Funds will arrive in 3-5 business days. You'll receive a confirmation email with the loan terms and repayment schedule. Is there anything else?</p>
+          <p><span class="spk cust">Robert:</span> Actually yes &mdash; I'd also like to add my daughter Emily as contingent beneficiary. She's 17.</p>
+          <p><span class="spk">Agent:</span> Since Emily is a minor, we'll need a UTMA custodian. Would Lisa serve as custodian? I can send you a prefilled form.</p>
+          <p><span class="spk cust">Robert:</span> Yes, Lisa would be custodian. Please send the form.</p>
+          <p><span class="spk">Agent:</span> Perfect, sending now. Once we receive it back signed, the change will process in 24-48 hours. I'll follow up to confirm.</p>
+        </div>
+      </div>
+
+      <div class="det-card anim d3">
+        <div class="det-card-title">&#9889; Actions Taken</div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--pos)"></div><div class="ctx-text"><strong>Policy loan submitted:</strong> $75,000 at 5.25% fixed. EFT to checking ****4821.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--acc)"></div><div class="ctx-text"><strong>Bene change form sent:</strong> Add Emily R. Chen as contingent, Lisa M. Chen as UTMA custodian.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--cau)"></div><div class="ctx-text"><strong>Follow-up scheduled:</strong> Feb 14 &mdash; confirm bene change form received.</div></div>
+      </div>
+
+      <div class="det-card anim d4">
+        <div class="det-card-title">&#128203; Agent Notes</div>
+        <div class="det-note">Client very pleasant and well-informed. Had already reviewed cash value and loan terms on portal and chatbot before calling. Seamless escalation &mdash; no info repeated. Also wants to add daughter as contingent bene (minor, UTMA required). Sent prefilled form. Follow up Friday to confirm receipt. &mdash; SM</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: FRICTION + CONTEXT -->
+  <div class="col-right">
+    <div class="sec-hdr">
+      <div class="sec-title"><span class="icon">&#129504;</span> AI Insights</div>
+    </div>
+    <div class="detail-wrap">
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num">14</div><div class="stat-lbl">Contacts</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:var(--pos)">82%</div><div class="stat-lbl">Pos Sent</div></div>
+        <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Open Cases</div></div>
+      </div>
+
+      <div class="alert-card good">
+        <div class="alert-label good">&#10003; No Friction Detected</div>
+        <div class="alert-text">Robert Chen has had <strong>zero repeat contacts</strong> for unresolved issues. Sentiment is consistently positive across all channels. No SLA breaches.</div>
+      </div>
+
+      <div class="alert-card info">
+        <div class="alert-label info">&#128279; Omnichannel Continuity</div>
+        <div class="alert-text">Today's interaction spanned <strong>4 channels</strong> (Portal &rarr; Chatbot &rarr; Agent Chat &rarr; Phone) with <strong>zero information repeated</strong>. Full context transferred at each handoff.</div>
+      </div>
+
+      <div class="alert-card med">
+        <div class="alert-label med">&#128337; Pending Follow-Up</div>
+        <div class="alert-text"><strong>Beneficiary change form</strong> sent today. UTMA custodian designation for minor Emily R. Chen. Follow-up scheduled <strong>Feb 14</strong>.</div>
+      </div>
+
+      <div class="det-card" style="margin-top:4px">
+        <div class="det-card-title">&#128218; Context Enrichment</div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--acc)"></div><div class="ctx-text"><strong>Cash Value:</strong> $187,420. After $75K loan: $112,420 net.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--pos)"></div><div class="ctx-text"><strong>Death Benefit:</strong> $500K. Net after loan: $425K.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--orange)"></div><div class="ctx-text"><strong>Premium:</strong> $412.50/mo via EFT. Current through 03/01/2026.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--cau)"></div><div class="ctx-text"><strong>Beneficiaries:</strong> Primary: Lisa M. Chen (Spouse, 100%). Contingent: <em>Pending &mdash; Emily R. Chen.</em></div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:var(--rev)"></div><div class="ctx-text"><strong>Loan History:</strong> No prior loans. First policy loan processed today.</div></div>
+        <div class="ctx-item"><div class="ctx-dot" style="background:#7c3aed"></div><div class="ctx-text"><strong>Cross-Sell:</strong> No annuity on file. Previously inquired about face amount increase (Aug 2025).</div></div>
+      </div>
+
+      <div class="det-card">
+        <div class="det-card-title">&#128202; Channel Breakdown (12 mo)</div>
+        <div style="margin-bottom:6px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:600;min-width:52px;color:var(--t2)">Phone</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:43%;height:100%;background:var(--acc);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:20px;text-align:right">6</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:600;min-width:52px;color:var(--t2)">Portal</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:21%;height:100%;background:var(--rev);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:20px;text-align:right">3</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:600;min-width:52px;color:var(--t2)">Email</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:21%;height:100%;background:var(--pos);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:20px;text-align:right">3</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:11px;font-weight:600;min-width:52px;color:var(--t2)">Chat</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:14%;height:100%;background:var(--cau);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:20px;text-align:right">2</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:52px;color:var(--t2)">Mobile</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:7%;height:100%;background:#7c3aed;border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:20px;text-align:right">1</span></div></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="ftr">&copy; 2026 Bloom Insurance &middot; Interaction Memory Hub Smart App &middot; Prototype</div>
+
+<script>
+/* TIMELINE FILTER */
+function filterTL(btn,ch){
+  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  document.querySelectorAll('.tl-item').forEach(function(item){
+    if(ch==='all'||item.dataset.ch===ch){item.style.display=''}
+    else{item.style.display='none'}
+  });
+  /* show/hide date headers based on visible items */
+  document.querySelectorAll('.tl-date').forEach(function(d){
+    var next=d.nextElementSibling;
+    var hasVisible=false;
+    while(next&&!next.classList.contains('tl-date')){
+      if(next.classList.contains('tl-item')&&next.style.display!=='none')hasVisible=true;
+      next=next.nextElementSibling;
+    }
+    d.style.display=hasVisible?'':'none';
+  });
+}
+
+/* INTERACTION DETAIL DATA */
+var details=[
+  /* 0 - Today Phone Loan Finalize */
+  {type:'Inbound Call',channel:'Phone (escalated from Chat)',date:'Feb 12, 2026 · 10:31 AM',dur:'12:04',agent:'Sarah Mitchell (CSR II)',sent:'Positive',sentC:'var(--pos)',intent:'Policy Loan — Finalization',res:'Resolved — FCR',resC:'var(--pos)',
+   transcript:'<p><span class="spk">Agent:</span> Hi Robert, I have all the context from your chat session. You\'d like to proceed with a $75K policy loan at the 5.25% fixed rate?</p><p><span class="spk cust">Robert:</span> Yes, that\'s right. And I want to make sure my net death benefit stays above $400K.</p><p><span class="spk">Agent:</span> Absolutely. With a $75K loan, your net death benefit would be $425K. The loan accrues interest annually and you can repay anytime without penalty.</p><p><span class="spk cust">Robert:</span> Perfect. Let\'s do EFT to my checking account on file.</p><p><span class="spk">Agent:</span> Done. Funds will arrive in 3-5 business days. You\'ll receive a confirmation email with the loan terms and repayment schedule.</p>',
+   actions:['Policy loan submitted: $75,000 at 5.25% fixed. EFT to checking ****4821.','Bene change form sent: Add Emily R. Chen as contingent beneficiary.','Follow-up scheduled: Feb 14 — confirm bene change form received.'],
+   note:'Client very pleasant and well-informed. Had already reviewed cash value and loan terms on portal and chatbot before calling. Seamless escalation — no info repeated. — SM'},
+  /* 1 - Today Agent Chat Loan Options */
+  {type:'Agent Chat',channel:'Chat (escalated from Chatbot)',date:'Feb 12, 2026 · 10:24 AM',dur:'8:21',agent:'Sarah Mitchell (CSR II)',sent:'Positive',sentC:'var(--pos)',intent:'Policy Loan — Options Review',res:'Escalated to Phone (customer request)',resC:'var(--acc)',
+   transcript:'<p><span class="spk">Agent:</span> Hi Robert — I have the details from the chatbot. Your max loanable amount is $168,678 at 90% of cash value.</p><p><span class="spk cust">Robert:</span> What\'s the interest rate?</p><p><span class="spk">Agent:</span> 5.25% fixed or 4.75% variable (resets annually). Most clients prefer fixed for predictability.</p><p><span class="spk cust">Robert:</span> And what happens to my death benefit?</p><p><span class="spk">Agent:</span> A $75K loan would reduce your net death benefit from $500K to $425K. The loan balance is deducted at claim time unless repaid.</p><p><span class="spk cust">Robert:</span> Let\'s do the loan. Can we finalize on a call?</p>',
+   actions:['Provided in-force illustration with loan scenarios.','Explained fixed vs variable rate options.','Escalated to phone per customer preference.'],
+   note:'Customer well-prepared, came from portal + chatbot with full context. Smooth handoff to phone for final signatures. — SM'},
+  /* 2 - Today Chatbot */
+  {type:'Chatbot Session',channel:'Chatbot (auto)',date:'Feb 12, 2026 · 10:19 AM',dur:'3:12',agent:'AI Chatbot',sent:'Neutral',sentC:'var(--t2)',intent:'Policy Loan — Initial Inquiry',res:'Escalated to Agent Chat',resC:'var(--acc)',
+   transcript:'<p><span class="spk">Bot:</span> Hi Robert! I see you\'re viewing your policy loan forms. How can I help?</p><p><span class="spk cust">Robert:</span> I need a policy loan against my Universal Life. What\'s the max I can borrow?</p><p><span class="spk">Bot:</span> Your current cash value is $187,420. Max loanable: $168,678 (90%). Current loan rate: 5.25% fixed.</p><p><span class="spk cust">Robert:</span> What about the impact on my death benefit?</p><p><span class="spk">Bot:</span> Great question. Let me connect you with an agent who can walk through the details.</p>',
+   actions:['Provided cash value and max loanable amount.','Detected complex question — escalated to agent chat.'],
+   note:'Chatbot correctly identified need for human agent on death benefit impact question. Intent confidence: 88%.'},
+  /* 3 - Today Portal */
+  {type:'Portal Session',channel:'Self-Service Portal',date:'Feb 12, 2026 · 10:14 AM',dur:'5 min session',agent:'Self-Service',sent:'Neutral',sentC:'var(--t2)',intent:'Cash Value Lookup / Form Download',res:'Self-Service (continued to Chatbot)',resC:'var(--acc)',
+   transcript:'<p><em>No conversation transcript — portal self-service activity.</em></p>',
+   actions:['Logged in via SSO (employer portal).','Viewed policy dashboard — cash value, death benefit, premium schedule.','Downloaded policy loan request form (PDF).','Initiated chatbot session from portal.'],
+   note:'Digital-first customer. Researched thoroughly before contacting support.'},
+  /* 4 - Feb 10 Email */
+  {type:'Outbound Email',channel:'Email (System)',date:'Feb 10, 2026 · 8:00 AM',dur:'—',agent:'System Generated',sent:'Neutral',sentC:'var(--t2)',intent:'Annual Statement Delivery',res:'Delivered — Opened',resC:'var(--pos)',
+   transcript:'<p><em>No conversation — system-generated annual statement.</em></p>',
+   actions:['Annual statement generated and delivered via email.','Email opened Feb 10 at 6:42 PM.','Statement includes: Cash value $187,420, Death benefit $500K, YTD premium $4,950.'],
+   note:'Client opened the statement email same day. This likely prompted the policy loan inquiry two days later.'},
+  /* 5 - Feb 3 Phone Bene */
+  {type:'Inbound Call',channel:'Phone',date:'Feb 3, 2026 · 2:15 PM',dur:'6:42',agent:'Lisa Tran (Senior CSR)',sent:'Positive',sentC:'var(--pos)',intent:'Beneficiary Change Inquiry',res:'Informational — Form Needed',resC:'var(--cau)',
+   transcript:'<p><span class="spk">Agent:</span> Thank you for calling Bloom Insurance, this is Lisa. How can I help you today?</p><p><span class="spk cust">Robert:</span> Hi Lisa, I\'d like to add my daughter as a contingent beneficiary on my Universal Life policy.</p><p><span class="spk">Agent:</span> Of course. Your current primary beneficiary is Lisa M. Chen, your spouse, at 100%. What is your daughter\'s name and date of birth?</p><p><span class="spk cust">Robert:</span> Emily Rose Chen, April 15, 2008.</p><p><span class="spk">Agent:</span> Since Emily is currently 17, she\'s a minor. We\'ll need a UTMA custodian designated. Would Lisa serve as custodian?</p><p><span class="spk cust">Robert:</span> Yes, that works. Can you send me the form?</p><p><span class="spk">Agent:</span> Absolutely, I\'ll email the prefilled beneficiary change form today.</p>',
+   actions:['Informed client of UTMA custodian requirement for minor beneficiary.','Bene change form emailed (prefilled with Emily R. Chen details).','Follow-up set for Feb 10 — form not yet returned.'],
+   note:'Very pleasant interaction. Client wants daughter as contingent bene. Form sent but not yet returned as of today. — LT'},
+  /* 6 - Jan 28 Portal */
+  {type:'Portal Session',channel:'Self-Service Portal',date:'Jan 28, 2026 · 7:42 PM',dur:'3 min session',agent:'Self-Service',sent:'Neutral',sentC:'var(--t2)',intent:'Billing Review',res:'Self-Service — No Changes',resC:'var(--t2)',
+   transcript:'<p><em>No conversation — portal self-service activity.</em></p>',
+   actions:['Logged in via SSO.','Viewed premium schedule and billing history.','No changes submitted.'],
+   note:'Routine billing review. No issues detected.'},
+  /* 7 - Jan 15 Email */
+  {type:'Outbound Email',channel:'Email (System)',date:'Jan 15, 2026 · 8:00 AM',dur:'—',agent:'System Generated',sent:'Neutral',sentC:'var(--t2)',intent:'Premium Due Reminder',res:'Delivered — Opened',resC:'var(--pos)',
+   transcript:'<p><em>No conversation — system-generated premium notice.</em></p>',
+   actions:['Monthly premium reminder sent: $412.50 due 02/01/2026.','Auto-pay confirmed on file (EFT ****4821).','Email opened Jan 15 at 12:18 PM.'],
+   note:'Routine premium notice. Auto-pay on file, no action required from client.'},
+  /* 8 - Jan 8 Mobile */
+  {type:'Mobile App Session',channel:'Mobile App (iOS)',date:'Jan 8, 2026 · 9:18 AM',dur:'2 min session',agent:'Self-Service',sent:'Neutral',sentC:'var(--t2)',intent:'ID Card Download',res:'Self-Service — Completed',resC:'var(--pos)',
+   transcript:'<p><em>No conversation — mobile app self-service activity.</em></p>',
+   actions:['Accessed mobile app via biometric login.','Downloaded digital policy ID card.','Viewed coverage summary (face amount, beneficiaries).'],
+   note:'Quick mobile app session. ID card download may have been for a financial advisor or lender.'},
+  /* 9 - Dec 12 Phone Premium */
+  {type:'Inbound Call',channel:'Phone',date:'Dec 12, 2025 · 11:30 AM',dur:'4:55',agent:'Lisa Tran (Senior CSR)',sent:'Positive',sentC:'var(--pos)',intent:'Billing Mode Change',res:'Resolved — FCR',resC:'var(--pos)',
+   transcript:'<p><span class="spk">Agent:</span> Good morning, Bloom Insurance, this is Lisa.</p><p><span class="spk cust">Robert:</span> Hi, I\'d like to change my billing from quarterly to monthly.</p><p><span class="spk">Agent:</span> Sure thing. Your current quarterly premium is $1,237.50. Monthly would be $412.50 via EFT. Shall I update the account on file?</p><p><span class="spk cust">Robert:</span> Yes please, same checking account.</p><p><span class="spk">Agent:</span> Done. Your next monthly payment of $412.50 will process on January 1st.</p>',
+   actions:['Changed billing frequency: Quarterly → Monthly.','Updated EFT schedule. Next payment: 01/01/2026.','Confirmation letter sent via email.'],
+   note:'Simple billing change. Client prefers monthly for cash flow. — LT'},
+  /* 10 - Nov 20 Phone Address */
+  {type:'Inbound Call',channel:'Phone',date:'Nov 20, 2025 · 3:10 PM',dur:'3:28',agent:'James Rivera (CSR II)',sent:'Positive',sentC:'var(--pos)',intent:'Address Change',res:'Resolved — FCR',resC:'var(--pos)',
+   transcript:'<p><span class="spk">Agent:</span> Bloom Insurance, this is James. How can I help?</p><p><span class="spk cust">Robert:</span> I just moved and need to update my address.</p><p><span class="spk">Agent:</span> Of course. What is the new address?</p><p><span class="spk cust">Robert:</span> 1842 Pacific Avenue, San Francisco, California 94115.</p><p><span class="spk">Agent:</span> Updated. This will apply to all your Bloom policies. You\'ll receive a confirmation letter at the new address within 5-7 days.</p>',
+   actions:['Address updated: 1842 Pacific Ave, San Francisco, CA 94115.','Change applied across all policies on file.','Confirmation letter generated.'],
+   note:'Quick address change. Client mentioned relocating within San Francisco. — JR'},
+  /* 11 - Oct 5 Email Bene */
+  {type:'Outbound Email',channel:'Email (System)',date:'Oct 5, 2025 · 10:00 AM',dur:'—',agent:'System Generated',sent:'Neutral',sentC:'var(--t2)',intent:'Beneficiary Review Reminder',res:'Delivered — Opened',resC:'var(--pos)',
+   transcript:'<p><em>No conversation — system-generated annual beneficiary review reminder.</em></p>',
+   actions:['Annual beneficiary review reminder sent.','Current primary: Lisa M. Chen (Spouse, 100%).','No contingent beneficiary on file — flagged for review.','Email opened Oct 5 at 4:15 PM.'],
+   note:'Client opened email. No action taken at the time. Bene inquiry came 4 months later (Feb 3).'},
+  /* 12 - Sep 15 Portal Illustration */
+  {type:'Portal Session',channel:'Self-Service Portal',date:'Sep 15, 2025 · 6:22 PM',dur:'8 min session',agent:'Self-Service',sent:'Neutral',sentC:'var(--t2)',intent:'In-Force Illustration / Loan Research',res:'Self-Service — Research Only',resC:'var(--t2)',
+   transcript:'<p><em>No conversation — portal self-service activity.</em></p>',
+   actions:['Generated in-force illustration (age 65 projection).','Projected cash value at 65: $312,400.','Reviewed policy loan options page (rates, terms, impact).','Did not submit any requests.'],
+   note:'Early research into policy loan options. Client was clearly planning ahead — returned 5 months later to execute.'},
+  /* 13 - Aug 22 Phone Coverage */
+  {type:'Inbound Call',channel:'Phone',date:'Aug 22, 2025 · 1:45 PM',dur:'8:12',agent:'Sarah Mitchell (CSR II)',sent:'Positive',sentC:'var(--pos)',intent:'Coverage Increase Inquiry',res:'Informational — Declined Increase',resC:'var(--t2)',
+   transcript:'<p><span class="spk">Agent:</span> Bloom Insurance, this is Sarah.</p><p><span class="spk cust">Robert:</span> Hi Sarah, I\'m thinking about increasing my coverage. What would it cost to go from $500K to $750K?</p><p><span class="spk">Agent:</span> Let me pull up your policy. Based on your current age and health class, the additional $250K would be approximately $189 per month on top of your current premium.</p><p><span class="spk cust">Robert:</span> That\'s a bit more than I expected. Let me think about it.</p><p><span class="spk">Agent:</span> Of course. The quote is valid for 30 days. I can also run illustrations for other amounts if you\'d like.</p>',
+   actions:['Provided quote: $500K → $750K = +$189/mo additional premium.','Client declined for now — quote valid 30 days.','No follow-up requested.'],
+   note:'Client considering coverage increase. Declined due to cost. May revisit in the future. — SM'}
+];
+
+function selectItem(el,idx){
+  document.querySelectorAll('.tl-item').forEach(function(i){i.classList.remove('selected')});
+  el.classList.add('selected');
+  var d=details[idx];
+  if(!d)return;
+  var html='<div class="det-card anim d1"><div class="det-card-title">&#128196; Interaction Summary</div>';
+  html+='<div class="det-row"><span class="det-lbl">Type</span><span class="det-val">'+d.type+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Channel</span><span class="det-val">'+d.channel+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Date / Time</span><span class="det-val">'+d.date+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Duration</span><span class="det-val">'+d.dur+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Agent</span><span class="det-val">'+d.agent+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Sentiment</span><span class="det-val" style="color:'+d.sentC+'">'+d.sent+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Intent</span><span class="det-val">'+d.intent+'</span></div>';
+  html+='<div class="det-row"><span class="det-lbl">Resolution</span><span class="det-val" style="color:'+d.resC+'">'+d.res+'</span></div>';
+  html+='</div>';
+  html+='<div class="det-card anim d2"><div class="det-card-title">&#128172; Conversation Summary</div><div class="det-transcript">'+d.transcript+'</div></div>';
+  html+='<div class="det-card anim d3"><div class="det-card-title">&#9889; Actions Taken</div>';
+  d.actions.forEach(function(a){html+='<div class="ctx-item"><div class="ctx-dot" style="background:var(--acc)"></div><div class="ctx-text">'+a+'</div></div>'});
+  html+='</div>';
+  html+='<div class="det-card anim d4"><div class="det-card-title">&#128203; Agent Notes</div><div class="det-note">'+d.note+'</div></div>';
+  document.getElementById('detailWrap').innerHTML=html;
+}
+</script>
+</body>
+</html>

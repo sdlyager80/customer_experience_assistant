@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Insurance — Agent Desktop Smart App</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dk:#0f4c75;--acc:#1B75BB;--acc2:#00ADEE;--orange:#F6921E;--lgreen:#8BC53F;--green:#37A526;
+  --canvas:#F2F7F6;--white:#fff;--mid:#1a1a1a;--t2:#808285;--t3:#a8aaad;--bdr:#e0e5e4;
+  --pos:#2a7a1a;--posbg:#e6f5e0;--cau:#946b0e;--caubg:#fef9c3;--neg:#b91c1c;--negbg:#fee2e2;
+  --inf:#1B75BB;--infbg:#e0f0fc;--rev:#7c5500;--revbg:#fef3d6;
+  --f:'Inter',system-ui,sans-serif;--r:8px;--rs:6px;--rf:999px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--canvas);color:var(--mid);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{background:var(--white);border-bottom:1px solid var(--bdr);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:200}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:36px;height:36px;flex-shrink:0}
+.hdr-brand{display:flex;align-items:baseline;gap:5px}
+.hdr-brand b{font-size:19px;font-weight:700;color:#333;letter-spacing:-.3px}
+.hdr-brand span{font-size:19px;font-weight:400;color:#555}
+.hdr-sep{width:1px;height:24px;background:var(--bdr);margin:0 12px}
+.hdr-app{font-size:13px;font-weight:700;color:var(--mid)}
+.badge{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-avatar{width:30px;height:30px;border-radius:var(--rf);background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px}
+.hdr-user{display:flex;align-items:center;gap:8px}
+.hdr-uname{font-size:12px;font-weight:600}.hdr-urole{font-size:10px;color:var(--t2)}
+
+/* MAIN */
+.main{margin-top:56px;min-height:calc(100vh - 56px)}
+
+/* ============ INCOMING SCREEN ============ */
+.screen-incoming{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);background:linear-gradient(160deg,#f0f5f4 0%,#e4eff8 100%)}
+.inc-wrap{text-align:center;max-width:480px;padding:40px}
+.inc-ring{width:96px;height:96px;border-radius:50%;background:var(--infbg);border:3px solid var(--acc);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:pulse 2s ease-in-out infinite;font-size:38px}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,117,187,.3)}50%{box-shadow:0 0 0 18px rgba(27,117,187,0)}}
+.inc-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.inc-sub{font-size:13px;color:var(--t2);margin-bottom:24px}
+.inc-preview{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:28px;text-align:left}
+.inc-preview .row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--canvas)}
+.inc-preview .row:last-child{border:none}
+.inc-preview .lbl{color:var(--t2);font-weight:500;font-size:12px}
+.inc-preview .val{font-weight:600}
+.inc-btns{display:flex;gap:12px;justify-content:center}
+.inc-btn{display:flex;align-items:center;gap:8px;padding:12px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--f);transition:all .15s}
+.inc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.inc-btn.phone{background:var(--acc);color:#fff}
+.inc-btn.chat{background:var(--white);color:var(--acc);border:2px solid var(--acc)}
+
+/* ============ WORKSPACE ============ */
+.workspace{display:none;flex-direction:column;min-height:calc(100vh - 56px)}
+.workspace.active{display:flex}
+
+/* Banner */
+.ws-banner{background:var(--white);border-bottom:1px solid var(--bdr);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ws-banner .pairs{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ws-banner .pair{font-size:13px}.ws-banner .lbl{color:var(--t2);font-weight:500;font-size:12px;margin-right:4px}.ws-banner .val{font-weight:600}
+.pill-sm{display:inline-flex;padding:3px 10px;border-radius:var(--rf);font-size:11px;font-weight:600}
+.pill-green{background:var(--posbg);color:var(--pos);border:1px solid #bbf7d0}
+.pill-blue{background:#eef2f7;color:#475569;border:1px solid #d5dce6}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;color:var(--acc);background:var(--infbg);padding:4px 12px;border-radius:var(--rs)}
+
+/* Persona toggle */
+.persona-tog{display:flex;gap:2px;background:var(--canvas);border-radius:var(--rs);padding:2px;margin-left:12px}
+.persona-btn{padding:4px 14px;border-radius:4px;font-size:11px;font-weight:600;border:none;cursor:pointer;font-family:var(--f);background:transparent;color:var(--t2);transition:all .15s}
+.persona-btn.on{background:var(--acc);color:#fff}
+
+/* Tabs */
+.ws-tabs{display:flex;border-bottom:2px solid var(--bdr);padding:0 24px;background:var(--white)}
+.ws-tab{padding:10px 18px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.ws-tab:hover{color:var(--mid)}.ws-tab.on{color:var(--acc);border-bottom-color:var(--acc);font-weight:600}
+
+/* Content area */
+.ws-content{flex:1;display:flex;overflow:hidden}
+.ws-main{flex:1;overflow-y:auto;padding:20px 24px 40px}
+.ws-main::-webkit-scrollbar{width:5px}.ws-main::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+.tab-pane{display:none}.tab-pane.on{display:block}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-title .ico{font-size:15px}
+.dr{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--canvas)}.dr:last-child{border:none}
+.dl{color:var(--t2);font-weight:500;font-size:12px}.dv{font-weight:600;font-size:12px;text-align:right}
+
+/* AI Brief card */
+.brief-card{background:linear-gradient(135deg,#eff6ff,#f5f9ff);border:1px solid #93bbfd;border-radius:var(--r);padding:18px;margin-bottom:14px}
+.brief-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--acc);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.brief-label .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);animation:blink 1.5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.brief-why{font-size:14px;font-weight:700;color:var(--mid);margin-bottom:8px;line-height:1.4}
+.brief-body{font-size:12px;color:#475569;line-height:1.6}
+.brief-body strong{color:var(--mid)}
+.brief-items{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.brief-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#475569;line-height:1.4}
+.brief-item .bi-dot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0}
+
+/* NBA card */
+.nba-card{background:var(--white);border:1px solid var(--bdr);border-left:4px solid var(--acc2);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.nba-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--canvas)}
+.nba-item:last-child{border:none}
+.nba-num{width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.nba-body{flex:1;min-width:0}
+.nba-title{font-size:13px;font-weight:700;color:var(--mid);margin-bottom:2px}
+.nba-reason{font-size:11px;color:var(--t2);line-height:1.4}
+.nba-btn{padding:4px 12px;border-radius:var(--rs);font-size:11px;font-weight:600;border:1px solid var(--acc);background:var(--white);color:var(--acc);cursor:pointer;font-family:var(--f);transition:all .15s;flex-shrink:0;margin-top:2px}
+.nba-btn:hover{background:var(--acc);color:#fff}
+
+/* Conversation points */
+.conv-card{background:linear-gradient(135deg,#fefce8,#fefdf5);border:1px solid #fcd34d;border-radius:var(--r);padding:18px;margin-bottom:14px}
+.conv-item{display:flex;align-items:flex-start;gap:8px;margin-top:6px;font-size:12px;line-height:1.5}
+.conv-bullet{color:var(--orange);font-size:14px;flex-shrink:0;line-height:1.2}
+
+/* Quick actions */
+.qa-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.qa-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rs);font-size:11px;font-weight:600;border:1px solid var(--bdr);background:var(--white);color:var(--mid);cursor:pointer;font-family:var(--f);transition:all .15s}
+.qa-btn:hover{border-color:var(--acc);color:var(--acc)}
+.qa-btn.primary{background:var(--acc);color:#fff;border-color:var(--acc)}.qa-btn.primary:hover{background:var(--acc2)}
+
+/* Policy grid */
+.pol-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.pol-grid{grid-template-columns:1fr}}
+
+/* Timeline */
+.tl-item{display:flex;gap:12px;padding:10px 12px;border-radius:var(--r);margin-bottom:4px;cursor:pointer;transition:background .12s}
+.tl-item:hover{background:var(--white)}
+.tl-item.sel{background:var(--infbg);border:1px solid #93bbfd}
+.tl-ico{width:30px;height:30px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tl-ico.phone{background:var(--infbg);color:var(--inf)}
+.tl-ico.chat{background:var(--caubg);color:var(--cau)}
+.tl-ico.portal{background:var(--revbg);color:var(--rev)}
+.tl-ico.email{background:var(--posbg);color:var(--pos)}
+.tl-ico.mobile{background:#f3e8ff;color:#7c3aed}
+.tl-body{flex:1;min-width:0}
+.tl-top{display:flex;justify-content:space-between;gap:8px}
+.tl-title{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-time{font-size:10px;color:var(--t3);flex-shrink:0}
+.tl-desc{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tl-tags{display:flex;gap:4px;margin-top:4px}
+.tl-tag{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px}
+.tl-tag.pos{background:var(--posbg);color:var(--pos)}.tl-tag.neu{background:#f3f4f6;color:var(--t2)}.tl-tag.neg{background:var(--negbg);color:var(--neg)}
+.tl-date-sep{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin:14px 0 6px;display:flex;align-items:center;gap:8px}
+.tl-date-sep::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* Detail expand */
+.tl-detail{display:none;background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin:6px 0 10px;font-size:12px}
+.tl-detail.show{display:block}
+.tl-detail .transcript{padding:10px;background:var(--canvas);border-radius:var(--rs);border-left:3px solid var(--acc);line-height:1.6;margin:10px 0;max-height:180px;overflow-y:auto}
+.tl-detail .transcript .spk{font-weight:700;color:var(--acc)}.tl-detail .transcript .cust{color:var(--orange)}
+.tl-detail .transcript p{margin-bottom:6px}
+.tl-detail .note{padding:10px;background:#fefce8;border:1px solid #fcd34d;border-radius:var(--rs);margin-top:8px;line-height:1.5}
+
+/* Insights */
+.alert-card{border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid}
+.alert-card.good{background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border-color:#86efac}
+.alert-card.info{background:linear-gradient(135deg,#eff6ff,#f5f9ff);border-color:#93bbfd}
+.alert-card.warn{background:linear-gradient(135deg,#fefce8,#fffef5);border-color:#fcd34d}
+.alert-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.alert-label.good{color:var(--pos)}.alert-label.info{color:var(--inf)}.alert-label.warn{color:var(--cau)}
+.alert-text{font-size:12px;line-height:1.5;color:var(--mid)}
+.alert-text strong{font-weight:700}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-box{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:10px;text-align:center}
+.stat-num{font-size:20px;font-weight:700;line-height:1.1}
+.stat-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-top:3px}
+
+.ctx-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--canvas);font-size:12px}
+.ctx-item:last-child{border:none}
+.ctx-dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.ctx-text{flex:1;line-height:1.4;color:var(--t2)}.ctx-text strong{color:var(--mid)}
+
+/* Chat panel */
+.chat-panel{display:none;width:360px;border-left:1px solid var(--bdr);background:var(--white);flex-direction:column;flex-shrink:0}
+.chat-panel.active{display:flex}
+.chat-hdr{padding:12px 16px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);display:flex;align-items:center;justify-content:space-between}
+.chat-hdr .live-dot{width:7px;height:7px;border-radius:50%;background:var(--pos);animation:blink 1.5s ease infinite}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.chat-msgs::-webkit-scrollbar{width:4px}.chat-msgs::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+.cm{display:flex;gap:6px;max-width:88%}
+.cm.cust{align-self:flex-start}.cm.agent{align-self:flex-end;flex-direction:row-reverse}.cm.bot{align-self:flex-start}
+.cm-av{width:22px;height:22px;border-radius:var(--rf);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0}
+.cm.cust .cm-av{background:var(--orange);color:#fff}
+.cm.agent .cm-av{background:var(--acc);color:#fff}
+.cm.bot .cm-av{background:var(--t3);color:#fff}
+.cm-bub{padding:8px 12px;border-radius:var(--r);font-size:12px;line-height:1.5}
+.cm.cust .cm-bub{background:var(--canvas);border:1px solid var(--bdr)}
+.cm.agent .cm-bub{background:var(--acc);color:#fff}
+.cm.bot .cm-bub{background:var(--infbg);border:1px solid #93bbfd}
+.chat-sys{text-align:center;font-size:10px;color:var(--t3);padding:4px 0;display:flex;align-items:center;gap:8px;justify-content:center}
+.chat-sys::before,.chat-sys::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.chat-input{padding:12px;border-top:1px solid var(--bdr);display:flex;gap:8px}
+.chat-input input{flex:1;border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 12px;font-size:12px;font-family:var(--f);outline:none}
+.chat-input input:focus{border-color:var(--acc)}
+.chat-input button{padding:8px 16px;border-radius:var(--rs);background:var(--acc);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f)}
+
+/* Footer */
+.ftr{padding:8px 24px;text-align:center;font-size:10px;color:var(--t3);border-top:1px solid var(--bdr);background:var(--white)}
+
+/* Anim */
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:fu .25s ease forwards}.d1{animation-delay:.03s;opacity:0}.d2{animation-delay:.06s;opacity:0}.d3{animation-delay:.09s;opacity:0}.d4{animation-delay:.12s;opacity:0}.d5{animation-delay:.15s;opacity:0}
+
+@media(max-width:900px){.chat-panel{position:fixed;right:0;top:56px;height:calc(100vh - 56px);z-index:100;box-shadow:-4px 0 20px rgba(0,0,0,.1)}.pol-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<header class="hdr">
+  <div class="hdr-left">
+    <svg class="hdr-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 16C90 16 68 38 68 62c0 16 10 28 32 38 22-10 32-22 32-38 0-24-22-46-32-46Z" fill="#00ADEE"/>
+      <path d="M184 100c0-10-22-32-46-32-16 0-28 10-38 32 10 22 22 32 38 32 24 0 46-22 46-32Z" fill="#37A526"/>
+      <path d="M100 184c10 0 32-22 32-46 0-16-10-28-32-38-22 10-32 22-32 38 0 24 22 46 32 46Z" fill="#8BC53F"/>
+      <path d="M16 100c0 10 22 32 46 32 16 0 28-10 38-32-10-22-22-32-38-32-24 0-46 22-46 32Z" fill="#1B75BB"/>
+      <path d="M156 20c-8 0-30 16-38 36-6 14-4 28-18 44 16 0 30-4 44-12 16-10 26-34 24-46-2-12-8-22-12-22Z" fill="#E8DE23"/>
+      <path d="M44 180c8 0 30-16 38-36 6-14 4-28 18-44-16 0-30 4-44 12-16 10-26 34-24 46 2 12 8 22 12 22Z" fill="#F6921E"/>
+      <circle cx="100" cy="100" r="10" fill="#E8DE23"/>
+    </svg>
+    <div class="hdr-brand"><b>Bloom</b> <span>Insurance</span></div>
+    <div class="hdr-sep"></div>
+    <span class="hdr-app">Agent Desktop<span class="badge">Smart App</span></span>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-user">
+      <div class="hdr-avatar">SM</div>
+      <div><div class="hdr-uname">Sarah Mitchell</div><div class="hdr-urole">CSR II &middot; L&amp;A Servicing</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+
+<!-- ====== SCREEN 1: INCOMING ====== -->
+<div class="screen-incoming" id="screenIncoming">
+  <div class="inc-wrap">
+    <div class="inc-ring">&#128222;</div>
+    <div class="inc-title">Incoming Interaction</div>
+    <div class="inc-sub">Robert A. Chen &middot; Policy 440387261UL &middot; Universal Life</div>
+    <div class="inc-preview">
+      <div class="row"><span class="lbl">Customer</span><span class="val">Robert A. Chen</span></div>
+      <div class="row"><span class="lbl">Policy</span><span class="val">440387261UL — Universal Life $500K</span></div>
+      <div class="row"><span class="lbl">Status</span><span class="val" style="color:var(--pos)">Active &middot; Authenticated</span></div>
+      <div class="row"><span class="lbl">IVR Path</span><span class="val">Existing Policy → Policy Loans → Agent</span></div>
+      <div class="row"><span class="lbl">Recent Activity</span><span class="val">3 channel contacts in last 30 min</span></div>
+    </div>
+    <div class="inc-btns">
+      <button class="inc-btn phone" onclick="acceptCall('phone')">&#128222; Accept Call</button>
+      <button class="inc-btn chat" onclick="acceptCall('chat')">&#128172; Accept Chat</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SCREEN 2: WORKSPACE ====== -->
+<div class="workspace" id="workspace">
+
+  <!-- Banner -->
+  <div class="ws-banner">
+    <div class="pairs">
+      <div class="pair"><span class="lbl">Policy</span><span class="val">440387261UL</span></div>
+      <div class="pair"><span class="lbl">Owner</span><span class="val">Robert A. Chen</span></div>
+      <div class="pair"><span class="lbl">Product</span><span class="val">Universal Life — $500K</span></div>
+      <div class="pair"><span class="lbl">Status</span><span class="pill-sm pill-green">Active</span></div>
+      <span class="pill-sm pill-green">&#10003; Authenticated</span>
+      <span class="pill-sm pill-blue" id="channelBadge">IVR → Agent</span>
+      <div class="persona-tog">
+        <button class="persona-btn on" id="togPhone" onclick="switchPersona('phone')">&#128222; Phone</button>
+        <button class="persona-btn" id="togChat" onclick="switchPersona('chat')">&#128172; Chat</button>
+      </div>
+    </div>
+    <div class="timer" id="tmr">00:00</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="ws-tabs">
+    <div class="ws-tab on" data-tab="current" onclick="switchTab(this)">&#129504; Current</div>
+    <div class="ws-tab" data-tab="policy" onclick="switchTab(this)">&#128196; Policy</div>
+    <div class="ws-tab" data-tab="history" onclick="switchTab(this)">&#128337; History</div>
+    <div class="ws-tab" data-tab="insights" onclick="switchTab(this)">&#128202; Insights</div>
+  </div>
+
+  <!-- Content -->
+  <div class="ws-content">
+    <div class="ws-main">
+
+      <!-- ===== CURRENT TAB ===== -->
+      <div class="tab-pane on" id="pane-current">
+
+        <!-- AI Brief -->
+        <div class="brief-card an d1" id="briefCard">
+          <!-- filled by JS based on persona -->
+        </div>
+
+        <!-- Next Best Actions -->
+        <div class="nba-card an d2" id="nbaCard">
+          <div class="card-title"><span class="ico">&#9889;</span> Next Best Actions</div>
+          <!-- filled by JS based on persona -->
+        </div>
+
+        <!-- Conversation Points -->
+        <div class="conv-card an d3">
+          <div class="card-title" style="color:var(--cau)"><span class="ico">&#128172;</span> Conversation Points</div>
+          <div class="conv-item"><span class="conv-bullet">&#9656;</span><span>Robert is <strong>well-informed</strong> — he researched on portal and chatbot before contacting. Avoid repeating info he already has.</span></div>
+          <div class="conv-item"><span class="conv-bullet">&#9656;</span><span>Acknowledge his <strong>thorough preparation</strong> — "I can see you've done your homework" builds rapport.</span></div>
+          <div class="conv-item"><span class="conv-bullet">&#9656;</span><span>Mention the <strong>outstanding bene change form</strong> naturally — "While I have you, we still need that beneficiary form back."</span></div>
+          <div class="conv-item"><span class="conv-bullet">&#9656;</span><span>If he asks about the <strong>coverage increase</strong> he explored in August, the $189/mo quote has expired — offer to re-quote.</span></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="margin-bottom:14px" class="an d4">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t2);margin-bottom:8px">Quick Actions</div>
+          <div class="qa-bar">
+            <button class="qa-btn primary">&#128196; View Loan Request</button>
+            <button class="qa-btn">&#9993; Send Update</button>
+            <button class="qa-btn">&#128203; Add Note</button>
+            <button class="qa-btn">&#8679; Escalate</button>
+            <button class="qa-btn">&#128222; Schedule Callback</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== POLICY TAB ===== -->
+      <div class="tab-pane" id="pane-policy">
+        <div class="pol-grid">
+          <div class="card an d1">
+            <div class="card-title"><span class="ico">&#128196;</span> Policy Details</div>
+            <div class="dr"><span class="dl">Policy</span><span class="dv">440387261UL</span></div>
+            <div class="dr"><span class="dl">Product</span><span class="dv">Universal Life</span></div>
+            <div class="dr"><span class="dl">Face Amount</span><span class="dv">$500,000</span></div>
+            <div class="dr"><span class="dl">Status</span><span class="dv" style="color:var(--pos)">Active</span></div>
+            <div class="dr"><span class="dl">Issue Date</span><span class="dv">06/12/2018</span></div>
+            <div class="dr"><span class="dl">State</span><span class="dv">CA</span></div>
+            <div class="dr"><span class="dl">Owner</span><span class="dv">Robert A. Chen</span></div>
+            <div class="dr"><span class="dl">Insured</span><span class="dv">Robert A. Chen (Age 47)</span></div>
+          </div>
+          <div class="card an d2">
+            <div class="card-title"><span class="ico">&#128176;</span> Billing &amp; Premium</div>
+            <div class="dr"><span class="dl">Premium Mode</span><span class="dv">Monthly — EFT</span></div>
+            <div class="dr"><span class="dl">Monthly Premium</span><span class="dv">$412.50</span></div>
+            <div class="dr"><span class="dl">Payment Method</span><span class="dv">EFT ****4821</span></div>
+            <div class="dr"><span class="dl">Next Due</span><span class="dv">03/01/2026</span></div>
+            <div class="dr"><span class="dl">Paid Through</span><span class="dv">03/01/2026</span></div>
+            <div class="dr"><span class="dl">YTD Premium</span><span class="dv">$4,950.00</span></div>
+          </div>
+          <div class="card an d3">
+            <div class="card-title"><span class="ico">&#128200;</span> Contract Values</div>
+            <div class="dr"><span class="dl">Cash Value</span><span class="dv">$187,420.00</span></div>
+            <div class="dr"><span class="dl">Death Benefit</span><span class="dv">$500,000.00</span></div>
+            <div class="dr"><span class="dl">Max Loanable (90%)</span><span class="dv">$168,678.00</span></div>
+            <div class="dr"><span class="dl">Loan Rate (Fixed)</span><span class="dv">5.25%</span></div>
+            <div class="dr"><span class="dl">Loan Rate (Variable)</span><span class="dv">4.75%</span></div>
+            <div class="dr"><span class="dl">Existing Loans</span><span class="dv">None</span></div>
+            <div style="margin-top:10px;padding:8px;background:var(--infbg);border-radius:var(--rs);font-size:11px;color:var(--inf)"><strong>If $75K loan:</strong> Net cash value $112,420. Net death benefit $425K. Annual interest $3,937.50.</div>
+          </div>
+          <div class="card an d4">
+            <div class="card-title"><span class="ico">&#128101;</span> Beneficiaries</div>
+            <div class="dr"><span class="dl">Primary</span><span class="dv">Lisa M. Chen (Spouse) — 100%</span></div>
+            <div class="dr"><span class="dl">Contingent</span><span class="dv" style="color:var(--cau)">Pending — Emily R. Chen</span></div>
+            <div style="margin-top:10px;padding:8px;background:var(--caubg);border-radius:var(--rs);font-size:11px;color:var(--cau)"><strong>Note:</strong> Bene change form sent Feb 3. Emily is a minor (17) — UTMA custodian: Lisa M. Chen. Form not yet returned.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== HISTORY TAB ===== -->
+      <div class="tab-pane" id="pane-history">
+        <div class="tl-date-sep">Today — Feb 12, 2026</div>
+        <div class="tl-item" onclick="toggleDetail(this,'d0')">
+          <div class="tl-ico phone">&#128222;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Inbound Call — Policy Loan Finalize</span><span class="tl-time">10:31 AM</span></div>
+            <div class="tl-desc">Finalizing $75K policy loan at 5.25% fixed. EFT disbursement. Death benefit impact confirmed.</div>
+            <div class="tl-tags"><span class="tl-tag pos">Positive</span><span class="tl-tag" style="background:var(--infbg);color:var(--inf)">Phone</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d0">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">12:04</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">Sarah Mitchell (CSR II)</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--pos)">Resolved — FCR</span></div>
+          <div class="transcript"><p><span class="spk">Agent:</span> Hi Robert, I have all the context from your chat session. You'd like to proceed with a $75K policy loan at the 5.25% fixed rate?</p><p><span class="spk cust">Robert:</span> Yes, that's right. And I want to make sure my net death benefit stays above $400K.</p><p><span class="spk">Agent:</span> Absolutely. With a $75K loan, your net death benefit would be $425K. The loan accrues interest annually and you can repay anytime without penalty.</p><p><span class="spk cust">Robert:</span> Perfect. Let's do EFT to my checking account on file.</p></div>
+          <div class="note"><strong>Agent note:</strong> Client very pleasant and well-informed. Seamless escalation from chat — no info repeated. — SM</div>
+        </div>
+
+        <div class="tl-item" onclick="toggleDetail(this,'d1')">
+          <div class="tl-ico chat">&#128172;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Agent Chat — Loan Options</span><span class="tl-time">10:24 AM</span></div>
+            <div class="tl-desc">Guided through max loanable amount, fixed vs variable rate, death benefit reduction.</div>
+            <div class="tl-tags"><span class="tl-tag pos">Positive</span><span class="tl-tag" style="background:var(--caubg);color:var(--cau)">Chat</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d1">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">8:21</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">Sarah Mitchell (CSR II)</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--acc)">Escalated to Phone (customer request)</span></div>
+          <div class="transcript"><p><span class="spk">Agent:</span> Hi Robert — I have the details from the chatbot. Your max loanable amount is $168,678 at 90% of cash value.</p><p><span class="spk cust">Robert:</span> What's the interest rate?</p><p><span class="spk">Agent:</span> 5.25% fixed or 4.75% variable (resets annually).</p><p><span class="spk cust">Robert:</span> And what happens to my death benefit?</p><p><span class="spk">Agent:</span> A $75K loan would reduce your net death benefit from $500K to $425K.</p></div>
+          <div class="note"><strong>Agent note:</strong> Customer well-prepared from portal + chatbot. Smooth handoff to phone. — SM</div>
+        </div>
+
+        <div class="tl-item" onclick="toggleDetail(this,'d2')">
+          <div class="tl-ico chat" style="background:var(--caubg)">&#129302;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Chatbot — Loan Inquiry</span><span class="tl-time">10:19 AM</span></div>
+            <div class="tl-desc">Provided cash value and max loanable. Escalated on interest rate question.</div>
+            <div class="tl-tags"><span class="tl-tag neu">Neutral</span><span class="tl-tag" style="background:var(--caubg);color:var(--cau)">Chatbot</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d2">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">3:12</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">AI Chatbot</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--acc)">Escalated to Agent Chat</span></div>
+          <div class="transcript"><p><span class="spk">Bot:</span> Hi Robert! I see you're viewing your policy loan forms. How can I help?</p><p><span class="spk cust">Robert:</span> I need a policy loan against my UL. What's the max I can borrow?</p><p><span class="spk">Bot:</span> Your current cash value is $187,420. Max loanable: $168,678 (90%).</p><p><span class="spk cust">Robert:</span> What about the impact on my death benefit?</p><p><span class="spk">Bot:</span> Great question. Let me connect you with an agent.</p></div>
+        </div>
+
+        <div class="tl-date-sep">Feb 3, 2026</div>
+        <div class="tl-item" onclick="toggleDetail(this,'d3')">
+          <div class="tl-ico phone">&#128222;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Inbound Call — Bene Change Inquiry</span><span class="tl-time">2:15 PM</span></div>
+            <div class="tl-desc">Add daughter Emily (minor) as contingent bene. UTMA custodian form sent.</div>
+            <div class="tl-tags"><span class="tl-tag pos">Positive</span><span class="tl-tag" style="background:var(--infbg);color:var(--inf)">Phone</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d3">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">6:42</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">Lisa Tran (Senior CSR)</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--cau)">Form Needed</span></div>
+          <div class="transcript"><p><span class="spk cust">Robert:</span> I'd like to add my daughter as a contingent beneficiary.</p><p><span class="spk">Agent:</span> Since Emily is currently 17, she's a minor. We'll need a UTMA custodian designated.</p><p><span class="spk cust">Robert:</span> Yes, Lisa would serve as custodian. Can you send me the form?</p></div>
+          <div class="note"><strong>Agent note:</strong> Form sent. Follow-up set for Feb 10 — form not yet returned. — LT</div>
+        </div>
+
+        <div class="tl-date-sep">Dec 12, 2025</div>
+        <div class="tl-item" onclick="toggleDetail(this,'d4')">
+          <div class="tl-ico phone">&#128222;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Inbound Call — Billing Mode Change</span><span class="tl-time">11:30 AM</span></div>
+            <div class="tl-desc">Changed billing from quarterly ($1,237.50) to monthly ($412.50). EFT updated.</div>
+            <div class="tl-tags"><span class="tl-tag pos">Positive</span><span class="tl-tag" style="background:var(--infbg);color:var(--inf)">Phone</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d4">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">4:55</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">Lisa Tran (Senior CSR)</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--pos)">Resolved — FCR</span></div>
+          <div class="note"><strong>Agent note:</strong> Simple billing change. Client prefers monthly for cash flow. — LT</div>
+        </div>
+
+        <div class="tl-date-sep">Nov 20, 2025</div>
+        <div class="tl-item" onclick="toggleDetail(this,'d5')">
+          <div class="tl-ico phone">&#128222;</div>
+          <div class="tl-body">
+            <div class="tl-top"><span class="tl-title">Inbound Call — Address Change</span><span class="tl-time">3:10 PM</span></div>
+            <div class="tl-desc">Updated address to 1842 Pacific Ave, San Francisco, CA 94115.</div>
+            <div class="tl-tags"><span class="tl-tag pos">Positive</span><span class="tl-tag" style="background:var(--infbg);color:var(--inf)">Phone</span></div>
+          </div>
+        </div>
+        <div class="tl-detail" id="d5">
+          <div class="dr"><span class="dl">Duration</span><span class="dv">3:28</span></div>
+          <div class="dr"><span class="dl">Agent</span><span class="dv">James Rivera (CSR II)</span></div>
+          <div class="dr"><span class="dl">Resolution</span><span class="dv" style="color:var(--pos)">Resolved — FCR</span></div>
+          <div class="note"><strong>Agent note:</strong> Client relocated within San Francisco. Applied across all policies. — JR</div>
+        </div>
+      </div>
+
+      <!-- ===== INSIGHTS TAB ===== -->
+      <div class="tab-pane" id="pane-insights">
+        <div class="stats-row an d1">
+          <div class="stat-box"><div class="stat-num">14</div><div class="stat-lbl">Contacts (12 mo)</div></div>
+          <div class="stat-box"><div class="stat-num" style="color:var(--pos)">82%</div><div class="stat-lbl">Positive Sent.</div></div>
+          <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">Open Cases</div></div>
+        </div>
+
+        <div class="alert-card good an d2">
+          <div class="alert-label good">&#10003; No Friction Detected</div>
+          <div class="alert-text">Robert Chen has had <strong>zero repeat contacts</strong> for unresolved issues. Sentiment is consistently positive across all channels. No SLA breaches.</div>
+        </div>
+        <div class="alert-card info an d3">
+          <div class="alert-label info">&#128279; Omnichannel Continuity</div>
+          <div class="alert-text">Today's interaction spanned <strong>4 channels</strong> (Portal → Chatbot → Agent Chat → Phone) with <strong>zero information repeated</strong>. Full context transferred at each handoff.</div>
+        </div>
+        <div class="alert-card warn an d4">
+          <div class="alert-label warn">&#128337; Pending Follow-Up</div>
+          <div class="alert-text"><strong>Beneficiary change form</strong> sent Feb 3. UTMA custodian designation for minor Emily R. Chen. Not yet returned.</div>
+        </div>
+
+        <div class="card an d5">
+          <div class="card-title"><span class="ico">&#128218;</span> Context Enrichment</div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:var(--acc)"></div><div class="ctx-text"><strong>Cash Value:</strong> $187,420. After $75K loan: $112,420 net.</div></div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:var(--pos)"></div><div class="ctx-text"><strong>Death Benefit:</strong> $500K. Net after loan: $425K.</div></div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:var(--orange)"></div><div class="ctx-text"><strong>Premium:</strong> $412.50/mo via EFT. Current through 03/01/2026.</div></div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:var(--cau)"></div><div class="ctx-text"><strong>Beneficiaries:</strong> Primary: Lisa M. Chen (Spouse, 100%). Contingent: <em>Pending — Emily R. Chen.</em></div></div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:var(--rev)"></div><div class="ctx-text"><strong>Loan History:</strong> No prior loans. First policy loan processed today.</div></div>
+          <div class="ctx-item"><div class="ctx-dot" style="background:#7c3aed"></div><div class="ctx-text"><strong>Cross-Sell:</strong> No annuity on file. Previously inquired about face amount increase (Aug 2025).</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="ico">&#128202;</span> Channel Breakdown (12 mo)</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:50px;color:var(--t2)">Phone</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:43%;height:100%;background:var(--acc);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:18px;text-align:right">6</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:50px;color:var(--t2)">Portal</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:21%;height:100%;background:var(--rev);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:18px;text-align:right">3</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:50px;color:var(--t2)">Email</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:21%;height:100%;background:var(--pos);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:18px;text-align:right">3</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:50px;color:var(--t2)">Chat</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:14%;height:100%;background:var(--cau);border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:18px;text-align:right">2</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;font-weight:600;min-width:50px;color:var(--t2)">Mobile</span><div style="flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden"><div style="width:7%;height:100%;background:#7c3aed;border-radius:10px"></div></div><span style="font-size:11px;font-weight:700;min-width:18px;text-align:right">1</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /ws-main -->
+
+    <!-- Chat panel (visible in chat persona only) -->
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-hdr"><span>&#128172; Live Chat — Robert Chen</span><span class="live-dot"></span></div>
+      <div class="chat-msgs">
+        <div class="chat-sys">Chatbot session transferred</div>
+        <div class="cm bot"><div class="cm-av">AI</div><div class="cm-bub">Hi Robert! Your current cash value is $187,420. Max loanable: $168,678 (90%). Let me connect you with an agent for details on rates and death benefit impact.</div></div>
+        <div class="chat-sys">Connected to Sarah Mitchell</div>
+        <div class="cm agent"><div class="cm-av">SM</div><div class="cm-bub">Hi Robert — I have the details from the chatbot. Your max loanable amount is $168,678. Would you like to discuss fixed vs variable rates?</div></div>
+        <div class="cm cust"><div class="cm-av">RC</div><div class="cm-bub">Yes, what are the rate options?</div></div>
+        <div class="cm agent"><div class="cm-av">SM</div><div class="cm-bub">5.25% fixed or 4.75% variable (resets annually). Most clients prefer fixed for predictability.</div></div>
+        <div class="cm cust"><div class="cm-av">RC</div><div class="cm-bub">And what happens to my death benefit if I take $75K?</div></div>
+        <div class="cm agent"><div class="cm-av">SM</div><div class="cm-bub">Your net death benefit would reduce from $500K to $425K. The loan balance is deducted at claim time unless repaid.</div></div>
+        <div class="cm cust"><div class="cm-av">RC</div><div class="cm-bub">That works. How do I proceed?</div></div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Type a message...">
+        <button>Send</button>
+      </div>
+    </div>
+
+  </div><!-- /ws-content -->
+  <div class="ftr">&copy; 2026 Bloom Insurance &middot; Agent Desktop Smart App &middot; Prototype</div>
+</div><!-- /workspace -->
+
+</div><!-- /main -->
+
+<script>
+var persona='phone';
+var sec=0;
+var timerInt=null;
+
+var briefData={
+  phone:{
+    why:'Policy loan finalization. Robert is ready to execute.',
+    body:'Robert navigated IVR selecting <strong>Existing Policy → Policy Loans → Speak to Agent</strong>. He has been active across 3 channels in the last 30 minutes (Portal → Chatbot → Agent Chat) researching a <strong>$75K policy loan</strong> against his Universal Life. Chat agent already reviewed fixed vs variable rates and death benefit impact. Robert requested phone to finalize. <strong>No information needs to be re-collected.</strong>',
+    items:[
+      {text:'<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor — UTMA custodian needed) sent Feb 3, not yet returned.',color:'var(--cau)'},
+      {text:'<strong>Recent pattern:</strong> 4 contacts today across 4 channels. Sentiment: Positive. No friction detected.',color:'var(--pos)'},
+      {text:'<strong>Customer profile:</strong> Digital-first, well-researched. Prefers phone for final transactions.',color:'var(--acc)'}
+    ]
+  },
+  chat:{
+    why:'Policy loan inquiry — escalated from chatbot. Robert needs rate details and wants to proceed.',
+    body:'Robert asked the chatbot about borrowing against his Universal Life. Bot provided cash value (<strong>$187,420</strong>) and max loanable amount (<strong>$168,678</strong>). Robert asked about death benefit impact — chatbot escalated to live agent. <strong>Robert already knows his cash value and max loan amount. He needs: rate options, death benefit impact, and likely wants to proceed.</strong>',
+    items:[
+      {text:'<strong>Pre-chat activity:</strong> Portal session 5 min ago — downloaded loan request form PDF.',color:'var(--acc)'},
+      {text:'<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor) sent Feb 3, not yet returned.',color:'var(--cau)'},
+      {text:'<strong>Customer profile:</strong> Digital-first, well-researched. Positive sentiment history (82%).',color:'var(--pos)'}
+    ]
+  }
+};
+
+var nbaData={
+  phone:[
+    {title:'Confirm $75K loan at 5.25% fixed',reason:'Customer already reviewed terms across 3 channels. Ready to execute — avoid re-explaining.',btn:'Process Loan'},
+    {title:'Collect beneficiary change form',reason:'Form sent Feb 3 — not returned. Emily R. Chen (minor) needs UTMA custodian. Customer is on the line.',btn:'Send Reminder'},
+    {title:'Mention free withdrawal option',reason:'10% annual free withdrawal ($18,742) available without loan interest. Could reduce loan amount needed.',btn:'View Illustration'},
+    {title:'Schedule annual policy review',reason:'Loan changes death benefit and cash value projections. Good trigger for a comprehensive review.',btn:'Schedule'}
+  ],
+  chat:[
+    {title:'Walk through fixed vs variable rate',reason:'Chatbot escalated on rate question. Customer needs this answered before proceeding.',btn:'Send Comparison'},
+    {title:'Show death benefit impact',reason:'Customer specifically asked. Provide $75K loan scenario: $500K → $425K net.',btn:'Send Illustration'},
+    {title:'Offer to finalize on phone',reason:'Loan execution may require voice verification. If ready, offer warm transfer.',btn:'Transfer'},
+    {title:'Remind: bene change form outstanding',reason:'Form sent Feb 3, not returned. Can attach to chat for convenience.',btn:'Attach Form'}
+  ]
+};
+
+function renderBrief(){
+  var d=briefData[persona];
+  var h='<div class="brief-label"><span class="dot"></span> AI Interaction Brief</div>';
+  h+='<div class="brief-why">'+d.why+'</div>';
+  h+='<div class="brief-body">'+d.body+'</div>';
+  h+='<div class="brief-items">';
+  d.items.forEach(function(it){
+    h+='<div class="brief-item"><div class="bi-dot" style="background:'+it.color+'"></div><span>'+it.text+'</span></div>';
+  });
+  h+='</div>';
+  document.getElementById('briefCard').innerHTML=h;
+}
+
+function renderNBA(){
+  var items=nbaData[persona];
+  var h='<div class="card-title"><span class="ico">&#9889;</span> Next Best Actions</div>';
+  items.forEach(function(it,i){
+    h+='<div class="nba-item"><div class="nba-num">'+(i+1)+'</div><div class="nba-body"><div class="nba-title">'+it.title+'</div><div class="nba-reason">'+it.reason+'</div></div><button class="nba-btn">'+it.btn+'</button></div>';
+  });
+  document.getElementById('nbaCard').innerHTML=h;
+}
+
+function acceptCall(p){
+  persona=p;
+  document.getElementById('screenIncoming').style.display='none';
+  document.getElementById('workspace').classList.add('active');
+  if(p==='chat'){
+    document.getElementById('togChat').classList.add('on');
+    document.getElementById('togPhone').classList.remove('on');
+    document.getElementById('chatPanel').classList.add('active');
+    document.getElementById('channelBadge').textContent='Chatbot → Agent Chat';
+  } else {
+    document.getElementById('togPhone').classList.add('on');
+    document.getElementById('togChat').classList.remove('on');
+    document.getElementById('chatPanel').classList.remove('active');
+    document.getElementById('channelBadge').textContent='IVR → Agent';
+  }
+  renderBrief();
+  renderNBA();
+  sec=0;
+  if(timerInt) clearInterval(timerInt);
+  timerInt=setInterval(function(){sec++;document.getElementById('tmr').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')},1000);
+}
+
+function switchPersona(p){
+  persona=p;
+  document.getElementById('togPhone').classList.toggle('on',p==='phone');
+  document.getElementById('togChat').classList.toggle('on',p==='chat');
+  document.getElementById('chatPanel').classList.toggle('active',p==='chat');
+  document.getElementById('channelBadge').textContent=p==='phone'?'IVR → Agent':'Chatbot → Agent Chat';
+  renderBrief();
+  renderNBA();
+}
+
+function switchTab(el){
+  document.querySelectorAll('.ws-tab').forEach(function(t){t.classList.remove('on')});
+  el.classList.add('on');
+  document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('pane-'+el.dataset.tab).classList.add('on');
+  // re-trigger animations
+  document.getElementById('pane-'+el.dataset.tab).querySelectorAll('.an').forEach(function(e){e.style.animation='none';e.offsetHeight;e.style.animation=''});
+}
+
+function toggleDetail(el,id){
+  var det=document.getElementById(id);
+  var isOpen=det.classList.contains('show');
+  // close all
+  document.querySelectorAll('.tl-detail').forEach(function(d){d.classList.remove('show')});
+  document.querySelectorAll('.tl-item').forEach(function(i){i.classList.remove('sel')});
+  if(!isOpen){
+    det.classList.add('show');
+    el.classList.add('sel');
+  }
+}
+</script>
+</body>
+</html>

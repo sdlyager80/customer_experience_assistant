@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom Insurance - Lifecycle Outreach Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dk:#0f4c75;--acc:#1B75BB;--acc2:#00ADEE;--orange:#F6921E;--yellow:#E8DE23;--lgreen:#8BC53F;--green:#37A526;
+  --canvas:#F2F7F6;--white:#fff;--mid:#1a1a1a;--t2:#808285;--t3:#a8aaad;--bdr:#e0e5e4;
+  --pos:#2a7a1a;--posbg:#e6f5e0;--cau:#946b0e;--caubg:#fef9c3;--neg:#b91c1c;--negbg:#fee2e2;
+  --inf:#1B75BB;--infbg:#e0f0fc;--rev:#7c5500;--revbg:#fef3d6;
+  --f:'Inter',system-ui,-apple-system,sans-serif;--r:8px;--rs:6px;--rf:999px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--canvas);color:var(--mid);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:var(--f);cursor:pointer}
+
+/* ═══ HEADER ═══ */
+.hdr{background:var(--white);border-bottom:1px solid var(--bdr);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:34px;height:34px;flex-shrink:0}
+.hdr-brand{display:flex;align-items:baseline;gap:5px}
+.hdr-brand b{font-size:18px;font-weight:700;color:#333;letter-spacing:-.3px}
+.hdr-brand span{font-size:18px;font-weight:400;color:#555}
+.hdr-sep{width:1px;height:22px;background:var(--bdr);margin:0 12px}
+.hdr-app{display:flex;align-items:center;gap:8px}
+.hdr-app-name{font-size:13px;font-weight:700;color:var(--mid)}
+.badge{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;padding:2px 7px;border-radius:4px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-avatar{width:30px;height:30px;border-radius:var(--rf);background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px}
+.hdr-uinfo .n{font-size:12px;font-weight:600}.hdr-uinfo .r{font-size:10px;color:var(--t2)}
+.hdr-user{display:flex;align-items:center;gap:8px}
+
+/* ═══ NAV ═══ */
+.nav{background:var(--white);border-bottom:1px solid var(--bdr);padding:0 24px;display:flex;gap:0;position:sticky;top:56px;z-index:190}
+.nav-tab{padding:12px 20px;font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none}
+.nav-tab:hover{color:var(--mid)}
+.nav-tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.nav-tab .ic{font-size:14px}
+.nav-tab .cnt{font-size:9px;font-weight:700;background:var(--neg);color:#fff;padding:1px 6px;border-radius:var(--rf);margin-left:2px}
+
+/* ═══ PAGE CONTAINER ═══ */
+.page{display:none;padding:20px 24px 40px}.page.on{display:block}
+
+/* ═══ SHARED COMPONENTS ═══ */
+.card{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-t .ic{font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:var(--white);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 12px;text-align:center}
+.stat .n{font-size:24px;font-weight:800;line-height:1.1}.stat .l{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-top:4px}
+.pill{display:inline-flex;padding:3px 8px;border-radius:var(--rf);font-size:11px;font-weight:600}
+.pill-g{background:var(--posbg);color:var(--pos)}.pill-r{background:var(--negbg);color:var(--neg)}.pill-y{background:var(--caubg);color:var(--cau)}.pill-b{background:var(--infbg);color:var(--inf)}.pill-o{background:var(--revbg);color:var(--rev)}
+.pill-outline{background:transparent;border:1px solid var(--bdr);color:var(--t2)}
+.row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--canvas)}.row:last-child{border:none}
+.row .lb{color:var(--t2);font-weight:500;font-size:12px}.row .vl{font-weight:600;font-size:12px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bar-label{font-size:11px;font-weight:600;min-width:80px;color:var(--t2)}
+.bar-track{flex:1;height:6px;background:var(--canvas);border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:10px}
+.bar-val{font-size:11px;font-weight:700;min-width:36px;text-align:right}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:var(--f);transition:all .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn-p{background:var(--acc);color:#fff}.btn-p:hover{background:var(--acc2)}
+.btn-o{background:var(--white);color:var(--acc);border:1px solid var(--acc)}
+.btn-s{background:var(--canvas);color:var(--mid);border:1px solid var(--bdr)}
+.btn-g{background:var(--pos);color:#fff}
+.btn-d{background:var(--neg);color:#fff}
+.btn-sm{padding:3px 8px;font-size:11px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--rs);font-size:11px;font-weight:600;margin-right:4px;margin-bottom:4px}
+.tag-le{background:var(--caubg);color:var(--cau)}.tag-co{background:var(--infbg);color:var(--inf)}.tag-re{background:var(--negbg);color:var(--neg)}.tag-gr{background:var(--posbg);color:var(--pos)}
+
+/* ═══ TABLE ═══ */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--bdr);border-radius:var(--r);background:var(--white)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--canvas);padding:10px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);border-bottom:1px solid var(--bdr);white-space:nowrap;position:sticky;top:0}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--canvas);vertical-align:middle}
+.tbl tr:last-child td{border:none}
+.tbl tr:hover td{background:rgba(27,117,187,.03)}
+.tbl tr.clickable{cursor:pointer}
+.tbl .name-cell{font-weight:600;color:var(--mid)}
+
+/* ═══ FILTER BAR ═══ */
+.fbar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fbar .label{font-size:11px;font-weight:600;color:var(--t2)}
+.fbtn{padding:4px 10px;border-radius:var(--rf);font-size:11px;font-weight:600;border:1px solid var(--bdr);background:var(--white);color:var(--t2);cursor:pointer;transition:all .12s;font-family:var(--f)}
+.fbtn:hover{border-color:var(--acc);color:var(--acc)}.fbtn.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* ═══ ACTIVITY FEED ═══ */
+.feed-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--canvas)}
+.feed-item:last-child{border:none}
+.feed-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.feed-body{flex:1}.feed-text{font-size:12px;line-height:1.4}.feed-time{font-size:10px;color:var(--t3);margin-top:2px}
+
+/* ═══ DETAIL OVERLAY ═══ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500;justify-content:center;align-items:flex-start;padding:40px 20px;overflow-y:auto}
+.overlay.on{display:flex}
+.modal{background:var(--white);border-radius:var(--r);max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18);position:relative}
+.modal-hdr{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.modal-hdr h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.modal-close{width:28px;height:28px;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--t2);transition:all .12s}
+.modal-close:hover{background:var(--negbg);color:var(--neg);border-color:#fca5a5}
+.modal-body{padding:20px;max-height:calc(100vh - 160px);overflow-y:auto}
+.modal-body::-webkit-scrollbar{width:4px}.modal-body::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:10px}
+
+/* ═══ HEALTH DOTS ═══ */
+.health-bar{display:flex;gap:2px;align-items:center}
+.health-seg{height:8px;border-radius:4px}
+
+/* ═══ FUNNEL ═══ */
+.funnel{display:flex;flex-direction:column;gap:4px}
+.funnel-step{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:var(--rs);font-size:13px}
+.funnel-step .num{font-size:20px;font-weight:800;min-width:56px;text-align:right}
+.funnel-step .lbl{font-weight:600;flex:1}
+.funnel-step .pct{font-size:12px;font-weight:700;color:var(--t2)}
+
+/* ═══ ANIM ═══ */
+@keyframes fu{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:fu .25s ease forwards}.d1{animation-delay:.03s;opacity:0}.d2{animation-delay:.06s;opacity:0}.d3{animation-delay:.09s;opacity:0}.d4{animation-delay:.12s;opacity:0}.d5{animation-delay:.15s;opacity:0}.d6{animation-delay:.18s;opacity:0}
+
+.ftr{padding:10px 24px;text-align:center;font-size:10px;color:var(--t3);border-top:1px solid var(--bdr);background:var(--white)}
+@media(max-width:900px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="hdr">
+  <div class="hdr-left">
+    <svg class="hdr-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M100 16 C90 16,68 38,68 62 C68 78,78 90,100 100 C122 90,132 78,132 62 C132 38,110 16,100 16Z" fill="#00ADEE"/><path d="M184 100 C184 90,162 68,138 68 C122 68,110 78,100 100 C110 122,122 132,138 132 C162 132,184 110,184 100Z" fill="#37A526"/><path d="M100 184 C110 184,132 162,132 138 C132 122,122 110,100 100 C78 110,68 122,68 138 C68 162,90 184,100 184Z" fill="#8BC53F"/><path d="M16 100 C16 110,38 132,62 132 C78 132,90 122,100 100 C90 78,78 68,62 68 C38 68,16 90,16 100Z" fill="#1B75BB"/><path d="M156 20 C148 20,126 36,118 56 C112 70,114 84,100 100 C116 100,130 96,144 88 C160 78,170 54,168 42 C166 30,160 20,156 20Z" fill="#E8DE23"/><path d="M44 180 C52 180,74 164,82 144 C88 130,86 116,100 100 C84 100,70 104,56 112 C40 122,30 146,32 158 C34 170,40 180,44 180Z" fill="#F6921E"/><circle cx="100" cy="100" r="10" fill="#E8DE23"/></svg>
+    <div class="hdr-brand"><b>Bloom</b> <span>Insurance</span></div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-app"><span class="hdr-app-name">Lifecycle Outreach Manager</span><span class="badge">Smart App</span></div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-user"><div class="hdr-avatar">AL</div><div class="hdr-uinfo"><div class="n">Andrea Lopez</div><div class="r">Retention Analyst</div></div></div>
+  </div>
+</header>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav" id="nav">
+  <button class="nav-tab on" onclick="goPage('dash',this)"><span class="ic">&#128202;</span> Dashboard</button>
+  <button class="nav-tab" onclick="goPage('camp',this)"><span class="ic">&#128203;</span> Campaigns <span class="cnt">8</span></button>
+  <button class="nav-tab" onclick="goPage('cases',this)"><span class="ic">&#128236;</span> Cases <span class="cnt" style="background:var(--neg)">23</span></button>
+  <button class="nav-tab" onclick="goPage('insights',this)"><span class="ic">&#128200;</span> Insights</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- ═══════════ PAGE 1: DASHBOARD ═══════════════ -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page on" id="p-dash">
+
+  <!-- STATS ROW -->
+  <div class="grid4 an d1" style="margin-bottom:16px">
+    <div class="stat"><div class="n" style="color:var(--acc)">48,210</div><div class="l">Policies Monitored</div></div>
+    <div class="stat"><div class="n" style="color:var(--rev)">8</div><div class="l">Active Campaigns</div></div>
+    <div class="stat"><div class="n" style="color:var(--neg)">23</div><div class="l">Open Cases</div></div>
+    <div class="stat"><div class="n" style="color:var(--pos)">142</div><div class="l">Auto-Actioned (30d)</div></div>
+  </div>
+
+  <div class="grid2">
+    <!-- LEFT COL -->
+    <div>
+      <!-- CUSTOMER HEALTH -->
+      <div class="card an d2">
+        <div class="card-t"><span class="ic">&#129505;</span> Portfolio Health Distribution</div>
+        <div style="display:flex;gap:2px;height:24px;border-radius:6px;overflow:hidden;margin-bottom:10px">
+          <div style="width:62%;background:var(--pos);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">62%</div>
+          <div style="width:21%;background:var(--orange);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">21%</div>
+          <div style="width:12%;background:var(--cau);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">12%</div>
+          <div style="width:5%;background:var(--neg);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">5%</div>
+        </div>
+        <div style="display:flex;gap:16px;font-size:11px">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--pos)"></span><strong>29,890</strong> Healthy</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></span><strong>10,124</strong> Watch</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--cau)"></span><strong>5,785</strong> At-Risk</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--neg)"></span><strong>2,411</strong> Critical</span>
+        </div>
+      </div>
+
+      <!-- CHURN RISK HEATMAP -->
+      <div class="card an d3">
+        <div class="card-t"><span class="ic">&#128293;</span> Churn Risk by Product</div>
+        <table class="tbl" style="font-size:11px">
+          <thead><tr><th>Product</th><th style="text-align:center">Low</th><th style="text-align:center">Medium</th><th style="text-align:center">High</th><th style="text-align:center">Critical</th></tr></thead>
+          <tbody>
+            <tr><td class="name-cell">Whole Life</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">8,420</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">1,210</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">340</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">89</td></tr>
+            <tr><td class="name-cell">Term Life</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">6,100</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">2,840</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">1,220</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">680</td></tr>
+            <tr><td class="name-cell">Universal Life</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">4,200</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">920</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">480</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">210</td></tr>
+            <tr><td class="name-cell">Fixed Annuity</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">5,800</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">1,640</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">890</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">520</td></tr>
+            <tr><td class="name-cell">Variable Annuity</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">2,100</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">740</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">380</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">290</td></tr>
+            <tr><td class="name-cell">IRA Annuity</td><td style="text-align:center;background:var(--posbg);color:var(--pos);font-weight:700">3,270</td><td style="text-align:center;background:#fef9c3;color:var(--cau);font-weight:700">1,120</td><td style="text-align:center;background:#fed7aa;color:#9a3412;font-weight:700">660</td><td style="text-align:center;background:var(--negbg);color:var(--neg);font-weight:700">420</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div>
+      <!-- TOP CAMPAIGNS -->
+      <div class="card an d2">
+        <div class="card-t"><span class="ic">&#127942;</span> Top Campaigns (30 days)</div>
+        <div class="bar-row"><span class="bar-label">Lapse Prevention</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--neg)"></div></div><span class="bar-val" style="color:var(--neg)">38</span></div>
+        <div class="bar-row"><span class="bar-label">RMD Compliance</span><div class="bar-track"><div class="bar-fill" style="width:64%;background:var(--inf)"></div></div><span class="bar-val" style="color:var(--inf)">29</span></div>
+        <div class="bar-row"><span class="bar-label">Term Conversion</span><div class="bar-track"><div class="bar-fill" style="width:52%;background:var(--cau)"></div></div><span class="bar-val" style="color:var(--cau)">24</span></div>
+        <div class="bar-row"><span class="bar-label">Cash Value Milestone</span><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--pos)"></div></div><span class="bar-val" style="color:var(--pos)">17</span></div>
+        <div class="bar-row"><span class="bar-label">Surrender Expiry</span><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--orange)"></div></div><span class="bar-val" style="color:var(--orange)">14</span></div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="card an d3">
+        <div class="card-t"><span class="ic">&#9889;</span> Recent Activity</div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--neg)"></div><div class="feed-body"><div class="feed-text"><strong>Lapse Prevention</strong> &mdash; auto-SMS sent to <strong>Karen Williams</strong>. Grace period day 32.</div><div class="feed-time">12 min ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--pos)"></div><div class="feed-body"><div class="feed-text"><strong>Cash Value Milestone</strong> &mdash; case created for <strong>Robert Chen</strong>. CV crossed $175K.</div><div class="feed-time">28 min ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--inf)"></div><div class="feed-body"><div class="feed-text"><strong>RMD Compliance</strong> &mdash; auto-email sent to <strong>James Nguyen</strong>. RMD deadline Apr 1.</div><div class="feed-time">1 hr ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--cau)"></div><div class="feed-body"><div class="feed-text"><strong>Term Conversion</strong> &mdash; case assigned to <strong>Lisa Tran</strong> for outreach to <strong>David Park</strong>.</div><div class="feed-time">2 hr ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--rev)"></div><div class="feed-body"><div class="feed-text"><strong>Annuity Maturity</strong> &mdash; case closed. <strong>Margaret Torres</strong> elected 5-yr renewal.</div><div class="feed-time">3 hr ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--pos)"></div><div class="feed-body"><div class="feed-text"><strong>Spousal Coverage</strong> &mdash; cross-sell case converted. <strong>Patricia Nguyen</strong> enrolled in $250K Term.</div><div class="feed-time">5 hr ago</div></div></div>
+        <div class="feed-item"><div class="feed-dot" style="background:var(--neg)"></div><div class="feed-body"><div class="feed-text"><strong>Surrender Charge Expiry</strong> &mdash; urgent case created for <strong>Helen Garcia</strong>. Churn score: 78.</div><div class="feed-time">6 hr ago</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- ═══════════ PAGE 2: CAMPAIGNS ═══════════════ -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page" id="p-camp">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <h2 style="font-size:16px;font-weight:700">Campaigns</h2>
+      <p style="font-size:12px;color:var(--t2);margin-top:2px">Configure monitoring rules that scan the portfolio for matching policies and events.</p>
+    </div>
+    <button class="btn btn-p">+ New Campaign</button>
+  </div>
+
+  <div class="fbar">
+    <span class="label">Type:</span>
+    <button class="fbtn on" onclick="filterCamp(this,'all')">All</button>
+    <button class="fbtn" onclick="filterCamp(this,'le')">&#127793; Life Event</button>
+    <button class="fbtn" onclick="filterCamp(this,'co')">&#128220; Compliance</button>
+    <button class="fbtn" onclick="filterCamp(this,'re')">&#128680; Retention</button>
+    <button class="fbtn" onclick="filterCamp(this,'gr')">&#128200; Growth</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl" id="campTbl">
+      <thead><tr><th style="width:24px"></th><th>Campaign Name</th><th>Type</th><th>Status</th><th>Criteria</th><th>Matched</th><th>Cases</th><th>Auto-Action</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr class="clickable" data-type="re" onclick="openCampDetail(0)"><td>&#128680;</td><td class="name-cell">Lapse Prevention</td><td><span class="tag tag-re">Retention</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--neg)">412</td><td>38</td><td><span class="pill pill-g">SMS + Case</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(0)">View</button></td></tr>
+        <tr class="clickable" data-type="co" onclick="openCampDetail(1)"><td>&#128220;</td><td class="name-cell">RMD Compliance Outreach</td><td><span class="tag tag-co">Compliance</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--inf)">1,840</td><td>29</td><td><span class="pill pill-g">Email + Case</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(1)">View</button></td></tr>
+        <tr class="clickable" data-type="re" onclick="openCampDetail(2)"><td>&#128680;</td><td class="name-cell">Term Conversion Window</td><td><span class="tag tag-re">Retention</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--cau)">680</td><td>24</td><td><span class="pill pill-o">Case Only</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(2)">View</button></td></tr>
+        <tr class="clickable" data-type="co" onclick="openCampDetail(3)"><td>&#128220;</td><td class="name-cell">Beneficiary Review</td><td><span class="tag tag-co">Compliance</span></td><td><span class="pill pill-g">Active</span></td><td>2 rules</td><td style="font-weight:700;color:var(--inf)">3,210</td><td>18</td><td><span class="pill pill-o">Case Only</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(3)">View</button></td></tr>
+        <tr class="clickable" data-type="le" onclick="openCampDetail(4)"><td>&#127793;</td><td class="name-cell">Annuity Maturity Approaching</td><td><span class="tag tag-le">Life Event</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--rev)">290</td><td>14</td><td><span class="pill pill-g">Email + Case</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(4)">View</button></td></tr>
+        <tr class="clickable" data-type="gr" onclick="openCampDetail(5)"><td>&#128200;</td><td class="name-cell">Cash Value Milestone</td><td><span class="tag tag-gr">Growth</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--pos)">520</td><td>17</td><td><span class="pill pill-o">Case Only</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(5)">View</button></td></tr>
+        <tr class="clickable" data-type="re" onclick="openCampDetail(6)"><td>&#128680;</td><td class="name-cell">Surrender Charge Expiry</td><td><span class="tag tag-re">Retention</span></td><td><span class="pill pill-g">Active</span></td><td>3 rules</td><td style="font-weight:700;color:var(--neg)">185</td><td>14</td><td><span class="pill pill-o">Case Only</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(6)">View</button></td></tr>
+        <tr class="clickable" data-type="gr" onclick="openCampDetail(7)"><td>&#128200;</td><td class="name-cell">Spousal Coverage Gap</td><td><span class="tag tag-gr">Growth</span></td><td><span class="pill pill-y">Paused</span></td><td>3 rules</td><td style="font-weight:700;color:var(--pos)">1,420</td><td>9</td><td><span class="pill pill-o">Case Only</span></td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation();openCampDetail(7)">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- ═══════════ PAGE 3: CASES ═══════════════════ -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page" id="p-cases">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <h2 style="font-size:16px;font-weight:700">Work Queue</h2>
+      <p style="font-size:12px;color:var(--t2);margin-top:2px">Cases surfaced by campaigns for processor action. Auto-actioned items shown for audit.</p>
+    </div>
+    <div style="display:flex;gap:6px"><button class="btn btn-s">Export</button><button class="btn btn-p">+ Manual Case</button></div>
+  </div>
+
+  <div class="fbar">
+    <span class="label">Priority:</span>
+    <button class="fbtn on" onclick="filterCases(this,'all')">All (23)</button>
+    <button class="fbtn" onclick="filterCases(this,'urg')">&#128308; Urgent (4)</button>
+    <button class="fbtn" onclick="filterCases(this,'high')">&#128992; High (7)</button>
+    <button class="fbtn" onclick="filterCases(this,'med')">&#128993; Medium (8)</button>
+    <button class="fbtn" onclick="filterCases(this,'low')">&#128994; Low (4)</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl" id="casesTbl">
+      <thead><tr><th>Case</th><th>Customer</th><th>Policy</th><th>Campaign</th><th>Priority</th><th>Status</th><th>Age</th><th>Assigned</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr class="clickable" data-pri="urg" onclick="openCaseDetail(0)"><td style="font-weight:600">CS-4401</td><td class="name-cell">Helen Garcia</td><td>FA-2019-44210</td><td><span class="tag tag-re" style="margin:0">Surrender Expiry</span></td><td><span class="pill pill-r">Urgent</span></td><td><span class="pill pill-b">New</span></td><td>2h</td><td>Unassigned</td><td><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Assign</button></td></tr>
+        <tr class="clickable" data-pri="urg" onclick="openCaseDetail(1)"><td style="font-weight:600">CS-4398</td><td class="name-cell">Karen Williams</td><td>WL-2016-78320</td><td><span class="tag tag-re" style="margin:0">Lapse Prevention</span></td><td><span class="pill pill-r">Urgent</span></td><td><span class="pill pill-y">In Progress</span></td><td>1d</td><td>Sarah M.</td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">View</button></td></tr>
+        <tr class="clickable" data-pri="urg" onclick="openCaseDetail(2)"><td style="font-weight:600">CS-4395</td><td class="name-cell">Thomas Reed</td><td>TL-2015-91002</td><td><span class="tag tag-re" style="margin:0">Lapse Prevention</span></td><td><span class="pill pill-r">Urgent</span></td><td><span class="pill pill-b">New</span></td><td>1d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm" onclick="event.stopPropagation()">Assign</button></td></tr>
+        <tr class="clickable" data-pri="urg" onclick="openCaseDetail(2)"><td style="font-weight:600">CS-4392</td><td class="name-cell">Linda Pham</td><td>IA-2018-63100</td><td><span class="tag tag-co" style="margin:0">RMD Compliance</span></td><td><span class="pill pill-r">Urgent</span></td><td><span class="pill pill-y">In Progress</span></td><td>2d</td><td>Lisa T.</td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">View</button></td></tr>
+        <tr class="clickable" data-pri="high" onclick="openCaseDetail(3)"><td style="font-weight:600">CS-4390</td><td class="name-cell">David Park</td><td>TL-2016-55190</td><td><span class="tag tag-re" style="margin:0">Term Conversion</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-b">New</span></td><td>2d</td><td>Lisa T.</td><td><button class="btn btn-s btn-sm" onclick="event.stopPropagation()">View</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4387</td><td class="name-cell">James Nguyen</td><td>IA-2020-33847</td><td><span class="tag tag-co" style="margin:0">RMD Compliance</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-g">Actioned</span></td><td>3d</td><td>Andrea L.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4385</td><td class="name-cell">Sandra Olsen</td><td>FA-2020-88710</td><td><span class="tag tag-re" style="margin:0">Surrender Expiry</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-y">In Progress</span></td><td>3d</td><td>James R.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4382</td><td class="name-cell">Cheryl Banks</td><td>UL-2017-22980</td><td><span class="tag tag-gr" style="margin:0">Cash Value</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-b">New</span></td><td>4d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4380</td><td class="name-cell">Robert Chen</td><td>440387261UL</td><td><span class="tag tag-gr" style="margin:0">Cash Value</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-g">Actioned</span></td><td>4d</td><td>Sarah M.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4377</td><td class="name-cell">Maria Santos</td><td>WL-2019-45600</td><td><span class="tag tag-co" style="margin:0">Bene Review</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-y">In Progress</span></td><td>5d</td><td>Lisa T.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="high"><td style="font-weight:600">CS-4375</td><td class="name-cell">William Tate</td><td>FA-2018-91240</td><td><span class="tag tag-le" style="margin:0">Annuity Maturity</span></td><td><span class="pill pill-o">High</span></td><td><span class="pill pill-b">New</span></td><td>5d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4372</td><td class="name-cell">Patricia Nguyen</td><td>&mdash;</td><td><span class="tag tag-gr" style="margin:0">Spousal Coverage</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-g">Converted</span></td><td>7d</td><td>Andrea L.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4370</td><td class="name-cell">Frank Morrison</td><td>TL-2014-38900</td><td><span class="tag tag-re" style="margin:0">Term Conversion</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-y">In Progress</span></td><td>7d</td><td>James R.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4368</td><td class="name-cell">Nancy Liu</td><td>UL-2020-56410</td><td><span class="tag tag-co" style="margin:0">Bene Review</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-b">New</span></td><td>8d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4365</td><td class="name-cell">George Kimura</td><td>IA-2019-71200</td><td><span class="tag tag-co" style="margin:0">RMD Compliance</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-g">Actioned</span></td><td>9d</td><td>Lisa T.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4362</td><td class="name-cell">Angela Cruz</td><td>WL-2021-34560</td><td><span class="tag tag-gr" style="margin:0">Cash Value</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-b">New</span></td><td>10d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4360</td><td class="name-cell">Michael Dunn</td><td>FA-2021-82310</td><td><span class="tag tag-le" style="margin:0">Annuity Maturity</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-y">In Progress</span></td><td>10d</td><td>Sarah M.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4358</td><td class="name-cell">Rachel Stone</td><td>TL-2018-90120</td><td><span class="tag tag-re" style="margin:0">Lapse Prevention</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-g">Actioned</span></td><td>11d</td><td>James R.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="med"><td style="font-weight:600">CS-4355</td><td class="name-cell">Steven Cho</td><td>UL-2019-42800</td><td><span class="tag tag-co" style="margin:0">Bene Review</span></td><td><span class="pill pill-y">Medium</span></td><td><span class="pill pill-b">New</span></td><td>12d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="low"><td style="font-weight:600">CS-4350</td><td class="name-cell">Betty Owens</td><td>WL-2022-15670</td><td><span class="tag tag-gr" style="margin:0">Spousal Coverage</span></td><td><span class="pill pill-outline">Low</span></td><td><span class="pill pill-b">New</span></td><td>14d</td><td>Unassigned</td><td><button class="btn btn-p btn-sm">Assign</button></td></tr>
+        <tr class="clickable" data-pri="low"><td style="font-weight:600">CS-4347</td><td class="name-cell">Harold Jensen</td><td>TL-2017-62340</td><td><span class="tag tag-re" style="margin:0">Term Conversion</span></td><td><span class="pill pill-outline">Low</span></td><td><span class="pill pill-y">In Progress</span></td><td>15d</td><td>Andrea L.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="low"><td style="font-weight:600">CS-4344</td><td class="name-cell">Diane Foster</td><td>FA-2020-55890</td><td><span class="tag tag-le" style="margin:0">Annuity Maturity</span></td><td><span class="pill pill-outline">Low</span></td><td><span class="pill pill-g">Actioned</span></td><td>18d</td><td>Sarah M.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+        <tr class="clickable" data-pri="low"><td style="font-weight:600">CS-4340</td><td class="name-cell">Carl Weber</td><td>IA-2021-81050</td><td><span class="tag tag-co" style="margin:0">RMD Compliance</span></td><td><span class="pill pill-outline">Low</span></td><td><span class="pill pill-g">Actioned</span></td><td>20d</td><td>Lisa T.</td><td><button class="btn btn-s btn-sm">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- ═══════════ PAGE 4: INSIGHTS ════════════════ -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page" id="p-insights">
+
+  <h2 style="font-size:16px;font-weight:700;margin-bottom:4px">Campaign Insights</h2>
+  <p style="font-size:12px;color:var(--t2);margin-bottom:16px">30-day performance across all active campaigns.</p>
+
+  <!-- FUNNEL + STATS -->
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="card an d1">
+      <div class="card-t"><span class="ic">&#127890;</span> Conversion Funnel (30d)</div>
+      <div class="funnel">
+        <div class="funnel-step" style="background:var(--infbg)"><span class="num" style="color:var(--inf)">7,557</span><span class="lbl">Policies Matched</span><span class="pct">100%</span></div>
+        <div style="text-align:center;color:var(--t3);font-size:18px">&darr;</div>
+        <div class="funnel-step" style="background:var(--caubg)"><span class="num" style="color:var(--cau)">165</span><span class="lbl">Cases Created</span><span class="pct">2.2%</span></div>
+        <div style="text-align:center;color:var(--t3);font-size:18px">&darr;</div>
+        <div class="funnel-step" style="background:var(--revbg)"><span class="num" style="color:var(--rev)">118</span><span class="lbl">Actioned</span><span class="pct">71.5%</span></div>
+        <div style="text-align:center;color:var(--t3);font-size:18px">&darr;</div>
+        <div class="funnel-step" style="background:var(--posbg)"><span class="num" style="color:var(--pos)">54</span><span class="lbl">Converted / Resolved</span><span class="pct">45.8%</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="grid2 an d2" style="margin-bottom:12px">
+        <div class="stat" style="border-left:3px solid var(--pos)"><div class="n" style="color:var(--pos)">$2.4M</div><div class="l">Premium Retained</div></div>
+        <div class="stat" style="border-left:3px solid var(--acc)"><div class="n" style="color:var(--acc)">$680K</div><div class="l">New Revenue Pipeline</div></div>
+      </div>
+      <div class="grid2 an d3" style="margin-bottom:12px">
+        <div class="stat" style="border-left:3px solid var(--neg)"><div class="n" style="color:var(--neg)">12</div><div class="l">Lapses Prevented</div></div>
+        <div class="stat" style="border-left:3px solid var(--rev)"><div class="n" style="color:var(--rev)">142</div><div class="l">Auto-Actions Fired</div></div>
+      </div>
+
+      <div class="card an d4">
+        <div class="card-t"><span class="ic">&#128232;</span> Channel Effectiveness</div>
+        <div class="bar-row"><span class="bar-label">Phone Call</span><div class="bar-track"><div class="bar-fill" style="width:68%;background:var(--pos)"></div></div><span class="bar-val" style="color:var(--pos)">68%</span></div>
+        <div class="bar-row"><span class="bar-label">Email</span><div class="bar-track"><div class="bar-fill" style="width:42%;background:var(--inf)"></div></div><span class="bar-val" style="color:var(--inf)">42%</span></div>
+        <div class="bar-row"><span class="bar-label">SMS</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--orange)"></div></div><span class="bar-val" style="color:var(--orange)">55%</span></div>
+        <div class="bar-row"><span class="bar-label">Letter</span><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--t2)"></div></div><span class="bar-val" style="color:var(--t2)">28%</span></div>
+        <div style="font-size:10px;color:var(--t3);margin-top:6px">Response rate = customer action within 14 days of outreach</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN BREAKDOWN -->
+  <div class="card an d5">
+    <div class="card-t"><span class="ic">&#128202;</span> Campaign Performance Detail</div>
+    <table class="tbl">
+      <thead><tr><th>Campaign</th><th>Matched</th><th>Cases</th><th>Actioned</th><th>Converted</th><th>Conv Rate</th><th>Revenue Impact</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td class="name-cell">Lapse Prevention</td><td>412</td><td>38</td><td>32</td><td>12</td><td style="font-weight:700;color:var(--pos)">37.5%</td><td style="font-weight:700">$1.8M retained</td><td style="color:var(--pos)">&#9650; +8%</td></tr>
+        <tr><td class="name-cell">RMD Compliance</td><td>1,840</td><td>29</td><td>26</td><td>24</td><td style="font-weight:700;color:var(--pos)">92.3%</td><td style="font-weight:700">Compliance</td><td style="color:var(--pos)">&#9650; +3%</td></tr>
+        <tr><td class="name-cell">Term Conversion</td><td>680</td><td>24</td><td>18</td><td>6</td><td style="font-weight:700;color:var(--cau)">33.3%</td><td style="font-weight:700">$420K pipeline</td><td style="color:var(--cau)">&#9644; flat</td></tr>
+        <tr><td class="name-cell">Beneficiary Review</td><td>3,210</td><td>18</td><td>14</td><td>11</td><td style="font-weight:700;color:var(--pos)">78.6%</td><td style="font-weight:700">Compliance</td><td style="color:var(--pos)">&#9650; +12%</td></tr>
+        <tr><td class="name-cell">Annuity Maturity</td><td>290</td><td>14</td><td>10</td><td>7</td><td style="font-weight:700;color:var(--pos)">70.0%</td><td style="font-weight:700">$340K retained</td><td style="color:var(--pos)">&#9650; +5%</td></tr>
+        <tr><td class="name-cell">Cash Value Milestone</td><td>520</td><td>17</td><td>12</td><td>4</td><td style="font-weight:700;color:var(--cau)">33.3%</td><td style="font-weight:700">$180K pipeline</td><td style="color:var(--neg)">&#9660; -4%</td></tr>
+        <tr><td class="name-cell">Surrender Charge Expiry</td><td>185</td><td>14</td><td>8</td><td>3</td><td style="font-weight:700;color:var(--cau)">37.5%</td><td style="font-weight:700">$260K retained</td><td style="color:var(--pos)">&#9650; +15%</td></tr>
+        <tr><td class="name-cell">Spousal Coverage Gap</td><td>1,420</td><td>9</td><td>6</td><td>2</td><td style="font-weight:700;color:var(--cau)">33.3%</td><td style="font-weight:700">$80K new</td><td style="color:var(--t2)">Paused</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MONTHLY TREND -->
+  <div class="card an d6">
+    <div class="card-t"><span class="ic">&#128200;</span> Monthly Trend (6 months)</div>
+    <table class="tbl" style="text-align:center">
+      <thead><tr><th>Metric</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Jan</th><th>Feb (MTD)</th></tr></thead>
+      <tbody>
+        <tr><td class="name-cell" style="text-align:left">Cases Created</td><td>98</td><td>112</td><td>128</td><td>140</td><td>155</td><td style="font-weight:700;color:var(--acc)">165</td></tr>
+        <tr><td class="name-cell" style="text-align:left">Auto-Actions</td><td>72</td><td>85</td><td>96</td><td>110</td><td>128</td><td style="font-weight:700;color:var(--acc)">142</td></tr>
+        <tr><td class="name-cell" style="text-align:left">Conversions</td><td>28</td><td>34</td><td>38</td><td>42</td><td>48</td><td style="font-weight:700;color:var(--pos)">54</td></tr>
+        <tr><td class="name-cell" style="text-align:left">Premium Retained</td><td>$1.2M</td><td>$1.5M</td><td>$1.7M</td><td>$1.9M</td><td>$2.1M</td><td style="font-weight:700;color:var(--pos)">$2.4M</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- ═══════════ OVERLAY: CAMPAIGN DETAIL ════════ -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="overlay" id="campOverlay" onclick="if(event.target===this)closeCamp()">
+  <div class="modal">
+    <div class="modal-hdr"><h3 id="campModalTitle">Campaign Detail</h3><button class="modal-close" onclick="closeCamp()">&times;</button></div>
+    <div class="modal-body" id="campModalBody"></div>
+  </div>
+</div>
+
+<!-- ═══ CASE DETAIL OVERLAY ═══ -->
+<div class="overlay" id="caseOverlay" onclick="if(event.target===this)closeCase()">
+  <div class="modal">
+    <div class="modal-hdr"><h3 id="caseModalTitle">Case Detail</h3><button class="modal-close" onclick="closeCase()">&times;</button></div>
+    <div class="modal-body" id="caseModalBody"></div>
+  </div>
+</div>
+
+<div class="ftr">&copy; 2026 Bloom Insurance &middot; Lifecycle Outreach Manager Smart App &middot; Prototype</div>
+
+<script>
+/* ═══ NAV ═══ */
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.page.on .an').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});
+}
+
+/* ═══ CAMPAIGN FILTER ═══ */
+function filterCamp(btn,type){
+  btn.closest('.fbar').querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('#campTbl tbody tr').forEach(r=>{r.style.display=(type==='all'||r.dataset.type===type)?'':'none'});
+}
+
+/* ═══ CASE FILTER ═══ */
+function filterCases(btn,pri){
+  btn.closest('.fbar').querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('#casesTbl tbody tr').forEach(r=>{r.style.display=(pri==='all'||r.dataset.pri===pri)?'':'none'});
+}
+
+/* ═══ CAMPAIGN DATA ═══ */
+var camps=[
+  {name:'Lapse Prevention',icon:'&#128680;',type:'Retention',tag:'tag-re',status:'Active',
+   desc:'Identifies life and annuity policies in grace period with no auto-pay, and initiates automated SMS outreach followed by case creation for processor follow-up.',
+   rules:['Premium 30+ days past due','No automatic payment method (EFT/ACH) on file','Policy currently in grace period (not yet lapsed)'],
+   action:'<strong>Auto-Action:</strong> Send SMS reminder with payment link on day 31. If no payment by day 38, create urgent case for outbound call.',
+   matched:412,cases:38,converted:12,
+   sample:[{name:'Karen Williams',pol:'WL-2016-78320',product:'Whole Life',days:'35 days past due',score:82},{name:'Thomas Reed',pol:'TL-2015-91002',product:'Term Life',days:'40 days past due',score:91},{name:'Rachel Stone',pol:'TL-2018-90120',product:'Term Life',days:'32 days past due',score:67}]},
+  {name:'RMD Compliance Outreach',icon:'&#128220;',type:'Compliance',tag:'tag-co',status:'Active',
+   desc:'Monitors IRA and qualified annuity policyholders approaching Required Minimum Distribution deadlines and sends proactive communications to avoid IRS penalties.',
+   rules:['IRA or Qualified Annuity product','Owner age ≥ 72 (or 73 per SECURE 2.0)','No systematic RMD distribution on file'],
+   action:'<strong>Auto-Action:</strong> Send personalized email with RMD calculation 90 days before deadline. Create case if no response in 14 days.',
+   matched:1840,cases:29,converted:24,
+   sample:[{name:'James Nguyen',pol:'IA-2020-33847',product:'IRA Annuity',days:'RMD due Apr 1',score:45},{name:'Linda Pham',pol:'IA-2018-63100',product:'IRA Annuity',days:'RMD due Apr 1',score:72},{name:'George Kimura',pol:'IA-2019-71200',product:'IRA Annuity',days:'RMD due Apr 1',score:38}]},
+  {name:'Term Conversion Window',icon:'&#128680;',type:'Retention',tag:'tag-re',status:'Active',
+   desc:'Identifies term life policyholders whose conversion privilege is expiring within 90 days, creating outreach opportunities before the window closes permanently.',
+   rules:['Term Life product','Conversion window closing within 90 days','No conversion inquiry or application on file'],
+   action:'<strong>Manual Case:</strong> Create case for outreach call. Agent presents conversion options (Whole Life, Universal Life) with no-exam guarantee.',
+   matched:680,cases:24,converted:6,
+   sample:[{name:'David Park',pol:'TL-2016-55190',product:'Term Life 20-Yr',days:'Converts exp. May 15',score:55},{name:'Frank Morrison',pol:'TL-2014-38900',product:'Term Life 15-Yr',days:'Converts exp. Apr 2',score:48},{name:'Harold Jensen',pol:'TL-2017-62340',product:'Term Life 20-Yr',days:'Converts exp. Jun 10',score:32}]},
+  {name:'Beneficiary Review',icon:'&#128220;',type:'Compliance',tag:'tag-co',status:'Active',
+   desc:'Surfaces policies with outdated beneficiary designations, especially when life events (marriage, divorce, birth) have been detected since last bene update.',
+   rules:['No beneficiary update in 3+ years','Life event signal detected (marriage, divorce, new dependent, address change)'],
+   action:'<strong>Manual Case:</strong> Create case with prefilled beneficiary change form. Agent contacts policyholder to review and update.',
+   matched:3210,cases:18,converted:11,
+   sample:[{name:'Maria Santos',pol:'WL-2019-45600',product:'Whole Life',days:'Last bene update: 2020',score:42},{name:'Nancy Liu',pol:'UL-2020-56410',product:'Universal Life',days:'Marriage detected Nov 2025',score:38},{name:'Steven Cho',pol:'UL-2019-42800',product:'Universal Life',days:'New dependent detected',score:35}]},
+  {name:'Annuity Maturity Approaching',icon:'&#127793;',type:'Life Event',tag:'tag-le',status:'Active',
+   desc:'Monitors fixed annuities approaching maturity date and proactively presents renewal, rollover, and annuitization options before the contract auto-renews or lapses.',
+   rules:['Fixed Annuity product','Maturity date within 60 days','No renewal or rollover election on file'],
+   action:'<strong>Auto-Action:</strong> Send maturity options email 60 days out. Create case at 30 days if no election received.',
+   matched:290,cases:14,converted:7,
+   sample:[{name:'William Tate',pol:'FA-2018-91240',product:'Fixed Annuity 7-Yr',days:'Matures Mar 15',score:52},{name:'Diane Foster',pol:'FA-2020-55890',product:'Fixed Annuity 5-Yr',days:'Matures Mar 20',score:35},{name:'Michael Dunn',pol:'FA-2021-82310',product:'Fixed Annuity 5-Yr',days:'Matures Apr 1',score:44}]},
+  {name:'Cash Value Milestone',icon:'&#128200;',type:'Growth',tag:'tag-gr',status:'Active',
+   desc:'Detects permanent life policies crossing key cash value thresholds ($50K, $100K, $150K), creating cross-sell and financial planning opportunities.',
+   rules:['Universal Life or Whole Life product','Cash value crossed $100K threshold','Owner age 50+, no prior policy loan'],
+   action:'<strong>Manual Case:</strong> Create growth opportunity case. Agent presents policy loan options, paid-up additions, or financial planning review.',
+   matched:520,cases:17,converted:4,
+   sample:[{name:'Robert Chen',pol:'440387261UL',product:'Universal Life',days:'CV crossed $175K',score:22},{name:'Cheryl Banks',pol:'UL-2017-22980',product:'Universal Life',days:'CV crossed $100K',score:28},{name:'Angela Cruz',pol:'WL-2021-34560',product:'Whole Life',days:'CV crossed $50K',score:18}]},
+  {name:'Surrender Charge Expiry',icon:'&#128680;',type:'Retention',tag:'tag-re',status:'Active',
+   desc:'Identifies annuity contracts where the surrender charge period is ending within 30 days and churn risk is elevated, enabling proactive retention outreach.',
+   rules:['Annuity product (Fixed, Variable, or Indexed)','Surrender charge period ending within 30 days','Churn score > 60'],
+   action:'<strong>Manual Case:</strong> Create urgent retention case. Agent presents renewal incentives, rate guarantees, or partial 1035 exchange options.',
+   matched:185,cases:14,converted:3,
+   sample:[{name:'Helen Garcia',pol:'FA-2019-44210',product:'Fixed Annuity 7-Yr',days:'SC expires Feb 28',score:78},{name:'Sandra Olsen',pol:'FA-2020-88710',product:'Fixed Annuity 5-Yr',days:'SC expires Mar 5',score:65},{name:'Raymond Watts',pol:'VA-2019-77340',product:'Variable Annuity',days:'SC expires Mar 12',score:72}]},
+  {name:'Spousal Coverage Gap',icon:'&#128200;',type:'Growth',tag:'tag-gr',status:'Paused',
+   desc:'Identifies married policyholders where the spouse has no coverage on file, presenting cross-sell opportunities for term or whole life products.',
+   rules:['Married policyholder (spouse on record)','No spouse coverage on file with Bloom','Household income > $100K (where available)'],
+   action:'<strong>Manual Case:</strong> Create cross-sell opportunity. Agent presents spousal term life options with household discount.',
+   matched:1420,cases:9,converted:2,
+   sample:[{name:'Patricia Nguyen',pol:'—',product:'No coverage',days:'Spouse of James Nguyen',score:15},{name:'Betty Owens',pol:'—',product:'No coverage',days:'Spouse of Carl Owens',score:12},{name:'Marie Tate',pol:'—',product:'No coverage',days:'Spouse of William Tate',score:18}]}
+];
+
+function openCampDetail(idx){
+  var c=camps[idx];
+  var h='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="tag '+c.tag+'" style="font-size:13px;padding:5px 12px">'+c.type+'</span><span class="pill '+(c.status==='Active'?'pill-g':'pill-y')+'">'+c.status+'</span></div>';
+  h+='<p style="font-size:13px;line-height:1.6;margin-bottom:16px;color:var(--t2)">'+c.desc+'</p>';
+  h+='<div class="card"><div class="card-t">&#9881; Criteria Rules</div>';
+  c.rules.forEach(function(r,i){h+='<div style="display:flex;gap:8px;padding:6px 0;font-size:13px;border-bottom:1px solid var(--canvas)"><span style="background:var(--infbg);color:var(--inf);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">'+(i+1)+'</span><span>'+r+'</span></div>'});
+  h+='</div>';
+  h+='<div class="card"><div class="card-t">&#9889; Action Configuration</div><div style="font-size:13px;line-height:1.6;padding:10px;background:var(--caubg);border-radius:6px;border-left:3px solid #fcd34d">'+c.action+'</div></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px"><div class="stat"><div class="n" style="color:var(--inf)">'+c.matched.toLocaleString()+'</div><div class="l">Matched</div></div><div class="stat"><div class="n" style="color:var(--cau)">'+c.cases+'</div><div class="l">Cases (30d)</div></div><div class="stat"><div class="n" style="color:var(--pos)">'+c.converted+'</div><div class="l">Converted</div></div></div>';
+  h+='<div class="card"><div class="card-t">&#128100; Sample Matched Policies</div><table class="tbl"><thead><tr><th>Customer</th><th>Policy</th><th>Product</th><th>Detail</th><th>Churn Score</th></tr></thead><tbody>';
+  c.sample.forEach(function(s){
+    var sc=s.score>70?'var(--neg)':s.score>50?'var(--cau)':s.score>30?'var(--orange)':'var(--pos)';
+    h+='<tr><td class="name-cell">'+s.name+'</td><td>'+s.pol+'</td><td>'+s.product+'</td><td style="font-size:11px">'+s.days+'</td><td style="font-weight:700;color:'+sc+'">'+s.score+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  document.getElementById('campModalTitle').innerHTML=c.icon+' '+c.name;
+  document.getElementById('campModalBody').innerHTML=h;
+  document.getElementById('campOverlay').classList.add('on');
+}
+function closeCamp(){document.getElementById('campOverlay').classList.remove('on')}
+
+/* ═══ CASE DETAIL ═══ */
+var casesData=[
+  {id:'CS-4401',name:'Helen Garcia',pol:'FA-2019-44210',product:'Fixed Annuity 7-Yr',campaign:'Surrender Charge Expiry',pri:'Urgent',
+   health:22,churn:78,
+   context:'Helen\'s 7-year surrender charge period expires Feb 28. Churn score 78 — she has been browsing competitor annuity rates on the portal. Last contact was a neutral billing inquiry 45 days ago. No recent positive engagement.',
+   rec:'Call within 24 hours. Present new 5-year guarantee rate (4.10%) and loyalty bonus (0.25% rate bump). Emphasize no-penalty renewal. If she\'s considering a 1035 exchange, offer partial transfer option to retain relationship.',
+   channel:'Phone — high-value retention requires personal touch',
+   draft:'Hi Helen, this is [Agent] from Bloom Insurance. I\'m reaching out because your Fixed Annuity is approaching a milestone — your surrender charge period ends this month, which means you now have full flexibility with your funds. I wanted to personally share some competitive renewal options we\'ve prepared for you, including a preferred rate that\'s only available to existing clients. Do you have a few minutes to discuss?'},
+  {id:'CS-4398',name:'Karen Williams',pol:'WL-2016-78320',product:'Whole Life',campaign:'Lapse Prevention',pri:'Urgent',
+   health:18,churn:82,
+   context:'Karen\'s Whole Life premium is 35 days past due. No auto-pay on file. Auto-SMS sent day 31 — no response. Grace period ends in 10 days. She also holds an IRA Annuity (IA-2020-71034). Total household premium at risk: $6,840/yr.',
+   rec:'Immediate outbound call. Acknowledge the past-due notice. Offer to set up EFT on the call. If financial hardship, present premium reduction options (reduce face amount, switch to paid-up, or use dividends to cover premium). Emphasize cash value preservation.',
+   channel:'Phone — urgent, time-sensitive. Follow up with email confirmation.',
+   draft:'Hi Karen, this is [Agent] from Bloom Insurance. I\'m calling about your Whole Life policy — I want to make sure we keep your coverage in force. I know life gets busy, and I can help get this resolved quickly right now. We have a few flexible options I\'d love to walk through with you.'},
+  {id:'CS-4395',name:'Thomas Reed',pol:'TL-2015-91002',product:'Term Life 20-Yr',campaign:'Lapse Prevention',pri:'Urgent',
+   health:15,churn:91,
+   context:'Thomas\'s Term Life is 40 days past due. No auto-pay. Two SMS reminders sent — no response. Grace period ends in 5 days. No other policies on file. Single policy relationship at risk.',
+   rec:'Urgent outbound call + voicemail. Follow with email. If unreachable, send physical letter via priority mail. Consider policy may have been intentionally abandoned — verify intent before final lapse.',
+   channel:'Phone (attempt 1), Email + Letter (backup)',
+   draft:'Thomas, this is [Agent] from Bloom Insurance calling about your Term Life coverage. Your policy is approaching the end of the grace period and I want to make sure your coverage stays protected. Please call us back at your earliest convenience — I have some quick options to get this resolved.'},
+  {id:'CS-4390',name:'David Park',pol:'TL-2016-55190',product:'Term Life 20-Yr',campaign:'Term Conversion',pri:'High',
+   health:55,churn:42,
+   context:'David\'s 20-year Term Life policy has a conversion privilege expiring May 15, 2026. No conversion inquiry on file. Age 48 — converting now locks in current health class without medical exam. Face amount: $500K. Estimated WL premium: $680/mo.',
+   rec:'Proactive outreach call. Position as a "time-sensitive opportunity" — conversion privilege is a valuable benefit that expires. Present Whole Life and Universal Life options with guaranteed insurability. Offer to send comparison illustration.',
+   channel:'Phone — consultative conversation needed. Follow up with illustration via email.',
+   draft:'Hi David, this is [Agent] from Bloom Insurance. I\'m reaching out about a valuable benefit on your Term Life policy that I want to make sure you know about. You have the option to convert your $500K term coverage to permanent life insurance — with no medical exam required — but this window closes on May 15th. I\'d love to walk you through what that would look like. Do you have about 10 minutes?'}
+];
+
+function openCaseDetail(idx){
+  var c=casesData[idx];if(!c)return;
+  var hc=c.health>60?'var(--pos)':c.health>40?'var(--orange)':c.health>20?'var(--cau)':'var(--neg)';
+  var cc=c.churn>70?'var(--neg)':c.churn>50?'var(--cau)':c.churn>30?'var(--orange)':'var(--pos)';
+  var h='<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">';
+  h+='<div class="stat" style="flex:1;min-width:120px;border-left:3px solid var(--inf)"><div class="n" style="color:var(--inf)">'+c.id+'</div><div class="l">Case ID</div></div>';
+  h+='<div class="stat" style="flex:1;min-width:120px;border-left:3px solid '+hc+'"><div class="n" style="color:'+hc+'">'+c.health+'</div><div class="l">Health Score</div></div>';
+  h+='<div class="stat" style="flex:1;min-width:120px;border-left:3px solid '+cc+'"><div class="n" style="color:'+cc+'">'+c.churn+'</div><div class="l">Churn Score</div></div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-t">&#128100; Customer Snapshot</div>';
+  h+='<div class="row"><span class="lb">Customer</span><span class="vl">'+c.name+'</span></div>';
+  h+='<div class="row"><span class="lb">Policy</span><span class="vl">'+c.pol+'</span></div>';
+  h+='<div class="row"><span class="lb">Product</span><span class="vl">'+c.product+'</span></div>';
+  h+='<div class="row"><span class="lb">Campaign</span><span class="vl">'+c.campaign+'</span></div>';
+  h+='<div class="row"><span class="lb">Priority</span><span class="vl"><span class="pill pill-r">'+c.pri+'</span></span></div></div>';
+  h+='<div class="card"><div class="card-t">&#129504; AI Context &amp; Analysis</div><div style="font-size:13px;line-height:1.6;color:var(--t2)">'+c.context+'</div></div>';
+  h+='<div class="card" style="background:linear-gradient(135deg,#fefce8,#fefdf5);border-color:#fcd34d"><div class="card-t" style="color:var(--cau)">&#127919; Recommended Action</div><div style="font-size:13px;line-height:1.6">'+c.rec+'</div><div style="margin-top:8px;font-size:12px;padding:8px;background:var(--infbg);border-radius:6px"><strong>Channel:</strong> '+c.channel+'</div></div>';
+  h+='<div class="card"><div class="card-t">&#128172; Draft Communication</div><div style="font-size:12px;line-height:1.6;padding:12px;background:var(--canvas);border-radius:6px;border-left:3px solid var(--acc);font-style:italic">'+c.draft+'</div></div>';
+  h+='<div style="display:flex;gap:8px;margin-top:4px"><button class="btn btn-p" onclick="closeCase()">&#128222; Schedule Call</button><button class="btn btn-o" onclick="closeCase()">&#128231; Send Email</button><button class="btn btn-s" onclick="closeCase()">&#128203; Add Note</button><button class="btn btn-g" onclick="closeCase()">&#10003; Close Case</button></div>';
+  document.getElementById('caseModalTitle').innerHTML='&#128236; '+c.id+' — '+c.name;
+  document.getElementById('caseModalBody').innerHTML=h;
+  document.getElementById('caseOverlay').classList.add('on');
+}
+function closeCase(){document.getElementById('caseOverlay').classList.remove('on')}
+</script>
+</body>
+</html>
