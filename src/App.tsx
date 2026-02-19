@@ -3,8 +3,7 @@ import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material';
 import { theme } from './theme';
 import { BLOOM } from './theme';
 import Header from './components/Header';
-import EngagementPanel from './components/EngagementPanel';
-import CSRWorkspace from './components/CSRWorkspace';
+import EngagementWorkspace from './components/EngagementWorkspace';
 import AgentDesktop from './pages/AgentDesktop/AgentDesktop';
 import LifecycleOutreach from './pages/LifecycleOutreach/LifecycleOutreach';
 import BloomLogo from './components/BloomLogo';
@@ -125,7 +124,6 @@ function AgentDesktopHeader({ onSwitch }: { onSwitch: () => void }) {
 export default function App() {
   const [view, setView] = useState<AppView>('engagement');
   const [activeScenario, setActiveScenario] = useState<ScenarioId>('friction');
-  const [panelOpen, setPanelOpen] = useState(true);
   const [seconds, setSeconds] = useState(194);
 
   useEffect(() => {
@@ -146,13 +144,8 @@ export default function App() {
               onSwitchToAgentDesktop={() => setView('agent-desktop')}
               onSwitchToLifecycle={() => setView('lifecycle')}
             />
-            <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
-              <EngagementPanel
-                activeScenario={activeScenario}
-                open={panelOpen}
-                onToggle={() => setPanelOpen((o) => !o)}
-              />
-              <CSRWorkspace activeScenario={activeScenario} callTime={formatTime(seconds)} />
+            <Box sx={{ flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
+              <EngagementWorkspace activeScenario={activeScenario} callTime={formatTime(seconds)} />
             </Box>
           </>
         )}
