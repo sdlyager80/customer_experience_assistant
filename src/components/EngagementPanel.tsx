@@ -596,13 +596,18 @@ export default function EngagementPanel({ activeScenario, open, onToggle }: Enga
       </Box>
 
       {/* Panel header */}
-      <Box sx={{ px: 3, pt: 2, pb: 0, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 1.25, mb: 1.25 }}>
-        <Typography sx={{ fontSize: '1rem', fontWeight: 700 }}>Engagement Intelligence</Typography>
-        <Box sx={{
-          fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
-          background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
-          color: '#fff', px: 1, py: 0.375, borderRadius: '4px',
-        }}>AI</Box>
+      <Box sx={{ px: 3, pt: 2, pb: 0, flexShrink: 0, mb: 1.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 0.375 }}>
+          <Typography sx={{ fontSize: '1rem', fontWeight: 700 }}>Engagement Analyzer</Typography>
+          <Box sx={{
+            fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
+            background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
+            color: '#fff', px: 0.875, py: 0.25, borderRadius: '4px',
+          }}>Smart App</Box>
+        </Box>
+        <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', lineHeight: 1.3 }}>
+          Powered by <strong style={{ color: '#475569' }}>Assure Orchestration</strong>
+        </Typography>
       </Box>
 
       {/* Scenario content */}
