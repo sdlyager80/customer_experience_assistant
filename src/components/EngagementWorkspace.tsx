@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Paper, Button, Chip } from '@mui/material';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
@@ -303,6 +303,79 @@ const MODAL_DATA: Record<ScenarioId, ModalScenarioData> = {
     noteDraft: "Outbound call — Patricia Martinez. 20-yr term matures in 90 days. Presented annuity conversion (87% match score) and permanent coverage alternatives. Customer receptive, requested illustrations. Scheduled annuity specialist follow-up. 20-year loyal customer — high retention priority.",
     callbackReason: 'Annuity illustration review — policy maturity',
   },
+};
+
+// ─── Live transcript data per scenario ────────────────────────────────────────
+interface TranscriptLine {
+  ts:        string;
+  speaker:   'agent' | 'customer';
+  text:      string;
+  sentiment: 'pos' | 'neu' | 'neg';
+}
+
+const TRANSCRIPT_DATA: Record<ScenarioId, TranscriptLine[]> = {
+  friction: [
+    { ts: '10:22:04', speaker: 'customer', text: "I've been calling about this claim for three weeks and nobody is helping me.",                                  sentiment: 'neg' },
+    { ts: '10:22:19', speaker: 'agent',    text: "Margaret, I sincerely apologize. Let me pull up your claim right now — you have my full attention.",            sentiment: 'neu' },
+    { ts: '10:22:33', speaker: 'customer', text: "The adjuster hasn't returned a single call. This is completely unacceptable.",                                  sentiment: 'neg' },
+    { ts: '10:22:48', speaker: 'agent',    text: "You're right. CLM-2026-4491 has been pending 18 days — that's beyond our SLA and I'm escalating this immediately.", sentiment: 'neu' },
+    { ts: '10:23:05', speaker: 'customer', text: "I just need my car fixed. That's all I've been asking since February 1st.",                                     sentiment: 'neg' },
+    { ts: '10:23:21', speaker: 'agent',    text: "I understand completely. I'm contacting the claims manager now and committing to a status update within 24 hours.", sentiment: 'pos' },
+    { ts: '10:23:38', speaker: 'customer', text: "Alright. That's what I needed to hear.",                                                                        sentiment: 'neu' },
+    { ts: '10:23:51', speaker: 'agent',    text: "You have my word, Margaret. I'll personally follow this through to resolution.",                                 sentiment: 'pos' },
+  ],
+  adaptive: [
+    { ts: '09:15:02', speaker: 'agent',    text: "Good morning, is this David Park? This is Sarah from Bloom Insurance.",                                          sentiment: 'pos' },
+    { ts: '09:15:11', speaker: 'customer', text: "Yes, hi Sarah.",                                                                                                sentiment: 'neu' },
+    { ts: '09:15:19', speaker: 'agent',    text: "Congratulations on the new baby, David! I saw the update on your account — that's wonderful news.",              sentiment: 'pos' },
+    { ts: '09:15:30', speaker: 'customer', text: "Thank you! Yes, that's actually why I'm calling. I need to update my policy for our new daughter.",              sentiment: 'pos' },
+    { ts: '09:15:44', speaker: 'agent',    text: "Absolutely. First thing — your new daughter isn't yet listed as a beneficiary. We should get that updated today.", sentiment: 'neu' },
+    { ts: '09:15:58', speaker: 'customer', text: "Oh, I didn't realize that. Yes, definitely needs to be updated.",                                                sentiment: 'neu' },
+    { ts: '09:16:12', speaker: 'agent',    text: "I'll start that form now. I'd also recommend a quick coverage review — a new dependent often changes your needs.", sentiment: 'pos' },
+    { ts: '09:16:26', speaker: 'customer', text: "That makes sense. I was actually wondering if my current coverage is still enough.",                             sentiment: 'neu' },
+  ],
+  omni: [
+    { ts: '11:04:15', speaker: 'customer', text: "Hi, I was just on the chatbot and it couldn't answer my billing question.",                                      sentiment: 'neu' },
+    { ts: '11:04:25', speaker: 'agent',    text: "Hi Sarah, I have your full chatbot and portal session here — no need to repeat anything.",                       sentiment: 'pos' },
+    { ts: '11:04:35', speaker: 'customer', text: "Oh good. My premium changed and I don't understand why.",                                                        sentiment: 'neu' },
+    { ts: '11:04:49', speaker: 'agent',    text: "I see exactly what happened — your annual review applied in January. Your deductible stayed the same.",          sentiment: 'neu' },
+    { ts: '11:05:03', speaker: 'customer', text: "OK, but why is the number different from what I see on the portal?",                                             sentiment: 'neu' },
+    { ts: '11:05:17', speaker: 'agent',    text: "The portal shows the pre-adjustment rate until the next billing cycle — I'll send you a clear breakdown by email.", sentiment: 'pos' },
+    { ts: '11:05:31', speaker: 'customer', text: "That would be really helpful, thank you.",                                                                       sentiment: 'pos' },
+    { ts: '11:05:42', speaker: 'agent',    text: "Sent. Is there anything else from your session today I can help you with?",                                      sentiment: 'pos' },
+  ],
+  callback: [
+    { ts: '14:32:07', speaker: 'agent',    text: "James, I am so sorry you waited 47 minutes. That is completely unacceptable and I take full responsibility.",    sentiment: 'neu' },
+    { ts: '14:32:21', speaker: 'customer', text: "47 minutes. I almost just cancelled my policy.",                                                                 sentiment: 'neg' },
+    { ts: '14:32:31', speaker: 'agent',    text: "You have every right to feel that way. I'm going to make this right for you right now — what can I help you with?", sentiment: 'pos' },
+    { ts: '14:32:46', speaker: 'customer', text: "There's a charge on my bill I don't recognize. A $127 fee from last month.",                                     sentiment: 'neg' },
+    { ts: '14:32:59', speaker: 'agent',    text: "I see it — that was a paper billing fee that shouldn't have applied to your account. I'm reversing it right now.", sentiment: 'pos' },
+    { ts: '14:33:14', speaker: 'customer', text: "OK. That's literally all I needed.",                                                                             sentiment: 'neu' },
+    { ts: '14:33:24', speaker: 'agent',    text: "Done — reversed. I've also applied a $25 courtesy credit for your wait time. I hope we've earned your trust back.", sentiment: 'pos' },
+    { ts: '14:33:40', speaker: 'customer', text: "Alright. Thank you for actually fixing it.",                                                                     sentiment: 'neu' },
+  ],
+  workforce: [
+    { ts: '10:02:14', speaker: 'customer', text: "Hi, I'm calling about taking out a loan against my life insurance policy.",                                      sentiment: 'neu' },
+    { ts: '10:02:25', speaker: 'agent',    text: "Good morning Robert! I'd be happy to help you with a policy loan today.",                                        sentiment: 'pos' },
+    { ts: '10:02:36', speaker: 'customer', text: "I've already been on the portal doing research. I'm looking at around $75,000.",                                 sentiment: 'neu' },
+    { ts: '10:02:50', speaker: 'agent',    text: "I can see your research — great preparation. Your maximum loanable is $168,678, so $75K is well within range.",  sentiment: 'pos' },
+    { ts: '10:03:04', speaker: 'customer', text: "I was comparing the fixed versus variable rate. Can you walk me through the difference?",                         sentiment: 'neu' },
+    { ts: '10:03:19', speaker: 'agent',    text: "Fixed is 5.25% — $3,937 annually, predictable. Variable is 4.75% now but can move with the market.",             sentiment: 'neu' },
+    { ts: '10:03:34', speaker: 'customer', text: "What happens to my death benefit and cash value if I take the full $75K?",                                        sentiment: 'neu' },
+    { ts: '10:03:49', speaker: 'agent',    text: "Net cash value $112,420, net death benefit $425K. And Assure just confirmed you're approved — we can proceed.",   sentiment: 'pos' },
+    { ts: '10:04:03', speaker: 'customer', text: "Perfect. Let's go with the fixed rate.",                                                                         sentiment: 'pos' },
+  ],
+  lifeevent: [
+    { ts: '09:45:11', speaker: 'agent',    text: "Good morning Patricia, this is Sarah from Bloom. I'm calling because your policy matures in 90 days.",           sentiment: 'pos' },
+    { ts: '09:45:24', speaker: 'customer', text: "Oh yes, I've been meaning to look into what my options are.",                                                    sentiment: 'neu' },
+    { ts: '09:45:36', speaker: 'agent',    text: "As a 20-year customer you have some excellent options. Can I walk you through them?",                             sentiment: 'pos' },
+    { ts: '09:45:47', speaker: 'customer', text: "Please. I'm not sure if I still need the same level of coverage.",                                               sentiment: 'neu' },
+    { ts: '09:46:02', speaker: 'agent',    text: "Based on your profile, an annuity conversion is a strong fit — your policy value becomes guaranteed income for life.", sentiment: 'pos' },
+    { ts: '09:46:17', speaker: 'customer', text: "I've heard of annuities but never really understood them. Can you explain a bit more?",                          sentiment: 'neu' },
+    { ts: '09:46:32', speaker: 'agent',    text: "Instead of your coverage simply expiring, your accumulated value becomes a steady monthly payment — for as long as you live.", sentiment: 'pos' },
+    { ts: '09:46:47', speaker: 'customer', text: "That actually sounds interesting. I'm retiring next year, so the timing could work perfectly.",                  sentiment: 'pos' },
+    { ts: '09:47:02', speaker: 'agent',    text: "Perfect timing. I'll have a specialist prepare illustrations — no obligation, just options for you to review.",   sentiment: 'pos' },
+  ],
 };
 
 const CALLBACK_SLOTS = [
@@ -895,84 +968,199 @@ function CenterPanel({ scenario, callTime, onEndCall }: { scenario: ScenarioId; 
   );
 }
 
-// ─── Right Panel — Live Analysis ──────────────────────────────────────────────
+// ─── Right Panel — Live Analysis + Transcript ─────────────────────────────────
+const SENT_DOT: Record<string, string> = { pos: BLOOM.green, neu: BLOOM.textTertiary, neg: BLOOM.red };
+
 function RightPanel({ scenario }: { scenario: ScenarioId }) {
-  const { signals } = SCENARIO_AI[scenario];
-  const sentimentColor = signals.sentiment.pct > 65 ? BLOOM.green : signals.sentiment.pct > 40 ? BLOOM.amber : BLOOM.red;
-  const stressColor    = signals.stress.pct    > 60 ? BLOOM.red   : signals.stress.pct    > 35 ? BLOOM.amber : BLOOM.green;
+  const [activeTab, setActiveTab] = useState<'analysis' | 'transcript'>('analysis');
+  const [visibleCount, setVisibleCount] = useState(2);
+  const transcriptEndRef = useRef<HTMLDivElement>(null);
+
+  const { signals }      = SCENARIO_AI[scenario];
+  const transcriptLines  = TRANSCRIPT_DATA[scenario];
+  const sentimentColor   = signals.sentiment.pct > 65 ? BLOOM.green : signals.sentiment.pct > 40 ? BLOOM.amber : BLOOM.red;
+  const stressColor      = signals.stress.pct    > 60 ? BLOOM.red   : signals.stress.pct    > 35 ? BLOOM.amber : BLOOM.green;
+  const isComplete       = visibleCount >= transcriptLines.length;
+
+  // Reset when scenario changes
+  useEffect(() => { setVisibleCount(2); }, [scenario]);
+
+  // Progressive line reveal — one line every ~4 seconds while transcript tab is open
+  useEffect(() => {
+    if (isComplete) return;
+    const t = setTimeout(() => setVisibleCount(v => v + 1), 4000);
+    return () => clearTimeout(t);
+  }, [visibleCount, isComplete]);
+
+  // Auto-scroll to latest line
+  useEffect(() => {
+    if (activeTab === 'transcript') {
+      transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [visibleCount, activeTab]);
+
+  const visibleLines = transcriptLines.slice(0, visibleCount);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      {/* Header */}
-      <Box sx={{ px: 2.5, py: 1.75, borderBottom: `1px solid ${BLOOM.border}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography sx={{ fontSize: '0.875rem', fontWeight: 700 }}>Live Analysis</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.625 }}>
-          <Box sx={{
-            width: 6, height: 6, borderRadius: '50%', bgcolor: BLOOM.red,
-            '@keyframes blink': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.2 } },
-            animation: 'blink 1.2s ease infinite',
-          }} />
-          <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, color: BLOOM.red, textTransform: 'uppercase', letterSpacing: '1px' }}>Live</Typography>
+      {/* Header with tab switcher */}
+      <Box sx={{ px: 2, py: 1.25, borderBottom: `1px solid ${BLOOM.border}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 0.25, bgcolor: BLOOM.canvas, borderRadius: '6px', p: '2px' }}>
+          {(['analysis', 'transcript'] as const).map(tab => (
+            <Box
+              key={tab}
+              component="button"
+              onClick={() => setActiveTab(tab)}
+              sx={{
+                px: 1.25, py: 0.5, borderRadius: '4px', fontSize: '0.625rem', fontWeight: 600,
+                border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', transition: 'all 0.15s',
+                bgcolor: activeTab === tab ? 'background.paper' : 'transparent',
+                color: activeTab === tab ? 'text.primary' : 'text.secondary',
+                boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+              }}
+            >
+              {tab === 'analysis' ? '📊 Analysis' : '🎙 Transcript'}
+            </Box>
+          ))}
         </Box>
-      </Box>
-
-      {/* Content */}
-      <Box sx={{ flex: 1, overflowY: 'auto', px: 2.5, py: 2 }}>
-        {/* Signal bars */}
-        <PanelSection title="Interaction Signals">
-          <SignalBar label="Sentiment"  pct={signals.sentiment.pct} color={sentimentColor} valueLabel={signals.sentiment.label} />
-          <SignalBar label="Stress"     pct={signals.stress.pct}    color={stressColor}    valueLabel={signals.stress.label} />
-          <SignalBar label="Engagement" pct={84}                    color={BLOOM.blue}     valueLabel="Active" />
-        </PanelSection>
-
-        {/* Intent */}
-        <PanelSection title="Intent Detected">
-          <Box sx={{ p: 1.25, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid ${BLOOM.blue}` }}>
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, lineHeight: 1.4 }}>{signals.intent}</Typography>
-          </Box>
-        </PanelSection>
-
-        {/* Channel journey */}
-        <PanelSection title="Channel Journey">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
-            {signals.journey.split(' → ').map((step, i, arr) => (
-              <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <Box sx={{ fontSize: '0.6875rem', fontWeight: 600, px: 0.875, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.canvas, color: 'text.primary' }}>
-                  {step}
-                </Box>
-                {i < arr.length - 1 && (
-                  <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>→</Typography>
-                )}
-              </Box>
-            ))}
-          </Box>
-        </PanelSection>
-
-        {/* Key topics */}
-        <PanelSection title="Key Topics">
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.625 }}>
-            {signals.topics.map(t => {
-              const style = TOPIC_STYLES[t.type];
-              return (
-                <Box key={t.label} sx={{ fontSize: '0.5625rem', fontWeight: 600, px: 0.875, py: 0.375, borderRadius: '4px', bgcolor: style.bg, color: style.color }}>
-                  {t.label}
-                </Box>
-              );
-            })}
-          </Box>
-        </PanelSection>
-
-        {/* Assure status */}
-        <Box sx={{ p: 1.25, borderRadius: '6px', border: `1px solid ${BLOOM.border}`, borderLeft: `3px solid #c4b5fd` }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
-            <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.green }} />
-            <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Assure Orchestration</Typography>
-          </Box>
-          <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', lineHeight: 1.4 }}>
-            NLP pipeline active · Context assembled · Recommendations synced
+        {/* Live indicator */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Box sx={{
+            width: 6, height: 6, borderRadius: '50%',
+            bgcolor: activeTab === 'transcript' && isComplete ? BLOOM.textTertiary : BLOOM.red,
+            '@keyframes blink': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.2 } },
+            animation: isComplete ? 'none' : 'blink 1.2s ease infinite',
+          }} />
+          <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, color: activeTab === 'transcript' && isComplete ? BLOOM.textTertiary : BLOOM.red, textTransform: 'uppercase', letterSpacing: '1px' }}>
+            {activeTab === 'transcript' && isComplete ? 'Paused' : 'Live'}
           </Typography>
         </Box>
       </Box>
+
+      {/* ── Analysis tab ── */}
+      {activeTab === 'analysis' && (
+        <Box sx={{ flex: 1, overflowY: 'auto', px: 2.5, py: 2 }}>
+          <PanelSection title="Interaction Signals">
+            <SignalBar label="Sentiment"  pct={signals.sentiment.pct} color={sentimentColor} valueLabel={signals.sentiment.label} />
+            <SignalBar label="Stress"     pct={signals.stress.pct}    color={stressColor}    valueLabel={signals.stress.label} />
+            <SignalBar label="Engagement" pct={84}                    color={BLOOM.blue}     valueLabel="Active" />
+          </PanelSection>
+
+          <PanelSection title="Intent Detected">
+            <Box sx={{ p: 1.25, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid ${BLOOM.blue}` }}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, lineHeight: 1.4 }}>{signals.intent}</Typography>
+            </Box>
+          </PanelSection>
+
+          <PanelSection title="Channel Journey">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexWrap: 'wrap' }}>
+              {signals.journey.split(' → ').map((step, i, arr) => (
+                <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Box sx={{ fontSize: '0.6875rem', fontWeight: 600, px: 0.875, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.canvas, color: 'text.primary' }}>
+                    {step}
+                  </Box>
+                  {i < arr.length - 1 && <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>→</Typography>}
+                </Box>
+              ))}
+            </Box>
+          </PanelSection>
+
+          <PanelSection title="Key Topics">
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.625 }}>
+              {signals.topics.map(t => {
+                const style = TOPIC_STYLES[t.type];
+                return (
+                  <Box key={t.label} sx={{ fontSize: '0.5625rem', fontWeight: 600, px: 0.875, py: 0.375, borderRadius: '4px', bgcolor: style.bg, color: style.color }}>
+                    {t.label}
+                  </Box>
+                );
+              })}
+            </Box>
+          </PanelSection>
+
+          <Box sx={{ p: 1.25, borderRadius: '6px', border: `1px solid ${BLOOM.border}`, borderLeft: `3px solid #c4b5fd` }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+              <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.green }} />
+              <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, color: '#6d28d9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Assure Orchestration</Typography>
+            </Box>
+            <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', lineHeight: 1.4 }}>
+              NLP pipeline active · Context assembled · Recommendations synced
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
+      {/* ── Transcript tab ── */}
+      {activeTab === 'transcript' && (
+        <Box sx={{ flex: 1, overflowY: 'auto', px: 2, py: 1.5 }}>
+          {visibleLines.map((line, i) => {
+            const isAgent    = line.speaker === 'agent';
+            const isLatest   = i === visibleLines.length - 1 && !isComplete;
+            const sentColor  = SENT_DOT[line.sentiment];
+            return (
+              <Box
+                key={i}
+                sx={{
+                  py: 1, px: isLatest ? 1 : 0,
+                  borderBottom: i < visibleLines.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none',
+                  borderLeft: isLatest ? `3px solid ${BLOOM.blue}` : '3px solid transparent',
+                  borderRadius: isLatest ? '0 4px 4px 0' : 0,
+                  bgcolor: isLatest ? '#f8faff' : 'transparent',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {/* Meta row */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+                  <Box sx={{
+                    fontSize: '0.4375rem', fontWeight: 800, px: 0.75, py: 0.25, borderRadius: '3px',
+                    textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0,
+                    bgcolor: isAgent ? BLOOM.bluePale   : '#fff7ed',
+                    color:   isAgent ? BLOOM.blue        : '#c2410c',
+                  }}>
+                    {isAgent ? 'Agent' : 'Customer'}
+                  </Box>
+                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textTertiary, fontVariantNumeric: 'tabular-nums' }}>
+                    {line.ts}
+                  </Typography>
+                  <Box sx={{ ml: 'auto', width: 6, height: 6, borderRadius: '50%', bgcolor: sentColor, flexShrink: 0 }} />
+                </Box>
+                {/* Text */}
+                <Typography sx={{ fontSize: '0.75rem', lineHeight: 1.55, color: 'text.primary' }}>
+                  {line.text}
+                </Typography>
+              </Box>
+            );
+          })}
+
+          {/* Typing indicator — shown while more lines are pending */}
+          {!isComplete && (
+            <Box sx={{ display: 'flex', gap: 0.5, py: 1.25, px: 0.5, alignItems: 'center' }}>
+              {[0, 0.2, 0.4].map((delay, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.textTertiary,
+                    '@keyframes typing': {
+                      '0%,60%,100%': { transform: 'translateY(0)',    opacity: 0.35 },
+                      '30%':         { transform: 'translateY(-4px)', opacity: 1    },
+                    },
+                    animation: `typing 1.2s ease ${delay}s infinite`,
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+
+          {/* End-of-transcript marker */}
+          {isComplete && (
+            <Box sx={{ mt: 1, py: 0.75, textAlign: 'center', fontSize: '0.5625rem', color: BLOOM.textTertiary }}>
+              — Call in progress —
+            </Box>
+          )}
+
+          <div ref={transcriptEndRef} />
+        </Box>
+      )}
     </Box>
   );
 }
