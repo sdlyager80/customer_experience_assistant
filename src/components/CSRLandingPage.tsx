@@ -61,6 +61,12 @@ const QUEUE: QueueItem[] = [
     detail: '20-yr term · 90 days remaining · Annuity candidate', channel: 'phone',
     priority: 'low', wait: '—',
   },
+  {
+    id: 'lifepolicy', customer: 'Catherine Brooks', initials: 'CB',
+    policy: 'WL-2018-44219', issue: 'Whole Life Review — Dividend Election',
+    detail: 'Paid-up additions inquiry · Cash value optimization', channel: 'phone',
+    priority: 'medium', wait: '1:45',
+  },
 ];
 
 const RECENT = [

@@ -187,6 +187,33 @@ const SCENARIO_AI: Record<ScenarioId, ScenarioAI> = {
       ],
     },
   },
+
+  lifepolicy: {
+    alert: { level: 'green', title: 'Dividend Optimization Opportunity',
+      body: 'Catherine has $12,840 in accumulated dividends. Switching to paid-up additions adds ~$18,200 in coverage at zero additional premium.' },
+    nba: [
+      { label: 'Present PUA election',  reason: 'Accumulated dividends at 7-year high — optimal reallocation moment', btn: 'Illustrate' },
+      { label: 'Explain all 4 options', reason: 'Customer researched dividend calculator on portal — ready to decide', btn: 'Script'     },
+      { label: 'Confirm beneficiary',   reason: 'No update on file since 2018 — flag for review',                      btn: 'Review'     },
+    ],
+    points: [
+      'She already ran the calculator on the portal — skip the basics and go straight to her numbers.',
+      'PUA is the strongest option: $12,840 in dividends → ~$18,200 in permanent coverage, no extra cost.',
+      'Her policy is 8 years in with a clean payment streak — acknowledge the discipline.',
+    ],
+    signals: {
+      sentiment: { pct: 88, label: 'Positive' },
+      stress:    { pct: 10, label: 'Very Low' },
+      intent:    'Dividend election change',
+      journey:   'Portal → Phone',
+      topics: [
+        { label: 'Dividend review',   type: 'ok'   },
+        { label: 'PUA interest',      type: 'ok'   },
+        { label: 'Bene out of date',  type: 'warn' },
+        { label: 'High retention',    type: 'ok'   },
+      ],
+    },
+  },
 };
 
 // ─── Styling maps ─────────────────────────────────────────────────────────────
@@ -303,6 +330,22 @@ const MODAL_DATA: Record<ScenarioId, ModalScenarioData> = {
     noteDraft: "Outbound call — Patricia Martinez. 20-yr term matures in 90 days. Presented annuity conversion (87% match score) and permanent coverage alternatives. Customer receptive, requested illustrations. Scheduled annuity specialist follow-up. 20-year loyal customer — high retention priority.",
     callbackReason: 'Annuity illustration review — policy maturity',
   },
+  lifepolicy: {
+    updateSubject: 'Your Dividend Election Change — Confirmation',
+    updateDraft: "Dear Catherine,\n\nThank you for speaking with me today. Your dividend election has been updated from Accumulate to Paid-Up Additions, effective your next dividend date.\n\nThis change will add approximately $18,200 in permanent additional coverage to your policy at no extra cost.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Medium',
+    escalationTo: 'Whole Life Specialist',
+    escalationReason: 'Complex dividend reallocation — PUA + partial cash option requested. Illustration team review needed.',
+    noteDraft: "Catherine Brooks — WL-2018-44219. Called to review dividend election. Currently Accumulate ($12,840 balance). Explained all 4 options. Customer elected Paid-Up Additions — adds ~$18,200 coverage at no extra cost. Confirmed beneficiary (Marcus Brooks, unchanged since 2018). Sent confirmation email. 7-year payment streak intact. Highly engaged, positive sentiment.",
+    callbackReason: 'Dividend election confirmation + PUA illustration follow-up',
+    claimTimeline: [
+      { date: 'Mar 2018', event: 'Policy issued — Whole Life 20-Pay, face $250,000',       done: true  },
+      { date: 'Annual',   event: 'Dividend credited — Accumulate election in effect',       done: true  },
+      { date: 'Jan 2026', event: 'Annual statement issued — $12,840 accumulated dividends', done: true  },
+      { date: 'Today',    event: 'Election change: Accumulate → Paid-Up Additions',         done: true  },
+      { date: 'Apr 2026', event: 'PUA effective — ~$18,200 in additional coverage added',  done: false },
+    ],
+  },
 };
 
 // ─── Live transcript data per scenario ────────────────────────────────────────
@@ -375,6 +418,17 @@ const TRANSCRIPT_DATA: Record<ScenarioId, TranscriptLine[]> = {
     { ts: '09:46:32', speaker: 'agent',    text: "Instead of your coverage simply expiring, your accumulated value becomes a steady monthly payment — for as long as you live.", sentiment: 'pos' },
     { ts: '09:46:47', speaker: 'customer', text: "That actually sounds interesting. I'm retiring next year, so the timing could work perfectly.",                  sentiment: 'pos' },
     { ts: '09:47:02', speaker: 'agent',    text: "Perfect timing. I'll have a specialist prepare illustrations — no obligation, just options for you to review.",   sentiment: 'pos' },
+  ],
+  lifepolicy: [
+    { ts: '13:15:04', speaker: 'agent',    text: "Good afternoon, thank you for calling Bloom. This is Sarah — I can see you were just on our dividend calculator.",  sentiment: 'pos' },
+    { ts: '13:15:16', speaker: 'customer', text: "Yes, I've had my whole life policy for eight years and I want to rethink how my dividends are being used.",        sentiment: 'pos' },
+    { ts: '13:15:30', speaker: 'agent',    text: "Absolutely. You're currently set to Accumulate — you have $12,840 built up. What option caught your eye?",         sentiment: 'neu' },
+    { ts: '13:15:44', speaker: 'customer', text: "Paid-up additions. The calculator showed something like eighteen thousand dollars in extra coverage?",              sentiment: 'pos' },
+    { ts: '13:15:58', speaker: 'agent',    text: "Exactly right — $18,200 in permanent additional coverage, no extra premium, starting at your next dividend date.", sentiment: 'pos' },
+    { ts: '13:16:13', speaker: 'customer', text: "That sounds much better than just letting it accumulate. Can I also confirm — is my beneficiary still Marcus?",    sentiment: 'pos' },
+    { ts: '13:16:27', speaker: 'agent',    text: "Marcus Brooks is on file from 2018. We should confirm that's still correct — want to update anything there?",      sentiment: 'neu' },
+    { ts: '13:16:41', speaker: 'customer', text: "He's still correct. OK, let's go ahead and switch to paid-up additions.",                                          sentiment: 'pos' },
+    { ts: '13:16:55', speaker: 'agent',    text: "Done — election updated. I'll send a confirmation with your new projected death benefit. Congratulations, Catherine!", sentiment: 'pos' },
   ],
 };
 

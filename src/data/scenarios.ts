@@ -1,4 +1,4 @@
-export type ScenarioId = 'friction' | 'adaptive' | 'omni' | 'callback' | 'workforce' | 'lifeevent';
+export type ScenarioId = 'friction' | 'adaptive' | 'omni' | 'callback' | 'workforce' | 'lifeevent' | 'lifepolicy';
 
 export interface BannerField {
   label: string;
@@ -83,6 +83,7 @@ export const SCENARIO_LIST: ScenarioMeta[] = [
   { id: 'callback',   label: 'Callback & Recovery',     icon: '📲', description: 'Sentiment drop, supervisor alerts' },
   { id: 'workforce',  label: 'Workforce Optimization',  icon: '👥', description: 'Skill matching, coaching' },
   { id: 'lifeevent',  label: 'Life-Event Detection',    icon: '📋', description: 'Marriage, retirement triggers' },
+  { id: 'lifepolicy', label: 'Whole Life Review',       icon: '🌿', description: 'Dividend election, cash value optimization' },
 ];
 
 export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
@@ -253,6 +254,37 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
       { icon: '🏡', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Homeowners Inquiry — Portal', timestamp: 'Feb 3, 2026', badge: 'Signal', badgeColor: 'info' },
       { icon: '💍', iconColor: '#7c5500', iconBg: '#fef3d6', title: 'Name Change Detected', timestamp: 'Jan 28, 2026 · Williams → Nguyen', badge: 'Event', badgeColor: 'cautionary' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Beneficiary Updated', timestamp: 'Jan 28, 2026 · Patricia Nguyen added', badge: 'Updated', badgeColor: 'info' },
+    ],
+  },
+  lifepolicy: {
+    banner: {
+      fields: [
+        { label: 'Policy', value: 'WL-2018-44219' },
+        { label: 'Owner', value: 'Catherine Brooks' },
+        { label: 'Product', value: 'Whole Life 20-Pay' },
+        { label: 'Dividend', value: 'Accumulate (current)' },
+      ],
+      authBadge: 'Authenticated',
+      channelBadge: 'Portal → Phone',
+    },
+    policy: { policyNumber: 'WL-2018-44219', product: 'Whole Life 20-Pay', status: 'Active', issueDate: '03/15/2018', state: 'GA' },
+    billing: { paidTo: '03/15/2026', method: 'EFT', frequency: 'Monthly', premium: '$287.00' },
+    contact: { contacts30d: 1, lastContact: 'Today, 1:15 PM', channel: 'Phone', sentiment: 'Positive', sentimentColor: 'positive' },
+    coverages: [
+      { label: 'Face Amount', value: '$250,000' },
+      { label: 'Death Benefit', value: '$268,420' },
+      { label: 'Cash Value', value: '$48,320' },
+      { label: 'Dividend (Accum.)', value: '$12,840' },
+      { label: 'Loan Balance', value: '$0' },
+      { label: 'Premium', value: '$287/mo' },
+      { label: 'Primary Bene', value: 'Marcus Brooks' },
+    ],
+    coverageNote: 'Dividend election: Accumulate. $12,840 accumulated — PUA election could add ~$18,200 in coverage at no additional cost.',
+    activity: [
+      { icon: '📞', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Inbound Call — Dividend Review', timestamp: 'Today, 1:15 PM · Active', badge: 'Active', badgeColor: 'positive' },
+      { icon: '🌐', iconColor: '#808285', iconBg: '#F2F7F6', title: 'Portal — Dividend Calculator', timestamp: 'Today, 1:08 PM · Research session', badge: 'Research', badgeColor: 'neutral' },
+      { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Annual Statement Issued', timestamp: 'Jan 15, 2026 · Dividend: $1,820', badge: 'Issued', badgeColor: 'info' },
+      { icon: '✅', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Premium Payment — On-Time Streak', timestamp: 'Mar 15, 2025 · 7-year streak intact', badge: 'On Time', badgeColor: 'positive' },
     ],
   },
 };

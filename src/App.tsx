@@ -35,7 +35,7 @@ function LifecycleHeader({ onSwitch }: { onSwitch: () => void }) {
           <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#333', letterSpacing: '-0.3px' }}>Bloom</Typography>
           <Typography sx={{ fontSize: 19, fontWeight: 400, color: '#555', letterSpacing: '-0.3px' }}>Insurance</Typography>
         </Box>
-        <Box sx={{ width: 1, height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
+        <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
           <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Lifecycle Outreach Manager</Typography>
           <Box sx={{
@@ -86,7 +86,7 @@ function AgentDesktopHeader({ onSwitch }: { onSwitch: () => void }) {
           <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#333', letterSpacing: '-0.3px' }}>Bloom</Typography>
           <Typography sx={{ fontSize: 19, fontWeight: 400, color: '#555', letterSpacing: '-0.3px' }}>Insurance</Typography>
         </Box>
-        <Box sx={{ width: 1, height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
+        <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
           <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Agent Desktop</Typography>
           <Box sx={{
