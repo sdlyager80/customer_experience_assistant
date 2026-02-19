@@ -15,6 +15,7 @@ interface QueueItem {
   channel:   'phone' | 'chat';
   priority:  Priority;
   wait:      string;
+  action?:   string;
 }
 
 const PRIORITY_CFG: Record<Priority, { color: string; bg: string; label: string }> = {
@@ -66,6 +67,18 @@ const QUEUE: QueueItem[] = [
     policy: 'WL-2018-44219', issue: 'Whole Life Review — Dividend Election',
     detail: 'Paid-up additions inquiry · Cash value optimization', channel: 'phone',
     priority: 'medium', wait: '1:45',
+  },
+  {
+    id: 'ivrstp', customer: 'Linda Reyes', initials: 'LR',
+    policy: 'TX-AU-2024-8832', issue: 'Address Update — IVR STP Active',
+    detail: '⚡ Assure Auto-Processing · No CSR Action Required', channel: 'phone',
+    priority: 'low', wait: '0:34', action: 'Monitor',
+  },
+  {
+    id: 'escalation', customer: 'Frank Harrison', initials: 'FH',
+    policy: 'TX-HO-2023-65219', issue: 'Claim Denial — Escalation Required',
+    detail: '$31K claim denied · Cancel threat · 3 policies at risk', channel: 'phone',
+    priority: 'urgent', wait: '0:18',
   },
 ];
 
@@ -194,9 +207,14 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
                     size="small"
                     disableElevation
                     onClick={() => onAccept(item.id)}
-                    sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 2.25, flexShrink: 0 }}
+                    sx={{
+                      fontSize: '0.6875rem', fontWeight: 700, px: 2.25, flexShrink: 0,
+                      ...(item.action === 'Monitor' && {
+                        bgcolor: '#6d28d9', '&:hover': { bgcolor: '#5b21b6' },
+                      }),
+                    }}
                   >
-                    Accept
+                    {item.action ?? 'Accept'}
                   </Button>
                 </Box>
               );

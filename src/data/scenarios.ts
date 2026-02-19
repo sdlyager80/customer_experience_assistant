@@ -1,4 +1,4 @@
-export type ScenarioId = 'friction' | 'adaptive' | 'omni' | 'callback' | 'workforce' | 'lifeevent' | 'lifepolicy';
+export type ScenarioId = 'friction' | 'adaptive' | 'omni' | 'callback' | 'workforce' | 'lifeevent' | 'lifepolicy' | 'ivrstp' | 'escalation';
 
 export interface BannerField {
   label: string;
@@ -84,6 +84,8 @@ export const SCENARIO_LIST: ScenarioMeta[] = [
   { id: 'workforce',  label: 'Workforce Optimization',  icon: '👥', description: 'Skill matching, coaching' },
   { id: 'lifeevent',  label: 'Life-Event Detection',    icon: '📋', description: 'Marriage, retirement triggers' },
   { id: 'lifepolicy', label: 'Whole Life Review',       icon: '🌿', description: 'Dividend election, cash value optimization' },
+  { id: 'ivrstp',     label: 'IVR STP — Monitoring',   icon: '⚡', description: 'Assure auto-handling, CSR on standby' },
+  { id: 'escalation', label: 'Claim Denial Escalation', icon: '🔴', description: 'Denial dispute, cancellation threat' },
 ];
 
 export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
@@ -285,6 +287,65 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
       { icon: '🌐', iconColor: '#808285', iconBg: '#F2F7F6', title: 'Portal — Dividend Calculator', timestamp: 'Today, 1:08 PM · Research session', badge: 'Research', badgeColor: 'neutral' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Annual Statement Issued', timestamp: 'Jan 15, 2026 · Dividend: $1,820', badge: 'Issued', badgeColor: 'info' },
       { icon: '✅', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Premium Payment — On-Time Streak', timestamp: 'Mar 15, 2025 · 7-year streak intact', badge: 'On Time', badgeColor: 'positive' },
+    ],
+  },
+  ivrstp: {
+    banner: {
+      fields: [
+        { label: 'Policy', value: 'TX-AU-2024-8832' },
+        { label: 'Owner', value: 'Linda Reyes' },
+        { label: 'Product', value: 'Auto Insurance' },
+        { label: 'Request', value: 'Address Update' },
+      ],
+      authBadge: 'IVR Auth',
+      channelBadge: 'IVR → STP Active',
+    },
+    policy: { policyNumber: 'TX-AU-2024-8832', product: 'Auto Insurance', status: 'Active', issueDate: '07/22/2024', state: 'TX' },
+    billing: { paidTo: '07/22/2026', method: 'Auto-Pay', frequency: 'Monthly', premium: '$148.00' },
+    contact: { contacts30d: 0, lastContact: 'Today, 1:42 PM', channel: 'IVR (STP)', sentiment: 'Positive', sentimentColor: 'positive' },
+    coverages: [
+      { label: 'Bodily Injury', value: '$50K/100K' },
+      { label: 'Property Damage', value: '$50,000' },
+      { label: 'Collision', value: '$1,000 deductible' },
+      { label: 'Comprehensive', value: '$500 deductible' },
+      { label: 'Uninsured Motorist', value: '$50K/100K' },
+    ],
+    activity: [
+      { icon: '⚡', iconColor: '#6d28d9', iconBg: '#ede9fe', title: 'IVR STP — Address Update In Progress', timestamp: 'Today, 1:42 PM · Assure Processing', badge: 'STP Active', badgeColor: 'info' },
+      { icon: '✅', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Premium Payment — Auto-Pay', timestamp: 'Feb 1, 2026 · $148.00 on time', badge: 'Paid', badgeColor: 'positive' },
+      { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Policy Issued', timestamp: 'Jul 22, 2024', badge: 'Issued', badgeColor: 'info' },
+    ],
+  },
+  escalation: {
+    banner: {
+      fields: [
+        { label: 'Policy', value: 'TX-HO-2023-65219' },
+        { label: 'Owner', value: 'Frank Harrison' },
+        { label: 'Product', value: 'Homeowners' },
+        { label: 'Claim', value: 'CLM-2026-8812 — DENIED' },
+      ],
+      authBadge: 'Authenticated',
+      channelBadge: 'Inbound — Direct',
+    },
+    policy: { policyNumber: 'TX-HO-2023-65219', product: 'Homeowners', status: 'Active', issueDate: '04/12/2023', state: 'TX' },
+    billing: { paidTo: '04/12/2026', method: 'Direct Bill', frequency: 'Annual', premium: '$2,440.00' },
+    claim: { reference: 'CLM-2026-8812', type: 'Water / Flood Damage', filed: '02/10/2026', status: 'DENIED', statusColor: 'negative' },
+    contact: { contacts30d: 2, lastContact: 'Today, 10:18 AM', channel: 'Phone', sentiment: 'Angry', sentimentColor: 'negative' },
+    coverages: [
+      { label: 'Dwelling (A)', value: '$380,000' },
+      { label: 'Other Structures (B)', value: '$38,000' },
+      { label: 'Personal Property (C)', value: '$190,000' },
+      { label: 'Loss of Use (D)', value: '$76,000' },
+      { label: 'Personal Liability (E)', value: '$300,000' },
+      { label: 'Flood Coverage', value: 'EXCLUDED' },
+      { label: 'Deductible', value: '$2,500' },
+    ],
+    coverageNote: 'CLM-2026-8812 denied 02/17 under flood exclusion. Sudden water intrusion component under secondary review. 3 active policies ($5,200/yr). Cancellation threat logged.',
+    activity: [
+      { icon: '🚨', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Inbound — Claim Denial Dispute', timestamp: 'Today, 10:18 AM · Cancellation threat', badge: 'Critical', badgeColor: 'negative' },
+      { icon: '📬', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Denial Letter Sent', timestamp: 'Today, 9:00 AM · CLM-2026-8812', badge: 'Denied', badgeColor: 'negative' },
+      { icon: '🔍', iconColor: '#946b0e', iconBg: '#fef9c3', title: 'Adjuster Inspection', timestamp: 'Feb 14, 2026 · Flood/water damage confirmed', badge: 'Complete', badgeColor: 'cautionary' },
+      { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Claim Filed — Water/Flood Damage', timestamp: 'Feb 10, 2026 · Est. $31,000', badge: 'Filed', badgeColor: 'info' },
     ],
   },
 };

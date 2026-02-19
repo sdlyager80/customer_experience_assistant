@@ -188,6 +188,60 @@ const SCENARIO_AI: Record<ScenarioId, ScenarioAI> = {
     },
   },
 
+  ivrstp: {
+    alert: { level: 'green', title: 'Assure STP Active — Monitoring Only',
+      body: 'Linda Reyes is completing an address update via IVR. Assure is processing automatically. No CSR action required unless an exception is flagged.' },
+    nba: [
+      { label: 'Monitor for exception',  reason: 'Auto-escalation triggers if IVR confidence drops below 80%',    btn: 'Alert'    },
+      { label: 'Ready to intervene',     reason: 'Click Join Call to enter the interaction at any point',          btn: 'Join Call' },
+      { label: 'Send confirmation SMS',  reason: 'Optional — confirm new address to customer after STP completes', btn: 'Send SMS'  },
+    ],
+    points: [
+      'This interaction is fully automated — Assure STP is handling it end-to-end.',
+      'If the customer says "agent" or "representative" you will be auto-connected within 5 seconds.',
+      'Confirmation email and policy document update will trigger automatically on completion.',
+    ],
+    signals: {
+      sentiment: { pct: 80, label: 'Positive' },
+      stress:    { pct: 8,  label: 'Very Low'  },
+      intent:    'Address update — IVR STP',
+      journey:   'IVR → Assure STP',
+      topics: [
+        { label: 'Auto-Processing', type: 'ok'      },
+        { label: 'Address Change',  type: 'neutral' },
+        { label: 'No Exception',    type: 'ok'      },
+        { label: 'STP Active',      type: 'ok'      },
+      ],
+    },
+  },
+
+  escalation: {
+    alert: { level: 'red', title: 'Escalation — Claim Denial + Cancel Threat',
+      body: "Frank Harrison's $31,000 water damage claim was denied under flood exclusion. He has 3 policies ($5,200/yr) and is threatening to cancel all. Do NOT put on hold." },
+    nba: [
+      { label: 'Lead with genuine empathy',      reason: 'Scripted empathy will make him angrier — use your own words',          btn: 'Script'   },
+      { label: 'Review for partial coverage',    reason: 'Adjuster notes show sudden water intrusion — may qualify separately',   btn: 'Review'   },
+      { label: 'Escalate to Claims Supervisor',  reason: '$31K denial dispute requires supervisor authority for secondary review', btn: 'Escalate' },
+    ],
+    points: [
+      'Never argue the flood exclusion — acknowledge it, then pivot to "what we can do."',
+      'He has 3 policies worth $5,200/yr — flag the retention team if the call deteriorates.',
+      'Key wedge: sudden water intrusion vs. gradual flooding may split the claim in his favor.',
+    ],
+    signals: {
+      sentiment: { pct: 8,  label: 'Critical' },
+      stress:    { pct: 95, label: 'Critical'  },
+      intent:    'Claim denial dispute + cancellation',
+      journey:   'Phone (inbound — direct)',
+      topics: [
+        { label: 'Claim denied',       type: 'alert' },
+        { label: 'Cancel threat',      type: 'alert' },
+        { label: '$31K exposure',      type: 'warn'  },
+        { label: '3 policies at risk', type: 'warn'  },
+      ],
+    },
+  },
+
   lifepolicy: {
     alert: { level: 'green', title: 'Dividend Optimization Opportunity',
       body: 'Catherine has $12,840 in accumulated dividends. Switching to paid-up additions adds ~$18,200 in coverage at zero additional premium.' },
@@ -330,6 +384,46 @@ const MODAL_DATA: Record<ScenarioId, ModalScenarioData> = {
     noteDraft: "Outbound call — Patricia Martinez. 20-yr term matures in 90 days. Presented annuity conversion (87% match score) and permanent coverage alternatives. Customer receptive, requested illustrations. Scheduled annuity specialist follow-up. 20-year loyal customer — high retention priority.",
     callbackReason: 'Annuity illustration review — policy maturity',
   },
+  ivrstp: {
+    updateSubject: 'Your Address Update — Confirmation',
+    updateDraft: "Dear Linda,\n\nThis confirms your address has been updated to 4821 Maple Creek Drive, Austin TX 78701, effective today.\n\nYour policy documents will reflect the new address at next renewal.\n\nWarm regards,\nBloom Insurance · Customer Service",
+    escalationPriority: 'Medium',
+    escalationTo: 'IVR Operations',
+    escalationReason: 'STP exception flagged — IVR confidence below threshold. Manual review of address update required.',
+    noteDraft: "Linda Reyes — TX-AU-2024-8832. Address change completed via Assure IVR STP. New address: 4821 Maple Creek Drive, Austin TX 78701. No CSR intervention required. Confirmation email auto-sent. STP completion time: 1:42 min.",
+    callbackReason: 'STP confirmation — address update follow-up',
+    claimTimeline: [
+      { date: '1:42:01', event: 'IVR session started — authentication confirmed',    done: true  },
+      { date: '1:42:23', event: 'Address change intent detected — NLP confidence 97%', done: true  },
+      { date: '1:43:00', event: 'New address captured: 4821 Maple Creek, Austin TX',  done: true  },
+      { date: '1:43:10', event: 'Customer confirmed — Assure processing update',       done: true  },
+      { date: '1:43:12', event: 'Policy record updated · Confirmation email queued',  done: false },
+    ],
+  },
+  escalation: {
+    updateSubject: 'Regarding Claim #CLM-2026-8812 — Next Steps',
+    updateDraft: "Dear Mr. Harrison,\n\nThank you for speaking with me today. I understand how frustrating this situation is and I want you to know your concern is being taken seriously.\n\nI have escalated CLM-2026-8812 to our Claims Supervisor for a secondary review of the water intrusion component. You will receive a decision within 48 hours.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Critical',
+    escalationTo: 'Claims Supervisor',
+    escalationReason: 'Claim denial dispute — $31,000 water/flood damage. Flood exclusion applied but adjuster notes show sudden intrusion component that may qualify separately. Customer threatening to cancel 3 policies ($5,200/yr). Secondary review required within 48 hours.',
+    noteDraft: "Frank Harrison — TX-HO-2023-65219. Inbound re: denied claim CLM-2026-8812 ($31K water/flood damage). Customer extremely angry, threatened to cancel all 3 policies. Led with empathy, did NOT argue the exclusion. Identified sudden water intrusion component in adjuster notes — may qualify separately. Escalated to Claims Supervisor for secondary review. Customer agreed to 48hr hold before final decision. Cancel request on hold pending review.",
+    callbackReason: 'Claim denial review — 48-hour decision update',
+    claimTimeline: [
+      { date: 'Feb 10', event: 'Claim filed — water/flood damage, est. $31,000',             done: true  },
+      { date: 'Feb 12', event: 'Initial review — flood exclusion flagged',                    done: true  },
+      { date: 'Feb 14', event: 'Adjuster inspection complete',                                done: true  },
+      { date: 'Feb 17', event: 'Claim denied — flood exclusion applied',                      done: true  },
+      { date: 'Feb 19', event: 'Customer dispute filed — sudden intrusion review initiated',  done: true  },
+      { date: 'TBD',    event: 'Secondary review decision — 48hr SLA',                       done: false },
+    ],
+    claimDocs: [
+      { name: 'Adjuster inspection report',  status: 'received' },
+      { name: 'Flood exclusion documentation', status: 'received' },
+      { name: 'Denial letter (sent 02/17)',   status: 'received' },
+      { name: 'Sudden intrusion supplement',  status: 'pending'  },
+    ],
+    adjuster: { name: 'Marcus Webb', email: 'm.webb@bloomins.com', ext: '5214' },
+  },
   lifepolicy: {
     updateSubject: 'Your Dividend Election Change — Confirmation',
     updateDraft: "Dear Catherine,\n\nThank you for speaking with me today. Your dividend election has been updated from Accumulate to Paid-Up Additions, effective your next dividend date.\n\nThis change will add approximately $18,200 in permanent additional coverage to your policy at no extra cost.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
@@ -351,7 +445,7 @@ const MODAL_DATA: Record<ScenarioId, ModalScenarioData> = {
 // ─── Live transcript data per scenario ────────────────────────────────────────
 interface TranscriptLine {
   ts:        string;
-  speaker:   'agent' | 'customer';
+  speaker:   'agent' | 'customer' | 'ivr';
   text:      string;
   sentiment: 'pos' | 'neu' | 'neg';
 }
@@ -418,6 +512,31 @@ const TRANSCRIPT_DATA: Record<ScenarioId, TranscriptLine[]> = {
     { ts: '09:46:32', speaker: 'agent',    text: "Instead of your coverage simply expiring, your accumulated value becomes a steady monthly payment — for as long as you live.", sentiment: 'pos' },
     { ts: '09:46:47', speaker: 'customer', text: "That actually sounds interesting. I'm retiring next year, so the timing could work perfectly.",                  sentiment: 'pos' },
     { ts: '09:47:02', speaker: 'agent',    text: "Perfect timing. I'll have a specialist prepare illustrations — no obligation, just options for you to review.",   sentiment: 'pos' },
+  ],
+  ivrstp: [
+    { ts: '13:42:01', speaker: 'ivr',      text: "Welcome to Bloom Insurance. Please say or enter your policy number.",                                                   sentiment: 'neu' },
+    { ts: '13:42:09', speaker: 'customer', text: "TX-AU-2024-8832.",                                                                                                      sentiment: 'neu' },
+    { ts: '13:42:15', speaker: 'ivr',      text: "Thank you. I found your policy for Linda Reyes. How can I help you today?",                                             sentiment: 'neu' },
+    { ts: '13:42:23', speaker: 'customer', text: "I need to update my mailing address.",                                                                                  sentiment: 'neu' },
+    { ts: '13:42:28', speaker: 'ivr',      text: "I can help with that. Please say your new street address.",                                                             sentiment: 'neu' },
+    { ts: '13:42:36', speaker: 'customer', text: "4821 Maple Creek Drive.",                                                                                               sentiment: 'neu' },
+    { ts: '13:42:43', speaker: 'ivr',      text: "And your city, state, and zip code?",                                                                                   sentiment: 'neu' },
+    { ts: '13:42:50', speaker: 'customer', text: "Austin, Texas. 7-8-7-0-1.",                                                                                            sentiment: 'neu' },
+    { ts: '13:43:01', speaker: 'ivr',      text: "I have 4821 Maple Creek Drive, Austin TX 78701. Is that correct?",                                                     sentiment: 'neu' },
+    { ts: '13:43:07', speaker: 'customer', text: "Yes, that's correct.",                                                                                                  sentiment: 'pos' },
+    { ts: '13:43:12', speaker: 'ivr',      text: "Your address has been updated. A confirmation email will be sent to the address on file. Is there anything else?",      sentiment: 'neu' },
+    { ts: '13:43:19', speaker: 'customer', text: "No, that's all. Thank you.",                                                                                            sentiment: 'pos' },
+  ],
+  escalation: [
+    { ts: '10:18:02', speaker: 'customer', text: "I got a letter saying my claim is DENIED. Over thirty thousand dollars in damage and you people won't pay it?",         sentiment: 'neg' },
+    { ts: '10:18:14', speaker: 'agent',    text: "Mr. Harrison, I hear you — that must be incredibly frustrating. I'm pulling up your file right now.",                   sentiment: 'neu' },
+    { ts: '10:18:24', speaker: 'customer', text: "Eight years I've been paying my premium. Eight years. And the one time I need you, you deny my claim.",                 sentiment: 'neg' },
+    { ts: '10:18:37', speaker: 'agent',    text: "You have every right to be upset. I want to understand exactly what happened and see what options you have.",            sentiment: 'neu' },
+    { ts: '10:18:50', speaker: 'customer', text: "I want to cancel all three of my policies. Right now.",                                                                 sentiment: 'neg' },
+    { ts: '10:19:03', speaker: 'agent',    text: "I can do that if that's what you decide. But I owe it to you to walk through the denial and every option first.",       sentiment: 'pos' },
+    { ts: '10:19:17', speaker: 'customer', text: "Fine. You've got about two minutes.",                                                                                   sentiment: 'neg' },
+    { ts: '10:19:28', speaker: 'agent',    text: "The denial is under the flood exclusion — but I'm seeing adjuster notes showing a sudden water intrusion component that may qualify separately.", sentiment: 'neu' },
+    { ts: '10:19:44', speaker: 'customer', text: "So part of it might actually be covered?",                                                                              sentiment: 'neu' },
   ],
   lifepolicy: [
     { ts: '13:15:04', speaker: 'agent',    text: "Good afternoon, thank you for calling Bloom. This is Sarah — I can see you were just on our dividend calculator.",  sentiment: 'pos' },
@@ -1035,6 +1154,7 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
   const sentimentColor   = signals.sentiment.pct > 65 ? BLOOM.green : signals.sentiment.pct > 40 ? BLOOM.amber : BLOOM.red;
   const stressColor      = signals.stress.pct    > 60 ? BLOOM.red   : signals.stress.pct    > 35 ? BLOOM.amber : BLOOM.green;
   const isComplete       = visibleCount >= transcriptLines.length;
+  const isIVRScenario    = transcriptLines.some(l => l.speaker === 'ivr');
 
   // Reset when scenario changes
   useEffect(() => { setVisibleCount(2); }, [scenario]);
@@ -1149,17 +1269,22 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
         <Box sx={{ flex: 1, overflowY: 'auto', px: 2, py: 1.5 }}>
           {visibleLines.map((line, i) => {
             const isAgent    = line.speaker === 'agent';
+            const isIVR      = line.speaker === 'ivr';
             const isLatest   = i === visibleLines.length - 1 && !isComplete;
             const sentColor  = SENT_DOT[line.sentiment];
+            const tagBg    = isAgent ? BLOOM.bluePale : isIVR ? '#ede9fe' : '#fff7ed';
+            const tagColor = isAgent ? BLOOM.blue     : isIVR ? '#6d28d9' : '#c2410c';
+            const tagLabel = isAgent ? 'Agent'        : isIVR ? 'IVR'     : 'Customer';
+            const activeBorder = isIVR ? '#6d28d9' : BLOOM.blue;
             return (
               <Box
                 key={i}
                 sx={{
                   py: 1, px: isLatest ? 1 : 0,
                   borderBottom: i < visibleLines.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none',
-                  borderLeft: isLatest ? `3px solid ${BLOOM.blue}` : '3px solid transparent',
+                  borderLeft: isLatest ? `3px solid ${activeBorder}` : '3px solid transparent',
                   borderRadius: isLatest ? '0 4px 4px 0' : 0,
-                  bgcolor: isLatest ? '#f8faff' : 'transparent',
+                  bgcolor: isLatest ? (isIVR ? '#faf5ff' : '#f8faff') : 'transparent',
                   transition: 'all 0.3s ease',
                 }}
               >
@@ -1168,10 +1293,9 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
                   <Box sx={{
                     fontSize: '0.4375rem', fontWeight: 800, px: 0.75, py: 0.25, borderRadius: '3px',
                     textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0,
-                    bgcolor: isAgent ? BLOOM.bluePale   : '#fff7ed',
-                    color:   isAgent ? BLOOM.blue        : '#c2410c',
+                    bgcolor: tagBg, color: tagColor,
                   }}>
-                    {isAgent ? 'Agent' : 'Customer'}
+                    {tagLabel}
                   </Box>
                   <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textTertiary, fontVariantNumeric: 'tabular-nums' }}>
                     {line.ts}
@@ -1207,8 +1331,8 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
 
           {/* End-of-transcript marker */}
           {isComplete && (
-            <Box sx={{ mt: 1, py: 0.75, textAlign: 'center', fontSize: '0.5625rem', color: BLOOM.textTertiary }}>
-              — Call in progress —
+            <Box sx={{ mt: 1, py: 0.75, textAlign: 'center', fontSize: '0.5625rem', color: isIVRScenario ? '#6d28d9' : BLOOM.textTertiary }}>
+              {isIVRScenario ? '— STP Complete · No CSR Action Required —' : '— Call in progress —'}
             </Box>
           )}
 
