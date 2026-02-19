@@ -211,6 +211,408 @@ const ALERT_LABEL: Record<AlertLevel, string> = {
   green: '✓ Opportunity',
 };
 
+// ─── Action modal system ──────────────────────────────────────────────────────
+type ModalId = 'claim' | 'update' | 'escalate' | 'note' | 'callback' | null;
+
+interface ModalScenarioData {
+  updateSubject: string;
+  updateDraft:   string;
+  escalationPriority: 'Critical' | 'High' | 'Medium';
+  escalationTo:   string;
+  escalationReason: string;
+  noteDraft: string;
+  callbackReason: string;
+  claimTimeline?: Array<{ date: string; event: string; done: boolean }>;
+  claimDocs?:     Array<{ name: string; status: 'received' | 'pending' }>;
+  adjuster?:      { name: string; email: string; ext: string };
+}
+
+const MODAL_DATA: Record<ScenarioId, ModalScenarioData> = {
+  friction: {
+    updateSubject: 'Update on Claim #CLM-2026-4491',
+    updateDraft: "Dear Margaret,\n\nThank you for your continued patience regarding claim #CLM-2026-4491. I have personally escalated your case and am prioritizing its review.\n\nYou can expect a full status update within 24 hours.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'High',
+    escalationTo: 'Claims Manager',
+    escalationReason: 'Repeat contact — 3 calls in 5 days. SLA breach risk. Customer escalation language detected.',
+    noteDraft: "Customer Margaret Torres — 3rd contact in 5 days re: CLM-2026-4491 (auto collision, pending docs). Sentiment negative, escalation language used. Acknowledged frustration, committed to 24hr resolution. Escalating to Claims Manager. Advised against further hold.",
+    callbackReason: 'Claim status follow-up — CLM-2026-4491',
+    claimTimeline: [
+      { date: 'Feb 1',  event: 'Claim filed — multi-vehicle auto collision',      done: true  },
+      { date: 'Feb 3',  event: 'Initial review complete',                          done: true  },
+      { date: 'Feb 5',  event: 'Adjuster assigned — J. Rodriguez',                done: true  },
+      { date: 'Feb 8',  event: 'Pending documentation — 2 items outstanding',     done: false },
+      { date: 'TBD',    event: 'Final assessment & disbursement',                  done: false },
+    ],
+    claimDocs: [
+      { name: 'Police report',         status: 'received' },
+      { name: 'Damage estimate',       status: 'received' },
+      { name: 'Medical release form',  status: 'pending'  },
+      { name: 'Rental car receipt',    status: 'pending'  },
+    ],
+    adjuster: { name: 'James Rodriguez', email: 'j.rodriguez@bloomins.com', ext: '4821' },
+  },
+  adaptive: {
+    updateSubject: 'Your Beneficiary Update & Coverage Review',
+    updateDraft: "Dear David,\n\nCongratulations on your new arrival! As we discussed, I've initiated a beneficiary update for your policy. A coverage review specialist will be in touch this week.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Medium',
+    escalationTo: 'Life Events Specialist',
+    escalationReason: 'Life event detected — new dependent, beneficiary update initiated. Coverage review recommended.',
+    noteDraft: "Life event call — David Park added dependent (newborn). Initiated beneficiary change form — not yet on record. Strong cross-sell opportunity: coverage gap review queued. High engagement, positive sentiment. Referred to Life Events specialist.",
+    callbackReason: 'Coverage review follow-up — life event',
+  },
+  omni: {
+    updateSubject: 'Your Billing Question — Follow-Up',
+    updateDraft: "Dear Sarah,\n\nThank you for your patience as we resolved the billing question from your earlier session. I've attached the detailed breakdown you requested.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Medium',
+    escalationTo: 'Billing Specialist',
+    escalationReason: 'Billing clarification — chatbot transfer, one open item required specialist review.',
+    noteDraft: "Omnichannel call — Sarah Johnson. Context loaded from portal + chatbot sessions. Resolved the one billing question the bot couldn't answer. Zero information repeated. Sent billing breakdown via email. Positive sentiment, efficient resolution.",
+    callbackReason: 'Billing follow-up confirmation',
+  },
+  callback: {
+    updateSubject: 'Apology & Account Credit — Today\'s Interaction',
+    updateDraft: "Dear James,\n\nI sincerely apologize for the extended wait time today. Your billing inquiry has been fully resolved and a courtesy credit of $42.50 has been applied to your account.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'High',
+    escalationTo: 'Team Lead',
+    escalationReason: '47-minute queue wait — CSAT recovery required. Goodwill credit of $42.50 applied. Needs supervisor acknowledgement.',
+    noteDraft: "Callback recovery — James Williams waited 47 min in queue. Opened with apology. Resolved billing dispute in single contact (FCR). Goodwill credit $42.50 applied per retention policy. Flagged for CSAT recovery survey. Do NOT schedule outbound phone — email only.",
+    callbackReason: 'CSAT recovery follow-up — goodwill confirmation',
+  },
+  workforce: {
+    updateSubject: 'Your Policy Loan — Confirmation',
+    updateDraft: "Dear Robert,\n\nThank you for calling today. Your $75,000 Universal Life policy loan has been approved and disbursement is queued to your EFT account ending ****4821.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Medium',
+    escalationTo: 'UL Product Specialist',
+    escalationReason: 'Complex loan interest calculation — variable rate question requires UL specialist confirmation.',
+    noteDraft: "Robert Chen — UL policy loan inquiry. Provided fixed (5.25%) vs variable (4.75%) rate comparison. $75K approved via Assure STP — EFT queued. Mentioned pending beneficiary form (Emily, minor). Handle time 6:45 — within 8-min target. Strong portal engagement prior.",
+    callbackReason: 'Policy loan disbursement confirmation',
+    claimTimeline: [
+      { date: '10:01', event: 'IVR path: Policy Loans → Agent (skills-routed)',   done: true  },
+      { date: '10:02', event: 'Identity & PIN authenticated',                      done: true  },
+      { date: '10:03', event: 'Loan eligibility confirmed — max $168,678',        done: true  },
+      { date: '10:04', event: '$75K approved — Assure STP auto-processed',        done: true  },
+      { date: '10:05', event: 'EFT disbursement queued — ****4821',               done: false },
+    ],
+  },
+  lifeevent: {
+    updateSubject: 'Your Policy Maturity — Options & Next Steps',
+    updateDraft: "Dear Patricia,\n\nThank you for speaking with me today about your options as your term policy matures. I've queued the annuity illustrations we discussed — a specialist will follow up within 2 business days.\n\nWarm regards,\nSarah Mitchell · CSR II · Bloom Insurance",
+    escalationPriority: 'Medium',
+    escalationTo: 'Annuity Specialist',
+    escalationReason: 'Policy maturity in 90 days — annuity conversion opportunity. Match score 87%. Specialist illustration requested.',
+    noteDraft: "Outbound call — Patricia Martinez. 20-yr term matures in 90 days. Presented annuity conversion (87% match score) and permanent coverage alternatives. Customer receptive, requested illustrations. Scheduled annuity specialist follow-up. 20-year loyal customer — high retention priority.",
+    callbackReason: 'Annuity illustration review — policy maturity',
+  },
+};
+
+const CALLBACK_SLOTS = [
+  { date: 'Thu Feb 20', time: '10:00 AM' },
+  { date: 'Thu Feb 20', time: '2:30 PM'  },
+  { date: 'Fri Feb 21', time: '9:00 AM'  },
+  { date: 'Fri Feb 21', time: '11:30 AM' },
+  { date: 'Mon Feb 24', time: '3:00 PM'  },
+];
+
+// ── Modal shell ───────────────────────────────────────────────────────────────
+function ModalShell({ title, width = 500, children, primaryLabel, onPrimary, onClose, submitted, successMsg }: {
+  title: string; width?: number; children: React.ReactNode;
+  primaryLabel: string; onPrimary: () => void; onClose: () => void;
+  submitted: boolean; successMsg: string;
+}) {
+  return (
+    <Box
+      sx={{ position: 'fixed', inset: 0, bgcolor: 'rgba(15,23,42,0.42)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1300, p: 3 }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <Paper sx={{ width, maxWidth: '100%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', borderRadius: '10px', overflow: 'hidden' }}>
+        {/* Header */}
+        <Box sx={{ px: 2.5, py: 1.75, borderBottom: `1px solid ${BLOOM.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <Typography sx={{ fontSize: '0.9375rem', fontWeight: 700 }}>{title}</Typography>
+          <Box component="button" onClick={onClose} sx={{ width: 26, height: 26, borderRadius: '50%', border: 'none', bgcolor: BLOOM.canvas, cursor: 'pointer', fontSize: '1rem', lineHeight: 1, color: 'text.secondary', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit', transition: 'all 0.12s', '&:hover': { bgcolor: BLOOM.border } }}>
+            ×
+          </Box>
+        </Box>
+
+        {submitted ? (
+          /* Success state */
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 4, gap: 1.5, minHeight: 200 }}>
+            <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: BLOOM.greenPale, border: `2px solid ${BLOOM.greenBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.375rem' }}>✓</Box>
+            <Typography sx={{ fontSize: '0.9375rem', fontWeight: 700, color: BLOOM.green, textAlign: 'center' }}>{successMsg}</Typography>
+            <Button variant="outlined" size="small" onClick={onClose} sx={{ mt: 0.5 }}>Close</Button>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ flex: 1, overflowY: 'auto', p: 2.5 }}>{children}</Box>
+            <Box sx={{ px: 2.5, py: 1.5, borderTop: `1px solid ${BLOOM.border}`, display: 'flex', gap: 1, justifyContent: 'flex-end', flexShrink: 0, bgcolor: BLOOM.canvas }}>
+              <Button variant="text" size="small" onClick={onClose} sx={{ color: 'text.secondary' }}>Cancel</Button>
+              <Button variant="contained" size="small" disableElevation onClick={onPrimary}>{primaryLabel}</Button>
+            </Box>
+          </>
+        )}
+      </Paper>
+    </Box>
+  );
+}
+
+// ── Reusable form primitives ──────────────────────────────────────────────────
+function FormLabel({ children }: { children: React.ReactNode }) {
+  return <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'text.secondary', mb: 0.625 }}>{children}</Typography>;
+}
+function FormGroup({ children, sx = {} }: { children: React.ReactNode; sx?: object }) {
+  return <Box sx={{ mb: 1.75, ...sx }}>{children}</Box>;
+}
+function StaticValue({ value }: { value: string }) {
+  return (
+    <Box sx={{ px: 1.5, py: 0.875, border: `1px solid ${BLOOM.border}`, borderRadius: '6px', bgcolor: BLOOM.canvas, fontSize: '0.8125rem', color: 'text.primary' }}>
+      {value}
+    </Box>
+  );
+}
+function PillSelector({ options, value, onChange }: { options: string[]; value: string; onChange: (v: string) => void }) {
+  return (
+    <Box sx={{ display: 'flex', gap: 0.5 }}>
+      {options.map(o => (
+        <Box
+          key={o} component="button" onClick={() => onChange(o)}
+          sx={{
+            px: 1.5, py: 0.625, borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
+            border: `1px solid ${value === o ? BLOOM.blue : BLOOM.border}`,
+            bgcolor: value === o ? BLOOM.bluePale : 'transparent',
+            color: value === o ? BLOOM.blue : 'text.secondary',
+            cursor: 'pointer', fontFamily: 'Inter, sans-serif', transition: 'all 0.12s',
+          }}
+        >{o}</Box>
+      ))}
+    </Box>
+  );
+}
+
+// ── ActionModal — renders the right modal based on type ───────────────────────
+function ActionModal({ modal, onClose, scenario }: { modal: NonNullable<ModalId>; onClose: () => void; scenario: ScenarioId }) {
+  const [submitted, setSubmitted]   = useState(false);
+  const [cbSlot, setCbSlot]         = useState(0);
+  const [noteType, setNoteType]     = useState('Call Note');
+  const [priority, setPriority]     = useState('');
+  const [channel, setChannel]       = useState('Email');
+
+  const csr = SCENARIO_CSR[scenario];
+  const md  = MODAL_DATA[scenario];
+  const customer = csr.banner.fields[0]?.value ?? 'Customer';
+  const policyNo = csr.policy.policyNumber;
+
+  // Initialise priority from scenario data
+  useState(() => { setPriority(md.escalationPriority); });
+
+  if (modal === 'claim') {
+    const hasClaim = !!csr.claim;
+    const timeline = md.claimTimeline ?? [];
+    return (
+      <ModalShell
+        title={hasClaim ? `Claim — ${csr.claim!.reference}` : 'Policy Activity'}
+        width={520}
+        primaryLabel={hasClaim ? 'Request Expedite' : 'View Full Policy'}
+        onPrimary={() => setSubmitted(true)}
+        onClose={onClose}
+        submitted={submitted}
+        successMsg={hasClaim ? 'Expedite request submitted — SLA override applied' : 'Opening full policy record…'}
+      >
+        {hasClaim && (
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+            <Box sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.redPale, color: BLOOM.red }}>{csr.claim!.type}</Box>
+            <Box sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.yellowPale, color: BLOOM.amber }}>{csr.claim!.status}</Box>
+            <Box sx={{ fontSize: '0.6875rem', color: 'text.secondary', px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.canvas }}>Filed {csr.claim!.filed}</Box>
+          </Box>
+        )}
+
+        {/* Timeline */}
+        {timeline.length > 0 && (
+          <FormGroup>
+            <FormLabel>Timeline</FormLabel>
+            {timeline.map((step, i) => (
+              <Box key={i} sx={{ display: 'flex', gap: 1.25, py: 0.875, borderBottom: i < timeline.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none', alignItems: 'flex-start' }}>
+                <Box sx={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, mt: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5625rem', fontWeight: 700, bgcolor: step.done ? BLOOM.green : BLOOM.canvas, color: step.done ? '#fff' : BLOOM.textTertiary, border: step.done ? 'none' : `2px dashed ${BLOOM.border}` }}>
+                  {step.done ? '✓' : ''}
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontSize: '0.75rem', fontWeight: step.done ? 500 : 600, color: step.done ? 'text.secondary' : 'text.primary', lineHeight: 1.3 }}>{step.event}</Typography>
+                  <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>{step.date}</Typography>
+                </Box>
+              </Box>
+            ))}
+          </FormGroup>
+        )}
+
+        {/* Documents */}
+        {md.claimDocs && (
+          <FormGroup>
+            <FormLabel>Required Documents</FormLabel>
+            {md.claimDocs.map((doc, i) => (
+              <Box key={i} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 0.75, borderBottom: i < md.claimDocs!.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none' }}>
+                <Typography sx={{ fontSize: '0.75rem' }}>{doc.name}</Typography>
+                <Box sx={{ fontSize: '0.5625rem', fontWeight: 700, px: 0.875, py: 0.25, borderRadius: '4px', bgcolor: doc.status === 'received' ? BLOOM.greenPale : BLOOM.yellowPale, color: doc.status === 'received' ? BLOOM.green : BLOOM.amber }}>
+                  {doc.status === 'received' ? '✓ Received' : '⚠ Pending'}
+                </Box>
+              </Box>
+            ))}
+          </FormGroup>
+        )}
+
+        {/* Adjuster */}
+        {md.adjuster && (
+          <FormGroup sx={{ mb: 0 }}>
+            <FormLabel>Assigned Adjuster</FormLabel>
+            <Box sx={{ p: 1.5, border: `1px solid ${BLOOM.border}`, borderRadius: '6px' }}>
+              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600 }}>{md.adjuster.name}</Typography>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{md.adjuster.email} · ext. {md.adjuster.ext}</Typography>
+            </Box>
+          </FormGroup>
+        )}
+      </ModalShell>
+    );
+  }
+
+  if (modal === 'update') {
+    return (
+      <ModalShell
+        title="Send Customer Update"
+        primaryLabel="Send Message"
+        onPrimary={() => setSubmitted(true)}
+        onClose={onClose}
+        submitted={submitted}
+        successMsg="Message sent — delivery confirmation queued"
+      >
+        <FormGroup>
+          <FormLabel>Channel</FormLabel>
+          <PillSelector options={['Email', 'SMS', 'Portal Message']} value={channel} onChange={setChannel} />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel>To</FormLabel>
+          <StaticValue value={`${customer} · ${policyNo}`} />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel>Subject</FormLabel>
+          <StaticValue value={md.updateSubject} />
+        </FormGroup>
+        <FormGroup sx={{ mb: 0 }}>
+          <FormLabel>Message</FormLabel>
+          <Box
+            component="textarea"
+            defaultValue={md.updateDraft}
+            sx={{ width: '100%', minHeight: 140, p: 1.5, border: `1px solid ${BLOOM.border}`, borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'Inter, sans-serif', lineHeight: 1.6, resize: 'vertical', outline: 'none', boxSizing: 'border-box', color: 'text.primary', '&:focus': { borderColor: BLOOM.blue, boxShadow: `0 0 0 3px ${BLOOM.bluePale}` } }}
+          />
+        </FormGroup>
+      </ModalShell>
+    );
+  }
+
+  if (modal === 'escalate') {
+    return (
+      <ModalShell
+        title="Escalate Interaction"
+        primaryLabel="Submit Escalation"
+        onPrimary={() => setSubmitted(true)}
+        onClose={onClose}
+        submitted={submitted}
+        successMsg={`Escalated to ${md.escalationTo} — ticket #ESC-${Math.floor(1000 + Math.random() * 9000)} created`}
+      >
+        <FormGroup>
+          <FormLabel>Priority</FormLabel>
+          <PillSelector options={['Critical', 'High', 'Medium']} value={priority || md.escalationPriority} onChange={setPriority} />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel>Escalate To</FormLabel>
+          <StaticValue value={md.escalationTo} />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel>Reason</FormLabel>
+          <Box sx={{ px: 1.5, py: 1, border: `1px solid ${BLOOM.border}`, borderRadius: '6px', bgcolor: BLOOM.canvas, fontSize: '0.8125rem', lineHeight: 1.5, color: 'text.secondary' }}>
+            {md.escalationReason}
+          </Box>
+        </FormGroup>
+        <FormGroup sx={{ mb: 0 }}>
+          <FormLabel>Additional Notes</FormLabel>
+          <Box
+            component="textarea"
+            placeholder="Add any additional context for the escalation recipient…"
+            sx={{ width: '100%', minHeight: 80, p: 1.5, border: `1px solid ${BLOOM.border}`, borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'Inter, sans-serif', lineHeight: 1.6, resize: 'vertical', outline: 'none', boxSizing: 'border-box', '&:focus': { borderColor: BLOOM.blue, boxShadow: `0 0 0 3px ${BLOOM.bluePale}` } }}
+          />
+        </FormGroup>
+      </ModalShell>
+    );
+  }
+
+  if (modal === 'note') {
+    return (
+      <ModalShell
+        title="Add Interaction Note"
+        primaryLabel="Save Note"
+        onPrimary={() => setSubmitted(true)}
+        onClose={onClose}
+        submitted={submitted}
+        successMsg="Note saved to policy record — timestamped"
+      >
+        <FormGroup>
+          <FormLabel>Note Type</FormLabel>
+          <PillSelector options={['Call Note', 'Follow-up', 'Action Taken', 'Internal']} value={noteType} onChange={setNoteType} />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel>Attached To</FormLabel>
+          <StaticValue value={`${policyNo} · ${customer}`} />
+        </FormGroup>
+        <FormGroup sx={{ mb: 0 }}>
+          <FormLabel>Note</FormLabel>
+          <Box
+            component="textarea"
+            defaultValue={md.noteDraft}
+            sx={{ width: '100%', minHeight: 120, p: 1.5, border: `1px solid ${BLOOM.border}`, borderRadius: '6px', fontSize: '0.8125rem', fontFamily: 'Inter, sans-serif', lineHeight: 1.6, resize: 'vertical', outline: 'none', boxSizing: 'border-box', color: 'text.primary', '&:focus': { borderColor: BLOOM.blue, boxShadow: `0 0 0 3px ${BLOOM.bluePale}` } }}
+          />
+        </FormGroup>
+      </ModalShell>
+    );
+  }
+
+  // callback
+  return (
+    <ModalShell
+      title="Schedule Callback"
+      primaryLabel="Confirm Callback"
+      onPrimary={() => setSubmitted(true)}
+      onClose={onClose}
+      submitted={submitted}
+      successMsg={`Callback confirmed — ${CALLBACK_SLOTS[cbSlot].date} at ${CALLBACK_SLOTS[cbSlot].time}`}
+    >
+      <FormGroup>
+        <FormLabel>Customer</FormLabel>
+        <StaticValue value={`${customer} · ${policyNo}`} />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Select Date & Time</FormLabel>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.625 }}>
+          {CALLBACK_SLOTS.map((slot, i) => (
+            <Box
+              key={i} component="button" onClick={() => setCbSlot(i)}
+              sx={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                px: 1.5, py: 1, borderRadius: '6px', textAlign: 'left',
+                border: `1px solid ${cbSlot === i ? BLOOM.blue : BLOOM.border}`,
+                bgcolor: cbSlot === i ? BLOOM.bluePale : 'transparent',
+                cursor: 'pointer', fontFamily: 'Inter, sans-serif', transition: 'all 0.12s',
+              }}
+            >
+              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: cbSlot === i ? BLOOM.blue : 'text.primary' }}>{slot.date}</Typography>
+              <Typography sx={{ fontSize: '0.8125rem', color: cbSlot === i ? BLOOM.blue : 'text.secondary' }}>{slot.time}</Typography>
+            </Box>
+          ))}
+        </Box>
+      </FormGroup>
+      <FormGroup sx={{ mb: 0 }}>
+        <FormLabel>Reason</FormLabel>
+        <StaticValue value={md.callbackReason} />
+      </FormGroup>
+    </ModalShell>
+  );
+}
+
 // ─── Shared micro-components ──────────────────────────────────────────────────
 function FieldRow({ label, value, valueColor }: { label: string; value: React.ReactNode; valueColor?: string }) {
   return (
@@ -358,7 +760,8 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 }
 
 function CenterPanel({ scenario, callTime }: { scenario: ScenarioId; callTime: string }) {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab]     = useState(0);
+  const [modal, setModal] = useState<ModalId>(null);
   const data = SCENARIO_CSR[scenario];
 
   return (
@@ -447,11 +850,11 @@ function CenterPanel({ scenario, callTime }: { scenario: ScenarioId; callTime: s
 
             {/* Quick actions */}
             <Box sx={{ display: 'flex', gap: 0.875, flexWrap: 'wrap', mb: 1.5 }}>
-              <Button variant="contained" size="small" startIcon={<DescriptionOutlinedIcon />} disableElevation sx={{ fontSize: '0.6875rem' }}>View Claim</Button>
-              <Button variant="outlined"  size="small" startIcon={<EmailOutlinedIcon />}             sx={{ fontSize: '0.6875rem' }}>Send Update</Button>
-              <Button variant="outlined"  size="small" startIcon={<ReportProblemOutlinedIcon />}     sx={{ fontSize: '0.6875rem' }}>Escalate</Button>
-              <Button variant="text"      size="small" startIcon={<AddOutlinedIcon />}               sx={{ fontSize: '0.6875rem', color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Add Note</Button>
-              <Button variant="text"      size="small" startIcon={<PhoneCallbackOutlinedIcon />}     sx={{ fontSize: '0.6875rem', color: 'text.secondary', border: `1px solid ${BLOOM.border}` }}>Schedule Callback</Button>
+              <Button variant="contained" size="small" startIcon={<DescriptionOutlinedIcon />} disableElevation sx={{ fontSize: '0.6875rem' }} onClick={() => setModal('claim')}>View Claim</Button>
+              <Button variant="outlined"  size="small" startIcon={<EmailOutlinedIcon />}         sx={{ fontSize: '0.6875rem' }} onClick={() => setModal('update')}>Send Update</Button>
+              <Button variant="outlined"  size="small" startIcon={<ReportProblemOutlinedIcon />} sx={{ fontSize: '0.6875rem' }} onClick={() => setModal('escalate')}>Escalate</Button>
+              <Button variant="text"      size="small" startIcon={<AddOutlinedIcon />}           sx={{ fontSize: '0.6875rem', color: 'text.secondary', border: `1px solid ${BLOOM.border}` }} onClick={() => setModal('note')}>Add Note</Button>
+              <Button variant="text"      size="small" startIcon={<PhoneCallbackOutlinedIcon />} sx={{ fontSize: '0.6875rem', color: 'text.secondary', border: `1px solid ${BLOOM.border}` }} onClick={() => setModal('callback')}>Schedule Callback</Button>
             </Box>
 
             {/* Recent activity */}
@@ -471,6 +874,9 @@ function CenterPanel({ scenario, callTime }: { scenario: ScenarioId; callTime: s
           </Box>
         )}
       </Box>
+
+      {/* Action modals */}
+      {modal && <ActionModal key={modal} modal={modal} onClose={() => setModal(null)} scenario={scenario} />}
     </Box>
   );
 }
