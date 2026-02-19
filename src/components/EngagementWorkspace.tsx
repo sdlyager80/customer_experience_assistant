@@ -759,7 +759,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
   );
 }
 
-function CenterPanel({ scenario, callTime }: { scenario: ScenarioId; callTime: string }) {
+function CenterPanel({ scenario, callTime, onEndCall }: { scenario: ScenarioId; callTime: string; onEndCall: () => void }) {
   const [tab, setTab]     = useState(0);
   const [modal, setModal] = useState<ModalId>(null);
   const data = SCENARIO_CSR[scenario];
@@ -786,9 +786,23 @@ function CenterPanel({ scenario, callTime }: { scenario: ScenarioId; callTime: s
             <Chip label={data.banner.channelBadge} size="small" sx={{ height: 18, fontSize: '0.5625rem', bgcolor: BLOOM.canvas, color: BLOOM.textSecondary, border: `1px solid ${BLOOM.border}` }} />
           )}
         </Box>
-        <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: BLOOM.blue, bgcolor: BLOOM.bluePale, px: 1.25, py: 0.375, borderRadius: '5px' }}>
-          {callTime}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: BLOOM.blue, bgcolor: BLOOM.bluePale, px: 1.25, py: 0.375, borderRadius: '5px' }}>
+            {callTime}
+          </Typography>
+          <Box
+            component="button"
+            onClick={onEndCall}
+            sx={{
+              fontSize: '0.6875rem', fontWeight: 600, px: 1.5, py: 0.5, borderRadius: '5px',
+              border: `1px solid ${BLOOM.border}`, bgcolor: 'transparent', cursor: 'pointer',
+              color: 'text.secondary', fontFamily: 'Inter, sans-serif', transition: 'all 0.12s',
+              '&:hover': { borderColor: BLOOM.red, color: BLOOM.red, bgcolor: BLOOM.redPale },
+            }}
+          >
+            ← Queue
+          </Box>
+        </Box>
       </Box>
 
       {/* Tabs */}
@@ -967,9 +981,10 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
 interface EngagementWorkspaceProps {
   activeScenario: ScenarioId;
   callTime: string;
+  onEndCall: () => void;
 }
 
-export default function EngagementWorkspace({ activeScenario, callTime }: EngagementWorkspaceProps) {
+export default function EngagementWorkspace({ activeScenario, callTime, onEndCall }: EngagementWorkspaceProps) {
   return (
     <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       {/* Left — Engagement Analyzer */}
@@ -979,7 +994,7 @@ export default function EngagementWorkspace({ activeScenario, callTime }: Engage
 
       {/* Center — Policy Workspace */}
       <Box sx={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
-        <CenterPanel scenario={activeScenario} callTime={callTime} />
+        <CenterPanel scenario={activeScenario} callTime={callTime} onEndCall={onEndCall} />
       </Box>
 
       {/* Right — Live Analysis */}

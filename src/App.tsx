@@ -3,6 +3,7 @@ import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material';
 import { theme } from './theme';
 import { BLOOM } from './theme';
 import Header from './components/Header';
+import CSRLandingPage from './components/CSRLandingPage';
 import EngagementWorkspace from './components/EngagementWorkspace';
 import AgentDesktop from './pages/AgentDesktop/AgentDesktop';
 import LifecycleOutreach from './pages/LifecycleOutreach/LifecycleOutreach';
@@ -123,8 +124,9 @@ function AgentDesktopHeader({ onSwitch }: { onSwitch: () => void }) {
 
 export default function App() {
   const [view, setView] = useState<AppView>('engagement');
-  const [activeScenario, setActiveScenario] = useState<ScenarioId>('friction');
-  const [seconds, setSeconds] = useState(194);
+  const [activeScenario, setActiveScenario]   = useState<ScenarioId>('friction');
+  const [workspaceActive, setWorkspaceActive] = useState(false);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => setSeconds((s) => s + 1), 1000);
@@ -140,12 +142,30 @@ export default function App() {
           <>
             <Header
               activeScenario={activeScenario}
-              onScenarioChange={setActiveScenario}
+              onScenarioChange={(id) => {
+                setActiveScenario(id);
+                setSeconds(0);
+                setWorkspaceActive(true);
+              }}
               onSwitchToAgentDesktop={() => setView('agent-desktop')}
               onSwitchToLifecycle={() => setView('lifecycle')}
             />
             <Box sx={{ flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
-              <EngagementWorkspace activeScenario={activeScenario} callTime={formatTime(seconds)} />
+              {workspaceActive ? (
+                <EngagementWorkspace
+                  activeScenario={activeScenario}
+                  callTime={formatTime(seconds)}
+                  onEndCall={() => { setWorkspaceActive(false); setSeconds(0); }}
+                />
+              ) : (
+                <CSRLandingPage
+                  onAccept={(id) => {
+                    setActiveScenario(id);
+                    setSeconds(0);
+                    setWorkspaceActive(true);
+                  }}
+                />
+              )}
             </Box>
           </>
         )}
