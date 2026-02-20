@@ -16,9 +16,10 @@ interface HeaderProps {
   onScenarioChange: (id: ScenarioId) => void;
   onSwitchToAgentDesktop: () => void;
   onSwitchToLifecycle: () => void;
+  onSwitchToSupervisor: () => void;
 }
 
-export default function Header({ activeScenario, onScenarioChange, onSwitchToAgentDesktop, onSwitchToLifecycle }: HeaderProps) {
+export default function Header({ activeScenario, onScenarioChange, onSwitchToAgentDesktop, onSwitchToLifecycle, onSwitchToSupervisor }: HeaderProps) {
   const [scenarioAnchor, setScenarioAnchor] = useState<null | HTMLElement>(null);
 
   const activeScenarioMeta = SCENARIO_LIST.find(s => s.id === activeScenario)!;
@@ -149,6 +150,17 @@ export default function Header({ activeScenario, onScenarioChange, onSwitchToAge
           </IconButton>
 
           {/* App switchers */}
+          <Box
+            onClick={onSwitchToSupervisor}
+            sx={{
+              px: 1.75, py: 0.875, borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600,
+              border: `1px solid ${BLOOM.border}`, cursor: 'pointer', color: 'text.secondary',
+              transition: 'all 0.15s', whiteSpace: 'nowrap',
+              '&:hover': { borderColor: BLOOM.blue, color: BLOOM.blue },
+            }}
+          >
+            📊 Supervisor Console
+          </Box>
           <Box
             onClick={onSwitchToAgentDesktop}
             sx={{

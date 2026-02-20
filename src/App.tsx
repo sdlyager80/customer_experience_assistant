@@ -7,10 +7,11 @@ import CSRLandingPage from './components/CSRLandingPage';
 import EngagementWorkspace from './components/EngagementWorkspace';
 import AgentDesktop from './pages/AgentDesktop/AgentDesktop';
 import LifecycleOutreach from './pages/LifecycleOutreach/LifecycleOutreach';
+import SupervisorConsole from './components/SupervisorConsole';
 import BloomLogo from './components/BloomLogo';
 import type { ScenarioId } from './data/scenarios';
 
-export type AppView = 'engagement' | 'agent-desktop' | 'lifecycle';
+export type AppView = 'engagement' | 'agent-desktop' | 'lifecycle' | 'supervisor';
 
 const HEADER_HEIGHT = 60;
 
@@ -18,6 +19,43 @@ function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+// Minimal header for Supervisor Console view
+function SupervisorHeader({ onSwitch }: { onSwitch: () => void }) {
+  return (
+    <Box sx={{
+      position: 'fixed', top: 0, left: 0, right: 0, height: HEADER_HEIGHT,
+      bgcolor: 'background.paper', borderBottom: `1px solid ${BLOOM.border}`,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      px: 3, zIndex: 300,
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <BloomLogo size={36} />
+        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.75 }}>
+          <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#333', letterSpacing: '-0.3px' }}>Bloom</Typography>
+          <Typography sx={{ fontSize: 19, fontWeight: 400, color: '#555', letterSpacing: '-0.3px' }}>Insurance</Typography>
+        </Box>
+        <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
+          <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Customer Engagement Console</Typography>
+          <Box sx={{ fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`, color: '#fff', px: 0.875, py: 0.25, borderRadius: '4px' }}>Smart App</Box>
+        </Box>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box onClick={onSwitch} sx={{ px: 1.75, py: 0.75, borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, border: `1px solid ${BLOOM.border}`, cursor: 'pointer', color: 'text.secondary', transition: 'all 0.15s', '&:hover': { borderColor: BLOOM.blue, color: BLOOM.blue } }}>
+          ← Engagement Assistant
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 1.5, borderLeft: `1px solid ${BLOOM.border}` }}>
+          <Box sx={{ width: 30, height: 30, borderRadius: '50%', bgcolor: BLOOM.blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.625rem' }}>AL</Box>
+          <Box>
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, lineHeight: 1.2 }}>Andrea Lopez</Typography>
+            <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', lineHeight: 1.2 }}>Engagement Supervisor</Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
 }
 
 // Minimal header for Lifecycle Outreach view
@@ -149,6 +187,7 @@ export default function App() {
               }}
               onSwitchToAgentDesktop={() => setView('agent-desktop')}
               onSwitchToLifecycle={() => setView('lifecycle')}
+              onSwitchToSupervisor={() => setView('supervisor')}
             />
             <Box sx={{ flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
               {workspaceActive ? (
@@ -184,6 +223,15 @@ export default function App() {
             <LifecycleHeader onSwitch={() => setView('engagement')} />
             <Box sx={{ flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
               <LifecycleOutreach />
+            </Box>
+          </>
+        )}
+
+        {view === 'supervisor' && (
+          <>
+            <SupervisorHeader onSwitch={() => setView('engagement')} />
+            <Box sx={{ flex: 1, overflow: 'hidden', mt: `${HEADER_HEIGHT}px` }}>
+              <SupervisorConsole onReview={(id) => { setActiveScenario(id); setSeconds(0); setView('engagement'); setWorkspaceActive(true); }} />
             </Box>
           </>
         )}
