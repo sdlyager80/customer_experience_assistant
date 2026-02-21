@@ -438,7 +438,7 @@ function InsightsTab() {
         const styles = {
           good: { bg: 'linear-gradient(135deg,#ecfdf5,#f0fdf4)', border: '#86efac', labelColor: BLOOM.green },
           info: { bg: 'linear-gradient(135deg,#eff6ff,#f5f9ff)', border: '#93bbfd', labelColor: BLOOM.blue },
-          warn: { bg: 'linear-gradient(135deg,#fefce8,#fffef5)', border: #f5cfa0, labelColor: BLOOM.orange },
+          warn: { bg: 'linear-gradient(135deg,#fefce8,#fffef5)', border: '#f5cfa0', labelColor: BLOOM.orange },
         }[a.variant];
         return (
           <Paper key={a.label} sx={{ p: 1.75, mb: 1.25, background: styles.bg, border: `1px solid ${styles.border}` }}>
