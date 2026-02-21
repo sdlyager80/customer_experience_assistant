@@ -582,7 +582,7 @@ function ModalShell({ title, width = 500, children, primaryLabel, onPrimary, onC
         {submitted ? (
           /* Success state */
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 4, gap: 1.5, minHeight: 200 }}>
-            <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: BLOOM.greenPale, border: `2px solid ${BLOOM.greenBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.375rem' }}>✓</Box>
+            <Box sx={{ width: 52, height: 52, borderRadius: '50%', bgcolor: BLOOM.greenPale, border: '2px solid #c5e3bc', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.375rem' }}>✓</Box>
             <Typography sx={{ fontSize: '0.9375rem', fontWeight: 700, color: BLOOM.green, textAlign: 'center' }}>{successMsg}</Typography>
             <Button variant="outlined" size="small" onClick={onClose} sx={{ mt: 0.5 }}>Close</Button>
           </Box>
@@ -665,7 +665,7 @@ function ActionModal({ modal, onClose, scenario }: { modal: NonNullable<ModalId>
         {hasClaim && (
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
             <Box sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.redPale, color: BLOOM.red }}>{csr.claim!.type}</Box>
-            <Box sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.yellowPale, color: BLOOM.amber }}>{csr.claim!.status}</Box>
+            <Box sx={{ fontSize: '0.6875rem', fontWeight: 700, px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.orangePale, color: BLOOM.orange }}>{csr.claim!.status}</Box>
             <Box sx={{ fontSize: '0.6875rem', color: 'text.secondary', px: 1.25, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.canvas }}>Filed {csr.claim!.filed}</Box>
           </Box>
         )}
@@ -676,12 +676,12 @@ function ActionModal({ modal, onClose, scenario }: { modal: NonNullable<ModalId>
             <FormLabel>Timeline</FormLabel>
             {timeline.map((step, i) => (
               <Box key={i} sx={{ display: 'flex', gap: 1.25, py: 0.875, borderBottom: i < timeline.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none', alignItems: 'flex-start' }}>
-                <Box sx={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, mt: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5625rem', fontWeight: 700, bgcolor: step.done ? BLOOM.green : BLOOM.canvas, color: step.done ? '#fff' : BLOOM.textTertiary, border: step.done ? 'none' : `2px dashed ${BLOOM.border}` }}>
+                <Box sx={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, mt: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5625rem', fontWeight: 700, bgcolor: step.done ? BLOOM.green : BLOOM.canvas, color: step.done ? '#fff' : BLOOM.textSecondary, border: step.done ? 'none' : `2px dashed ${BLOOM.border}` }}>
                   {step.done ? '✓' : ''}
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography sx={{ fontSize: '0.75rem', fontWeight: step.done ? 500 : 600, color: step.done ? 'text.secondary' : 'text.primary', lineHeight: 1.3 }}>{step.event}</Typography>
-                  <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>{step.date}</Typography>
+                  <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary }}>{step.date}</Typography>
                 </Box>
               </Box>
             ))}
@@ -695,7 +695,7 @@ function ActionModal({ modal, onClose, scenario }: { modal: NonNullable<ModalId>
             {md.claimDocs.map((doc, i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 0.75, borderBottom: i < md.claimDocs!.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none' }}>
                 <Typography sx={{ fontSize: '0.75rem' }}>{doc.name}</Typography>
-                <Box sx={{ fontSize: '0.5625rem', fontWeight: 700, px: 0.875, py: 0.25, borderRadius: '4px', bgcolor: doc.status === 'received' ? BLOOM.greenPale : BLOOM.yellowPale, color: doc.status === 'received' ? BLOOM.green : BLOOM.amber }}>
+                <Box sx={{ fontSize: '0.5625rem', fontWeight: 700, px: 0.875, py: 0.25, borderRadius: '4px', bgcolor: doc.status === 'received' ? BLOOM.greenPale : BLOOM.orangePale, color: doc.status === 'received' ? BLOOM.green : BLOOM.orange }}>
                   {doc.status === 'received' ? '✓ Received' : '⚠ Pending'}
                 </Box>
               </Box>
@@ -958,7 +958,7 @@ function LeftPanel({ scenario }: { scenario: ScenarioId }) {
         <PanelSection title="Talking Points">
           {ai.points.map((pt, i) => (
             <Box key={i} sx={{ display: 'flex', gap: 0.875, mb: 0.75, '&:last-child': { mb: 0 } }}>
-              <Typography sx={{ color: BLOOM.textTertiary, fontSize: '0.875rem', lineHeight: 1, mt: '1px', flexShrink: 0 }}>›</Typography>
+              <Typography sx={{ color: BLOOM.textSecondary, fontSize: '0.875rem', lineHeight: 1, mt: '1px', flexShrink: 0 }}>›</Typography>
               <Typography sx={{ fontSize: '0.6875rem', lineHeight: 1.5, color: 'text.secondary' }}>{pt}</Typography>
             </Box>
           ))}
@@ -986,7 +986,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
   const BADGE: Record<string, { bg: string; color: string }> = {
     positive:   { bg: BLOOM.greenPale,  color: BLOOM.green           },
     negative:   { bg: BLOOM.redPale,    color: BLOOM.red             },
-    cautionary: { bg: BLOOM.yellowPale, color: BLOOM.amber           },
+    cautionary: { bg: BLOOM.orangePale, color: BLOOM.orange           },
     info:       { bg: BLOOM.bluePale,   color: BLOOM.blue            },
     neutral:    { bg: BLOOM.canvas,     color: BLOOM.textSecondary   },
   };
@@ -1026,7 +1026,7 @@ function CenterPanel({ scenario, callTime, onEndCall }: { scenario: ScenarioId; 
             </Box>
           ))}
           {data.banner.authBadge && (
-            <Chip label={`✓ ${data.banner.authBadge}`} size="small" sx={{ height: 18, fontSize: '0.5625rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: `1px solid ${BLOOM.greenBorder}` }} />
+            <Chip label={`✓ ${data.banner.authBadge}`} size="small" sx={{ height: 18, fontSize: '0.5625rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: '1px solid #c5e3bc' }} />
           )}
           {data.banner.channelBadge && (
             <Chip label={data.banner.channelBadge} size="small" sx={{ height: 18, fontSize: '0.5625rem', bgcolor: BLOOM.canvas, color: BLOOM.textSecondary, border: `1px solid ${BLOOM.border}` }} />
@@ -1142,7 +1142,7 @@ function CenterPanel({ scenario, callTime, onEndCall }: { scenario: ScenarioId; 
 }
 
 // ─── Right Panel — Live Analysis + Transcript ─────────────────────────────────
-const SENT_DOT: Record<string, string> = { pos: BLOOM.green, neu: BLOOM.textTertiary, neg: BLOOM.red };
+const SENT_DOT: Record<string, string> = { pos: BLOOM.green, neu: BLOOM.textSecondary, neg: BLOOM.red };
 
 function RightPanel({ scenario }: { scenario: ScenarioId }) {
   const [activeTab, setActiveTab] = useState<'analysis' | 'transcript'>('analysis');
@@ -1151,8 +1151,8 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
 
   const { signals }      = SCENARIO_AI[scenario];
   const transcriptLines  = TRANSCRIPT_DATA[scenario];
-  const sentimentColor   = signals.sentiment.pct > 65 ? BLOOM.green : signals.sentiment.pct > 40 ? BLOOM.amber : BLOOM.red;
-  const stressColor      = signals.stress.pct    > 60 ? BLOOM.red   : signals.stress.pct    > 35 ? BLOOM.amber : BLOOM.green;
+  const sentimentColor   = signals.sentiment.pct > 65 ? BLOOM.green : signals.sentiment.pct > 40 ? BLOOM.orange : BLOOM.red;
+  const stressColor      = signals.stress.pct    > 60 ? BLOOM.red   : signals.stress.pct    > 35 ? BLOOM.orange : BLOOM.green;
   const isComplete       = visibleCount >= transcriptLines.length;
   const isIVRScenario    = transcriptLines.some(l => l.speaker === 'ivr');
 
@@ -1201,11 +1201,11 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <Box sx={{
             width: 6, height: 6, borderRadius: '50%',
-            bgcolor: activeTab === 'transcript' && isComplete ? BLOOM.textTertiary : BLOOM.red,
+            bgcolor: activeTab === 'transcript' && isComplete ? BLOOM.textSecondary : BLOOM.red,
             '@keyframes blink': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.2 } },
             animation: isComplete ? 'none' : 'blink 1.2s ease infinite',
           }} />
-          <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, color: activeTab === 'transcript' && isComplete ? BLOOM.textTertiary : BLOOM.red, textTransform: 'uppercase', letterSpacing: '1px' }}>
+          <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, color: activeTab === 'transcript' && isComplete ? BLOOM.textSecondary : BLOOM.red, textTransform: 'uppercase', letterSpacing: '1px' }}>
             {activeTab === 'transcript' && isComplete ? 'Paused' : 'Live'}
           </Typography>
         </Box>
@@ -1233,7 +1233,7 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
                   <Box sx={{ fontSize: '0.6875rem', fontWeight: 600, px: 0.875, py: 0.375, borderRadius: '4px', bgcolor: BLOOM.canvas, color: 'text.primary' }}>
                     {step}
                   </Box>
-                  {i < arr.length - 1 && <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>→</Typography>}
+                  {i < arr.length - 1 && <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary }}>→</Typography>}
                 </Box>
               ))}
             </Box>
@@ -1297,7 +1297,7 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
                   }}>
                     {tagLabel}
                   </Box>
-                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textTertiary, fontVariantNumeric: 'tabular-nums' }}>
+                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textSecondary, fontVariantNumeric: 'tabular-nums' }}>
                     {line.ts}
                   </Typography>
                   <Box sx={{ ml: 'auto', width: 6, height: 6, borderRadius: '50%', bgcolor: sentColor, flexShrink: 0 }} />
@@ -1317,7 +1317,7 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
                 <Box
                   key={i}
                   sx={{
-                    width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.textTertiary,
+                    width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.textSecondary,
                     '@keyframes typing': {
                       '0%,60%,100%': { transform: 'translateY(0)',    opacity: 0.35 },
                       '30%':         { transform: 'translateY(-4px)', opacity: 1    },
@@ -1331,7 +1331,7 @@ function RightPanel({ scenario }: { scenario: ScenarioId }) {
 
           {/* End-of-transcript marker */}
           {isComplete && (
-            <Box sx={{ mt: 1, py: 0.75, textAlign: 'center', fontSize: '0.5625rem', color: isIVRScenario ? '#6d28d9' : BLOOM.textTertiary }}>
+            <Box sx={{ mt: 1, py: 0.75, textAlign: 'center', fontSize: '0.5625rem', color: isIVRScenario ? '#6d28d9' : BLOOM.textSecondary }}>
               {isIVRScenario ? '— STP Complete · No CSR Action Required —' : '— Call in progress —'}
             </Box>
           )}

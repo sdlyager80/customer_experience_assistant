@@ -76,7 +76,7 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
             <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'text.secondary', mt: 0.375 }}>
               {s.label}
             </Typography>
-            <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary, mt: 0.25 }}>{s.sub}</Typography>
+            <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary, mt: 0.25 }}>{s.sub}</Typography>
           </Paper>
         ))}
       </Box>
@@ -131,7 +131,7 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
                     <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: item.priority === 'urgent' ? BLOOM.red : item.priority === 'high' ? '#b45309' : BLOOM.textSecondary }}>
                       {item.wait}
                     </Typography>
-                    <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textTertiary, textTransform: 'uppercase', letterSpacing: '0.4px' }}>wait</Typography>
+                    <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textSecondary, textTransform: 'uppercase', letterSpacing: '0.4px' }}>wait</Typography>
                   </Box>
                   <Button
                     variant="contained"
@@ -141,7 +141,7 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
                     sx={{
                       fontSize: '0.6875rem', fontWeight: 700, px: 2.25, flexShrink: 0,
                       ...(item.action === 'Monitor' && {
-                        bgcolor: BLOOM.blueLight, '&:hover': { bgcolor: BLOOM.blueDark },
+                        bgcolor: BLOOM.blueLight, '&:hover': { bgcolor: BLOOM.blue },
                       }),
                     }}
                   >
@@ -187,11 +187,11 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
                 <Box key={i} sx={{ px: 2, py: 1.25, borderBottom: i < RECENT.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mb: 0.25 }}>
                     <Typography sx={{ fontSize: '0.75rem', fontWeight: 600 }}>{r.customer}</Typography>
-                    <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary }}>{r.time}</Typography>
+                    <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary }}>{r.time}</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary' }}>{r.issue} · {r.duration}</Typography>
-                    <Typography sx={{ fontSize: '0.625rem', color: BLOOM.amber, letterSpacing: '1px' }}>
+                    <Typography sx={{ fontSize: '0.625rem', color: BLOOM.orange, letterSpacing: '1px' }}>
                       {'★'.repeat(r.stars)}{'☆'.repeat(5 - r.stars)}
                     </Typography>
                   </Box>

@@ -47,7 +47,7 @@ function DonutChart({ segments, size = 110, centerLabel, centerSub }: {
 
 function StatBar({ value, max, color, height = 4 }: { value: number; max: number; color: string; height?: number }) {
   return (
-    <Box sx={{ height, borderRadius: 2, bgcolor: BLOOM.canvasDark, overflow: 'hidden', flex: 1 }}>
+    <Box sx={{ height, borderRadius: 2, bgcolor: BLOOM.canvas, overflow: 'hidden', flex: 1 }}>
       <Box sx={{ width: `${Math.min((value / max) * 100, 100)}%`, height: '100%', bgcolor: color, borderRadius: 2, transition: 'width 0.4s ease' }} />
     </Box>
   );
@@ -138,7 +138,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
 
       {/* ── Command bar ── */}
       <Box sx={{
-        background: `linear-gradient(135deg, ${BLOOM.blueDark} 0%, ${BLOOM.blue} 60%, ${BLOOM.blueLight} 100%)`,
+        background: `linear-gradient(135deg, ${BLOOM.blue} 0%, ${BLOOM.blue} 60%, ${BLOOM.blueLight} 100%)`,
         px: 3, py: 2,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
@@ -292,7 +292,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875, mb: 1.125 }}>
                 <AutoAwesomeIcon sx={{ fontSize: 13, color: BLOOM.blue }} />
                 <Typography sx={{ ...LBL }}>AI Customer Insights</Typography>
-                <Chip label="Powered by Assure" size="small" sx={{ height: 16, fontSize: '0.375rem', fontWeight: 700, bgcolor: BLOOM.bluePale, color: BLOOM.blueDark, '& .MuiChip-label': { px: 1, letterSpacing: '0.3px' } }} />
+                <Chip label="Powered by Assure" size="small" sx={{ height: 16, fontSize: '0.375rem', fontWeight: 700, bgcolor: BLOOM.bluePale, color: BLOOM.blue, '& .MuiChip-label': { px: 1, letterSpacing: '0.3px' } }} />
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
                 {AI_INSIGHTS.map(ins => (
@@ -319,7 +319,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <TrendingUpIcon sx={{ fontSize: 13, color: BLOOM.redDark }} />
                   <Typography sx={{ ...LBL }}>Needs Attention</Typography>
-                  <Box sx={{ px: 0.875, py: 0.25, borderRadius: '8px', bgcolor: BLOOM.redPale, border: `1px solid ${BLOOM.redBorder}` }}>
+                  <Box sx={{ px: 0.875, py: 0.25, borderRadius: '8px', bgcolor: BLOOM.redPale, border: '1px solid #f5c6c6' }}>
                     <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, color: BLOOM.redDark }}>
                       {ESCALATIONS.filter(e => e.priority === 'critical').length} CRITICAL
                     </Typography>
@@ -386,7 +386,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                 <Typography sx={{ ...LBL, color: BLOOM.blue }}>Outbound Messaging</Typography>
               </Box>
               <Box sx={{ bgcolor: BLOOM.bluePale, borderRadius: '8px', p: 1.5, mb: 1.375, border: `1px solid ${BLOOM.border}` }}>
-                <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, color: BLOOM.blueDark, mb: 0.5 }}>
+                <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, color: BLOOM.blue, mb: 0.5 }}>
                   Policyholders over Age 60
                 </Typography>
                 <Typography sx={{ fontSize: '0.5625rem', color: 'text.secondary', lineHeight: 1.6 }}>
@@ -475,7 +475,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                   <Box><Box sx={{ display: 'inline-flex', px: 0.75, py: 0.25, borderRadius: '4px', bgcolor: r.status === 'Open' ? BLOOM.bluePale : BLOOM.canvas, color: r.status === 'Open' ? BLOOM.blue : 'text.secondary' }}><Typography sx={{ fontSize: '0.4875rem', fontWeight: 700 }}>{r.status}</Typography></Box></Box>
                   <Box><Box sx={{ display: 'inline-flex', px: 0.75, py: 0.25, borderRadius: '4px', bgcolor: sBg, color: sColor }}><Typography sx={{ fontSize: '0.4875rem', fontWeight: 700 }}>{r.sentiment}</Typography></Box></Box>
                   <Typography sx={{ fontSize: '0.5625rem', color: 'text.secondary', fontFamily: 'monospace' }}>{r.claim}</Typography>
-                  <Typography sx={{ fontSize: '0.6875rem', color: BLOOM.amber, letterSpacing: '1px' }}>{'★'.repeat(r.stars)}{'☆'.repeat(5 - r.stars)}</Typography>
+                  <Typography sx={{ fontSize: '0.6875rem', color: BLOOM.orange, letterSpacing: '1px' }}>{'★'.repeat(r.stars)}{'☆'.repeat(5 - r.stars)}</Typography>
                 </Box>
               );
             })}
@@ -484,7 +484,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
 
         {/* ── MTD KPI footer ── */}
         <Paper sx={{ overflow: 'hidden' }}>
-          <Box sx={{ px: 2.5, py: 1, background: `linear-gradient(135deg, ${BLOOM.blueDark}, ${BLOOM.blue})`, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ px: 2.5, py: 1, background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blue})`, display: 'flex', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', color: 'rgba(255,255,255,0.7)' }}>
               Month-to-Date Enterprise KPIs
             </Typography>

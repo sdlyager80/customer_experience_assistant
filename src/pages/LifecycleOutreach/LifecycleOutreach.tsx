@@ -8,28 +8,33 @@ import {
 
 // ── Config maps ───────────────────────────────────────────────────────────────
 
+// Priority uses a single clear signal per level — no rainbow of equal-weight colours.
+// Urgent = Red (style guide secondary), High = Blue (brand primary),
+// Medium = Light Green (brand primary), Low = Grey (neutral).
 const PRIORITY_CFG: Record<CasePriority, {
   label: string; groupBg: string; groupBorder: string; dot: string;
   pillBg: string; pillColor: string;
 }> = {
-  urgent: { label: 'Urgent', groupBg: '#fef2f2', groupBorder: '#fca5a5', dot: '#ef4444', pillBg: BLOOM.red,      pillColor: '#fff' },
-  high:   { label: 'High',   groupBg: '#fff7ed', groupBorder: '#fed7aa', dot: '#f97316', pillBg: '#ea580c',     pillColor: '#fff' },
-  medium: { label: 'Medium', groupBg: '#fefce8', groupBorder: '#fde68a', dot: '#f59e0b', pillBg: BLOOM.yellowPale, pillColor: BLOOM.amber },
-  low:    { label: 'Low',    groupBg: BLOOM.canvas, groupBorder: BLOOM.border, dot: '#94a3b8', pillBg: BLOOM.canvas, pillColor: BLOOM.textSecondary },
+  urgent: { label: 'Urgent', groupBg: BLOOM.redPale,   groupBorder: '#f5c6c6', dot: BLOOM.red,       pillBg: BLOOM.red,       pillColor: '#fff'          },
+  high:   { label: 'High',   groupBg: BLOOM.bluePale,  groupBorder: '#b8d9f0', dot: BLOOM.blue,      pillBg: BLOOM.blue,      pillColor: '#fff'          },
+  medium: { label: 'Medium', groupBg: BLOOM.greenPale, groupBorder: '#c5e3bc', dot: BLOOM.lightGreen, pillBg: BLOOM.lightGreen, pillColor: '#fff'         },
+  low:    { label: 'Low',    groupBg: BLOOM.canvas,    groupBorder: BLOOM.border, dot: BLOOM.grey,   pillBg: BLOOM.canvas,    pillColor: BLOOM.textSecondary },
 };
 
+// Campaign type colours — all use official brand palette; lifeevent uses Orange not amber.
 const CAMPAIGN_TYPE_COLOR: Record<CampaignType, { bg: string; color: string }> = {
-  retention:  { bg: BLOOM.redPale,    color: BLOOM.red    },
-  compliance: { bg: BLOOM.bluePale,   color: BLOOM.blue   },
-  growth:     { bg: BLOOM.greenPale,  color: BLOOM.green  },
-  lifeevent:  { bg: BLOOM.reviewPale, color: BLOOM.review },
+  retention:  { bg: BLOOM.redPale,    color: BLOOM.red       },
+  compliance: { bg: BLOOM.bluePale,   color: BLOOM.blue      },
+  growth:     { bg: BLOOM.greenPale,  color: BLOOM.green     },
+  lifeevent:  { bg: BLOOM.orangePale, color: BLOOM.orange    },
 };
 
+// Status — in-progress uses Blue (active/interactive) rather than amber.
 const STATUS_CFG: Record<string, { bg: string; color: string; label: string }> = {
-  'new':         { bg: BLOOM.bluePale,    color: BLOOM.blue,  label: 'New'         },
-  'in-progress': { bg: BLOOM.yellowPale,  color: BLOOM.amber, label: 'In Progress' },
-  'actioned':    { bg: BLOOM.greenPale,   color: BLOOM.green, label: 'Actioned'    },
-  'converted':   { bg: BLOOM.greenPale,   color: BLOOM.green, label: 'Converted'   },
+  'new':         { bg: BLOOM.bluePale,  color: BLOOM.blue,  label: 'New'         },
+  'in-progress': { bg: BLOOM.bluePale,  color: BLOOM.blue,  label: 'In Progress' },
+  'actioned':    { bg: BLOOM.greenPale, color: BLOOM.green, label: 'Actioned'    },
+  'converted':   { bg: BLOOM.greenPale, color: BLOOM.green, label: 'Converted'   },
 };
 
 const PRIORITY_ORDER: CasePriority[] = ['urgent', 'high', 'medium', 'low'];
@@ -212,7 +217,7 @@ function WorkQueue({
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                       <Avatar sx={{
                         width: 26, height: 26, flexShrink: 0,
-                        bgcolor: isSelected ? BLOOM.blue : BLOOM.canvasDark,
+                        bgcolor: isSelected ? BLOOM.blue : BLOOM.canvas,
                         color: isSelected ? '#fff' : BLOOM.textSecondary,
                         fontSize: '0.5rem', fontWeight: 700,
                       }}>
@@ -279,8 +284,10 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
   }
 
   const c = activeCase;
-  const healthColor = c.healthScore > 60 ? BLOOM.green : c.healthScore > 40 ? BLOOM.orange : c.healthScore > 20 ? BLOOM.amber : BLOOM.red;
-  const churnColor  = c.churnScore  > 70 ? BLOOM.red  : c.churnScore  > 50 ? BLOOM.amber  : c.churnScore  > 30 ? BLOOM.orange : BLOOM.green;
+  // Three-state scoring: good = green, watch = orange, critical = red.
+  // Avoids the multi-colour "traffic light + amber + yellow" rainbow.
+  const healthColor = c.healthScore > 50 ? BLOOM.green : c.healthScore > 25 ? BLOOM.orange : BLOOM.red;
+  const churnColor  = c.churnScore  > 65 ? BLOOM.red   : c.churnScore  > 35 ? BLOOM.orange : BLOOM.green;
   const priCfg = PRIORITY_CFG[c.priority];
   const statusCfg = STATUS_CFG[c.status];
 
@@ -327,7 +334,7 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
         {c.autoActioned && (
           <Box sx={{
             mb: 1.25, px: 1.25, py: 0.625, borderRadius: '6px',
-            bgcolor: BLOOM.greenPale, border: `1px solid ${BLOOM.greenBorder}`,
+            bgcolor: BLOOM.greenPale, border: '1px solid #c5e3bc',
             display: 'flex', alignItems: 'center', gap: 0.75,
           }}>
             <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: BLOOM.green }}>Auto</Typography>
@@ -339,7 +346,7 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
         {caseCreated && (
           <Box sx={{
             mb: 1.25, px: 1.5, py: 1, borderRadius: '8px',
-            bgcolor: BLOOM.greenPale, border: `1px solid ${BLOOM.greenBorder}`,
+            bgcolor: BLOOM.greenPale, border: '1px solid #c5e3bc',
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.375 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
@@ -356,7 +363,7 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
             <Box sx={{ mt: 0.75, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
               {[
                 { label: `Policy: ${c.policy}`, color: BLOOM.blue, bg: BLOOM.bluePale },
-                { label: `Campaign: ${c.campaign}`, color: BLOOM.amber, bg: BLOOM.yellowPale },
+                { label: `Campaign: ${c.campaign}`, color: BLOOM.orange, bg: BLOOM.orangePale },
                 { label: `Churn: ${c.churnScore}`, color: BLOOM.red, bg: BLOOM.redPale },
                 { label: `Channel: ${c.channel}`, color: BLOOM.textSecondary, bg: BLOOM.canvas },
               ].map(tag => (
@@ -392,12 +399,12 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
             <Button
               size="small"
               disabled
-              sx={{ fontWeight: 600, color: `${BLOOM.green} !important`, border: `1px solid ${BLOOM.greenBorder}` }}
+              sx={{ fontWeight: 600, color: `${BLOOM.green} !important`, border: '1px solid #c5e3bc' }}
             >
               ✓ {SERVICE_CASE_REF}
             </Button>
           )}
-          <Button size="small" sx={{ fontWeight: 600, color: BLOOM.green, border: `1px solid ${BLOOM.greenBorder}` }}>
+          <Button size="small" sx={{ fontWeight: 600, color: BLOOM.green, border: '1px solid #c5e3bc' }}>
             ✓ Close Case
           </Button>
         </Box>
@@ -428,11 +435,11 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
 
         {tab === 'brief' && (
           <>
-            {/* AI Context */}
+            {/* AI Context — Blue tinted, consistent with primary brand */}
             <Paper sx={{
               p: 2, mb: 1.5,
               background: `linear-gradient(135deg, ${BLOOM.bluePale}, #fff)`,
-              border: `1px solid #93bbfd`,
+              border: `1px solid #b8d9f0`,
             }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875, mb: 0.875 }}>
                 <Box sx={{
@@ -445,16 +452,16 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
                   AI Context
                 </Typography>
               </Box>
-              <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.7, color: '#334155' }}>{c.context}</Typography>
+              <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.7, color: BLOOM.textPrimary }}>{c.context}</Typography>
             </Paper>
 
-            {/* Recommended Action */}
+            {/* Recommended Action — Orange accent (style guide: single warm emphasis) */}
             <Paper sx={{
               p: 2, mb: 1.5,
-              background: 'linear-gradient(135deg, #fefce8, #fefdf5)',
-              border: `1px solid ${BLOOM.yellowBorder}`,
+              background: `linear-gradient(135deg, ${BLOOM.orangePale}, #fff)`,
+              border: `1px solid #f5cfa0`,
             }}>
-              <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: BLOOM.amber, mb: 0.875 }}>
+              <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: BLOOM.orange, mb: 0.875 }}>
                 🎯 Recommended Action
               </Typography>
               <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.7 }}>{c.recommendation}</Typography>
@@ -573,7 +580,7 @@ const CAMP_TYPE_COLOR_LINE: Record<CampaignType, string> = {
   retention:  BLOOM.red,
   compliance: BLOOM.blue,
   growth:     BLOOM.green,
-  lifeevent:  BLOOM.review,
+  lifeevent:  BLOOM.orange,
 };
 
 function ActivityPanel() {
@@ -621,7 +628,7 @@ function ActivityPanel() {
               </Typography>
               <Typography sx={{
                 fontSize: '0.6rem', fontWeight: 700, flexShrink: 0,
-                color: cb.convRate > 70 ? BLOOM.green : cb.convRate > 40 ? BLOOM.orange : BLOOM.amber,
+                color: cb.convRate > 70 ? BLOOM.green : cb.convRate > 40 ? BLOOM.orange : BLOOM.orange,
               }}>
                 {cb.convRate}%
               </Typography>
@@ -645,14 +652,14 @@ function ActivityPanel() {
           <Box sx={{ height: 8, borderRadius: '4px', overflow: 'hidden', display: 'flex', gap: '1px', mb: 1 }}>
             <Box sx={{ width: '62%', bgcolor: BLOOM.green }} />
             <Box sx={{ width: '21%', bgcolor: BLOOM.orange }} />
-            <Box sx={{ width: '12%', bgcolor: BLOOM.amber }} />
+            <Box sx={{ width: '12%', bgcolor: BLOOM.orange }} />
             <Box sx={{ width: '5%',  bgcolor: BLOOM.red }} />
           </Box>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.375 }}>
             {[
               { dot: BLOOM.green,  label: 'Healthy',  count: '29,890' },
               { dot: BLOOM.orange, label: 'Watch',    count: '10,124' },
-              { dot: BLOOM.amber,  label: 'At-Risk',  count: '5,785'  },
+              { dot: BLOOM.orange,  label: 'At-Risk',  count: '5,785'  },
               { dot: BLOOM.red,    label: 'Critical', count: '2,411'  },
             ].map(s => (
               <Box key={s.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

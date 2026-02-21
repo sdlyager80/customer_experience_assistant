@@ -1,79 +1,105 @@
 import { createTheme } from '@mui/material/styles';
 
+// ── Bloom Insurance brand tokens — sourced from Visual Style Guide 2023 ───────
+//
+// Primary palette:  Orange #F6921E · Yellow #E8DE23 · Light Green #8BC53F
+//                   Green #37A526 · Light Blue #00ADEE · Blue #1B75BB
+// Secondary:        Red #D02E2E · Pale Aqua #F2F7F6
+// Neutral:          Grey #808285 · Black #000000
+// Fonts:            Roboto Slab (headings) · Roboto (body)
+//
+// Usage hierarchy:
+//   Blue       → primary interactive (links, CTAs, selected state)
+//   Green      → success, completion, positive outcomes
+//   Orange     → single-use accent, warm emphasis (use sparingly)
+//   Red        → urgency, errors, critical alerts only
+//   Pale Aqua  → page/canvas background surface
+//   Grey       → secondary text, muted borders, inactive states
+
 export const BLOOM = {
-  blue: '#1B75BB',
-  blueDark: '#155A93',
-  blueLight: '#00ADEE',
-  bluePale: '#e0f0fc',
-  green: '#37A526',
-  greenDark: '#2B8020',
-  greenPale: '#e6f5e0',
-  greenBorder: '#bbf7d0',
-  lightGreen: '#8BC53F',
-  orange: '#F6921E',
-  orangePale: '#fef3d6',
-  orangeBorder: '#f6c66a',
-  yellow: '#E8DE23',
-  yellowPale: '#fef9c3',
-  yellowBorder: '#fcd34d',
-  red: '#b91c1c',
-  redDark: '#D02E2E',
-  redPale: '#fee2e2',
-  redBorder: '#fca5a5',
-  canvas: '#F2F7F6',
-  canvasDark: '#E5EFED',
-  border: '#e0e5e4',
-  white: '#ffffff',
-  textPrimary: '#1a1a1a',
-  textSecondary: '#808285',
-  textTertiary: '#a8aaad',
-  amber: '#946b0e',
-  amberPale: '#fef9c3',
-  amberBorder: '#fcd34d',
-  review: '#7c5500',
-  reviewPale: '#fef3d6',
+  // ── Core brand colours ───────────────────────────────────────────────────
+  blue:        '#1B75BB',
+  blueLight:   '#00ADEE',
+  bluePale:    '#E8F3FB',   // tint for selected / highlight backgrounds
+
+  green:       '#37A526',
+  lightGreen:  '#8BC53F',
+  greenPale:   '#EAF5E6',   // tint for success banners
+
+  orange:      '#F6921E',
+  orangePale:  '#FEF3E7',   // tint for warm accent areas
+
+  yellow:      '#E8DE23',   // use only for data-viz / score bars
+
+  red:         '#D02E2E',
+  redPale:     '#FCEAEA',   // tint for urgent / error areas
+
+  // ── Neutral ───────────────────────────────────────────────────────────────
+  grey:        '#808285',
+
+  // ── Surfaces ─────────────────────────────────────────────────────────────
+  canvas:      '#F2F7F6',   // Pale Aqua — page background
+  white:       '#FFFFFF',
+  border:      '#DDE4E2',   // subtle border derived from Pale Aqua
+
+  // ── Text ─────────────────────────────────────────────────────────────────
+  textPrimary:   '#1A1A1A',
+  textSecondary: '#808285', // Grey from style guide
 };
+
+// ── MUI theme ─────────────────────────────────────────────────────────────────
 
 export const theme = createTheme({
   palette: {
     primary: {
-      main: BLOOM.blue,
+      main:  BLOOM.blue,
       light: BLOOM.blueLight,
-      dark: BLOOM.blueDark,
     },
     secondary: {
       main: BLOOM.lightGreen,
       dark: BLOOM.green,
     },
     success: {
-      main: BLOOM.green,
+      main:  BLOOM.green,
       light: BLOOM.lightGreen,
     },
     warning: {
       main: BLOOM.orange,
     },
     error: {
-      main: BLOOM.redDark,
+      main: BLOOM.red,
     },
     info: {
       main: BLOOM.blueLight,
     },
     background: {
       default: BLOOM.canvas,
-      paper: BLOOM.white,
+      paper:   BLOOM.white,
     },
     text: {
-      primary: BLOOM.textPrimary,
+      primary:   BLOOM.textPrimary,
       secondary: BLOOM.textSecondary,
     },
     divider: BLOOM.border,
   },
+
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    // Roboto for all UI text — clean, readable at small sizes
+    fontFamily: '"Roboto", "Helvetica Neue", "Arial", sans-serif',
+
+    // Roboto Slab for headings — gives the brand identity
+    h1: { fontFamily: '"Roboto Slab", serif', fontWeight: 700 },
+    h2: { fontFamily: '"Roboto Slab", serif', fontWeight: 700 },
+    h3: { fontFamily: '"Roboto Slab", serif', fontWeight: 600 },
+    h4: { fontFamily: '"Roboto Slab", serif', fontWeight: 600 },
+    h5: { fontFamily: '"Roboto Slab", serif', fontWeight: 500 },
+    h6: { fontFamily: '"Roboto Slab", serif', fontWeight: 500 },
   },
+
   shape: {
     borderRadius: 8,
   },
+
   components: {
     MuiButton: {
       styleOverrides: {
@@ -82,6 +108,7 @@ export const theme = createTheme({
           fontWeight: 600,
           borderRadius: 6,
           fontSize: '0.8125rem',
+          fontFamily: '"Roboto", sans-serif',
         },
         sizeSmall: {
           padding: '4px 10px',
@@ -103,7 +130,7 @@ export const theme = createTheme({
     },
     MuiTabs: {
       styleOverrides: {
-        root: { minHeight: 40 },
+        root:      { minHeight: 40 },
         indicator: { height: 2 },
       },
     },

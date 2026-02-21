@@ -11,7 +11,7 @@ import { SCENARIO_CSR, type ScenarioId, type ActivityItem } from '../data/scenar
 const BADGE_STYLES: Record<string, { bgcolor: string; color: string }> = {
   positive: { bgcolor: BLOOM.greenPale, color: BLOOM.green },
   negative: { bgcolor: BLOOM.redPale, color: BLOOM.red },
-  cautionary: { bgcolor: BLOOM.yellowPale, color: BLOOM.amber },
+  cautionary: { bgcolor: BLOOM.orangePale, color: BLOOM.orange },
   info: { bgcolor: BLOOM.bluePale, color: BLOOM.blue },
   neutral: { bgcolor: BLOOM.canvas, color: BLOOM.textSecondary },
 };
@@ -19,7 +19,7 @@ const BADGE_STYLES: Record<string, { bgcolor: string; color: string }> = {
 const STATUS_STYLES: Record<string, { bgcolor: string; color: string }> = {
   positive: { bgcolor: BLOOM.greenPale, color: BLOOM.green },
   negative: { bgcolor: BLOOM.redPale, color: BLOOM.red },
-  cautionary: { bgcolor: BLOOM.yellowPale, color: BLOOM.amber },
+  cautionary: { bgcolor: BLOOM.orangePale, color: BLOOM.orange },
   info: { bgcolor: BLOOM.bluePale, color: BLOOM.blue },
   neutral: { bgcolor: BLOOM.canvas, color: BLOOM.textSecondary },
 };
@@ -87,7 +87,7 @@ export default function CSRWorkspace({ activeScenario, callTime }: CSRWorkspaceP
             </Box>
           ))}
           {data.banner.authBadge && (
-            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, bgcolor: BLOOM.greenPale, border: `1px solid ${BLOOM.greenBorder}`, px: 1.25, py: 0.375, borderRadius: '999px', fontSize: '0.6875rem', fontWeight: 600, color: BLOOM.green }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, bgcolor: BLOOM.greenPale, border: '1px solid #c5e3bc', px: 1.25, py: 0.375, borderRadius: '999px', fontSize: '0.6875rem', fontWeight: 600, color: BLOOM.green }}>
               ✓ {data.banner.authBadge}
             </Box>
           )}
@@ -189,7 +189,7 @@ export default function CSRWorkspace({ activeScenario, callTime }: CSRWorkspaceP
                   <WidgetCard title="Coverage Summary">
                     {data.coverages.map((c) => <DataRow key={c.label} label={c.label} value={c.value} />)}
                     {data.coverageNote && (
-                      <Box sx={{ mt: 1.5, p: 1, bgcolor: BLOOM.yellowPale, borderRadius: '6px', fontSize: '0.75rem', color: BLOOM.amber }}>
+                      <Box sx={{ mt: 1.5, p: 1, bgcolor: BLOOM.orangePale, borderRadius: '6px', fontSize: '0.75rem', color: BLOOM.orange }}>
                         <strong>Note:</strong> {data.coverageNote}
                       </Box>
                     )}

@@ -15,9 +15,9 @@ import {
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 const CHANNEL_STYLE: Record<string, { bg: string; color: string; icon: string }> = {
   phone:   { bg: BLOOM.bluePale,    color: BLOOM.blue,   icon: '📞' },
-  chat:    { bg: BLOOM.yellowPale,  color: BLOOM.amber,  icon: '💬' },
-  chatbot: { bg: BLOOM.yellowPale,  color: BLOOM.amber,  icon: '🤖' },
-  portal:  { bg: BLOOM.reviewPale,  color: BLOOM.review, icon: '🌐' },
+  chat:    { bg: BLOOM.orangePale,  color: BLOOM.orange,  icon: '💬' },
+  chatbot: { bg: BLOOM.orangePale,  color: BLOOM.orange,  icon: '🤖' },
+  portal:  { bg: BLOOM.orangePale,  color: BLOOM.orange, icon: '🌐' },
   email:   { bg: BLOOM.greenPale,   color: BLOOM.green,  icon: '✉️' },
   mobile:  { bg: '#f3e8ff',         color: '#7c3aed',    icon: '📱' },
 };
@@ -203,8 +203,8 @@ function CurrentTab({ persona }: { persona: Persona }) {
       )}
 
       {/* Conversation Points */}
-      <Paper sx={{ p: 2.25, mb: 1.75, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: `1px solid ${BLOOM.yellowBorder}` }}>
-        <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.7px', color: BLOOM.amber, mb: 1.25, display: 'flex', alignItems: 'center', gap: 0.75 }}>
+      <Paper sx={{ p: 2.25, mb: 1.75, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: '1px solid #f5cfa0' }}>
+        <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.7px', color: BLOOM.orange, mb: 1.25, display: 'flex', alignItems: 'center', gap: 0.75 }}>
           💬 Conversation Points
         </Typography>
         {[
@@ -298,8 +298,8 @@ function PolicyTab() {
 
       <SectionCard title="Beneficiaries" icon="👥">
         <DataRow label="Primary"    value="Lisa M. Chen (Spouse) — 100%" />
-        <DataRow label="Contingent" value="Pending — Emily R. Chen" valueColor={BLOOM.amber} />
-        <Box sx={{ mt: 1.25, p: 1, bgcolor: BLOOM.yellowPale, borderRadius: '6px', fontSize: '0.6875rem', color: BLOOM.amber }}>
+        <DataRow label="Contingent" value="Pending — Emily R. Chen" valueColor={BLOOM.orange} />
+        <Box sx={{ mt: 1.25, p: 1, bgcolor: BLOOM.orangePale, borderRadius: '6px', fontSize: '0.6875rem', color: BLOOM.orange }}>
           <strong>Note:</strong> Bene change form sent Feb 3. Emily is a minor (17) — UTMA custodian: Lisa M. Chen. Form not yet returned.
         </Box>
       </SectionCard>
@@ -324,7 +324,7 @@ function HistoryTab() {
       {dateGroups.map(group => (
         <Box key={group.date}>
           {/* Date separator */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: BLOOM.textTertiary, my: 1.75 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: BLOOM.textSecondary, my: 1.75 }}>
             {group.date}
             <Box sx={{ flex: 1, height: '1px', bgcolor: BLOOM.border }} />
           </Box>
@@ -353,7 +353,7 @@ function HistoryTab() {
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
                       <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</Typography>
-                      <Typography sx={{ fontSize: '0.625rem', color: BLOOM.textTertiary, flexShrink: 0 }}>{item.time}</Typography>
+                      <Typography sx={{ fontSize: '0.625rem', color: BLOOM.textSecondary, flexShrink: 0 }}>{item.time}</Typography>
                     </Box>
                     <Typography sx={{ fontSize: '0.6875rem', color: 'text.secondary', mt: 0.25, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {item.desc}
@@ -386,7 +386,7 @@ function HistoryTab() {
                     )}
 
                     {item.detail.note && (
-                      <Box sx={{ mt: 1, p: 1.25, bgcolor: '#fefce8', border: `1px solid ${BLOOM.yellowBorder}`, borderRadius: '6px', fontSize: '0.75rem', lineHeight: 1.5 }}>
+                      <Box sx={{ mt: 1, p: 1.25, bgcolor: '#fefce8', border: '1px solid #f5cfa0', borderRadius: '6px', fontSize: '0.75rem', lineHeight: 1.5 }}>
                         {item.detail.note}
                       </Box>
                     )}
@@ -405,9 +405,9 @@ function HistoryTab() {
 function InsightsTab() {
   const channelData = [
     { label: 'Phone',  pct: 43, count: 6, color: BLOOM.blue },
-    { label: 'Portal', pct: 21, count: 3, color: BLOOM.review },
+    { label: 'Portal', pct: 21, count: 3, color: BLOOM.orange },
     { label: 'Email',  pct: 21, count: 3, color: BLOOM.green },
-    { label: 'Chat',   pct: 14, count: 2, color: BLOOM.amber },
+    { label: 'Chat',   pct: 14, count: 2, color: BLOOM.orange },
     { label: 'Mobile', pct:  7, count: 1, color: '#7c3aed' },
   ];
 
@@ -424,7 +424,7 @@ function InsightsTab() {
           <Paper key={s.label} sx={{ p: 1.25, textAlign: 'center' }}>
             <Typography sx={{ fontSize: '1.1875rem', fontWeight: 700, lineHeight: 1.1, color: s.color }}>{s.value}</Typography>
             <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.4px', color: 'text.secondary', mt: 0.25 }}>{s.label}</Typography>
-            <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textTertiary, mt: 0.125 }}>{s.sub}</Typography>
+            <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textSecondary, mt: 0.125 }}>{s.sub}</Typography>
           </Paper>
         ))}
       </Box>
@@ -438,7 +438,7 @@ function InsightsTab() {
         const styles = {
           good: { bg: 'linear-gradient(135deg,#ecfdf5,#f0fdf4)', border: '#86efac', labelColor: BLOOM.green },
           info: { bg: 'linear-gradient(135deg,#eff6ff,#f5f9ff)', border: '#93bbfd', labelColor: BLOOM.blue },
-          warn: { bg: 'linear-gradient(135deg,#fefce8,#fffef5)', border: BLOOM.yellowBorder, labelColor: BLOOM.amber },
+          warn: { bg: 'linear-gradient(135deg,#fefce8,#fffef5)', border: #f5cfa0, labelColor: BLOOM.orange },
         }[a.variant];
         return (
           <Paper key={a.label} sx={{ p: 1.75, mb: 1.25, background: styles.bg, border: `1px solid ${styles.border}` }}>
@@ -454,8 +454,8 @@ function InsightsTab() {
           { color: BLOOM.blue,    text: '<strong>Cash Value:</strong> $187,420. After $75K loan: $112,420 net.' },
           { color: BLOOM.green,   text: '<strong>Death Benefit:</strong> $500K. Net after loan: $425K.' },
           { color: BLOOM.orange,  text: '<strong>Premium:</strong> $412.50/mo via EFT. Current through 03/01/2026.' },
-          { color: BLOOM.amber,   text: '<strong>Beneficiaries:</strong> Primary: Lisa M. Chen (Spouse, 100%). Contingent: <em>Pending — Emily R. Chen.</em>' },
-          { color: BLOOM.review,  text: '<strong>Loan History:</strong> No prior loans. First policy loan processed today.' },
+          { color: BLOOM.orange,   text: '<strong>Beneficiaries:</strong> Primary: Lisa M. Chen (Spouse, 100%). Contingent: <em>Pending — Emily R. Chen.</em>' },
+          { color: BLOOM.orange,  text: '<strong>Loan History:</strong> No prior loans. First policy loan processed today.' },
           { color: '#7c3aed',     text: '<strong>Cross-Sell:</strong> No annuity on file. Previously inquired about face amount increase (Aug 2025).' },
         ].map((item, i) => (
           <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, py: 0.75, borderBottom: i < 5 ? `1px solid ${BLOOM.canvas}` : 'none' }}>
@@ -486,12 +486,12 @@ function InsightsTab() {
           { ts: '10:02:31', event: 'Session Transfer',            detail: 'Chatbot → Live Agent · Full context passed',   color: BLOOM.blue },
           { ts: '10:03:19', event: 'Policy Loan Eligibility',     detail: 'Auto-checked · Max $168,678 · Approved',       color: BLOOM.green },
           { ts: '10:04:05', event: 'STP Loan Processing',         detail: '$75,000 auto-approved · EFT disbursement queued', color: BLOOM.green },
-          { ts: '10:04:28', event: 'Beneficiary Alert Surfaced',  detail: 'Form pending · Disclosed to agent',            color: BLOOM.amber },
+          { ts: '10:04:28', event: 'Beneficiary Alert Surfaced',  detail: 'Form pending · Disclosed to agent',            color: BLOOM.orange },
           { ts: '10:04:55', event: 'CSAT Survey Scheduled',       detail: 'Post-call survey queued · SMS to Robert Chen', color: BLOOM.textSecondary },
           { ts: '10:05:02', event: 'Interaction Recorded',        detail: 'Stored · 7-year retention · Reg. compliant',   color: BLOOM.textSecondary },
         ].map((row, i) => (
           <Box key={i} sx={{ display: 'flex', gap: 1.25, py: 0.625, borderBottom: i < 7 ? `1px solid ${BLOOM.canvas}` : 'none' }}>
-            <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary, fontVariantNumeric: 'tabular-nums', minWidth: 44, mt: '1px' }}>{row.ts}</Typography>
+            <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary, fontVariantNumeric: 'tabular-nums', minWidth: 44, mt: '1px' }}>{row.ts}</Typography>
             <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: row.color, mt: '4px', flexShrink: 0 }} />
             <Box sx={{ flex: 1 }}>
               <Typography sx={{ fontSize: '0.6875rem', fontWeight: 600, lineHeight: 1.3 }}>{row.event}</Typography>
@@ -551,7 +551,7 @@ function TranscriptTab() {
               borderBottom: i < TRANSCRIPT_LINES.length - 1 ? `1px solid ${BLOOM.canvas}` : 'none',
               bgcolor: i === TRANSCRIPT_LINES.length - 1 ? BLOOM.bluePale : 'transparent',
             }}>
-              <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textTertiary, mt: '2px', minWidth: 48, fontVariantNumeric: 'tabular-nums' }}>{line.ts}</Typography>
+              <Typography sx={{ fontSize: '0.5625rem', color: BLOOM.textSecondary, mt: '2px', minWidth: 48, fontVariantNumeric: 'tabular-nums' }}>{line.ts}</Typography>
               <Box sx={{ width: 32, height: 18, borderRadius: '3px', bgcolor: isAgent ? BLOOM.blue : BLOOM.orange, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5rem', fontWeight: 700, flexShrink: 0, mt: '1px' }}>
                 {isAgent ? 'AGENT' : 'CUST'}
               </Box>
@@ -570,7 +570,7 @@ function TranscriptTab() {
           { signal: 'Stress Indicators',   value: 'None detected',              color: BLOOM.textSecondary },
           { signal: 'Escalation Risk',     value: 'Low',                        color: BLOOM.green },
           { signal: 'STP Trigger',         value: 'Policy Loan auto-approved',  color: '#047857' },
-          { signal: 'Cross-sell Signal',   value: 'Annuity — prior inquiry Aug 2025', color: BLOOM.review },
+          { signal: 'Cross-sell Signal',   value: 'Annuity — prior inquiry Aug 2025', color: BLOOM.orange },
         ].map(r => (
           <Box key={r.signal} sx={{ display: 'flex', justifyContent: 'space-between', py: 0.5, borderBottom: `1px solid ${BLOOM.canvas}`, '&:last-child': { border: 'none' } }}>
             <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', fontWeight: 500 }}>{r.signal}</Typography>
@@ -601,7 +601,7 @@ function ChatPanel() {
       </Box>
 
       <Box sx={{ flex: 1, overflowY: 'auto', p: 1.75, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textTertiary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>
+        <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textSecondary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>
           Chatbot session transferred
         </Box>
 
@@ -609,7 +609,7 @@ function ChatPanel() {
           const isAgent    = msg.from === 'agent';
           const isCustomer = msg.from === 'customer';
           const isBot      = msg.from === 'bot';
-          const avatarBg   = isAgent ? BLOOM.blue : isCustomer ? BLOOM.orange : BLOOM.textTertiary;
+          const avatarBg   = isAgent ? BLOOM.blue : isCustomer ? BLOOM.orange : BLOOM.textSecondary;
           const bubbleBg   = isAgent ? BLOOM.blue : isBot ? BLOOM.bluePale : BLOOM.canvas;
           const bubbleBorder = isBot ? `1px solid #93bbfd` : isCustomer ? `1px solid ${BLOOM.border}` : 'none';
           const bubbleColor  = isAgent ? '#fff' : 'text.primary';
@@ -678,8 +678,8 @@ function Workspace({ persona, onPersonaSwitch }: { persona: Persona; onPersonaSw
               <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600 }}>{f.value}</Typography>
             </Box>
           ))}
-          <Chip label="Active" size="small" sx={{ height: 20, fontSize: '0.6875rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: `1px solid ${BLOOM.greenBorder}` }} />
-          <Chip label="✓ Authenticated" size="small" sx={{ height: 20, fontSize: '0.6875rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: `1px solid ${BLOOM.greenBorder}` }} />
+          <Chip label="Active" size="small" sx={{ height: 20, fontSize: '0.6875rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: '1px solid #c5e3bc' }} />
+          <Chip label="✓ Authenticated" size="small" sx={{ height: 20, fontSize: '0.6875rem', bgcolor: BLOOM.greenPale, color: BLOOM.green, border: '1px solid #c5e3bc' }} />
           <Chip label={channelBadge} size="small" sx={{ height: 20, fontSize: '0.6875rem', bgcolor: '#eef2f7', color: '#475569', border: '1px solid #d5dce6' }} />
           <Chip label="Conversation Manager" size="small" sx={{ height: 20, fontSize: '0.5625rem', bgcolor: BLOOM.bluePale, color: BLOOM.blue, border: '1px solid #93bbfd', fontWeight: 700 }} />
           <Chip label="⚡ Assure Orchestration" size="small" sx={{ height: 20, fontSize: '0.5625rem', bgcolor: '#f5f3ff', color: '#6d28d9', border: '1px solid #c4b5fd', fontWeight: 700 }} />
@@ -741,7 +741,7 @@ function Workspace({ persona, onPersonaSwitch }: { persona: Persona; onPersonaSw
         {persona === 'chat' && <ChatPanel />}
       </Box>
 
-      <Box sx={{ px: 3, py: 1.125, textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textTertiary, borderTop: `1px solid ${BLOOM.border}`, bgcolor: 'background.paper', flexShrink: 0 }}>
+      <Box sx={{ px: 3, py: 1.125, textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textSecondary, borderTop: `1px solid ${BLOOM.border}`, bgcolor: 'background.paper', flexShrink: 0 }}>
         © 2026 Bloom Insurance · Conversation Manager · Powered by Assure Orchestration
       </Box>
     </Box>

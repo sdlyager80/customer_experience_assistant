@@ -24,10 +24,10 @@ function Card({ children, sx = {} }: { children: React.ReactNode; sx?: object })
 
 function AlertCard({ variant, title, children }: { variant: 'red' | 'yellow' | 'blue' | 'amber'; title: string; children: React.ReactNode }) {
   const styles = {
-    red:    { bg: '#fef2f2', border: BLOOM.redBorder,    titleColor: BLOOM.red },
-    yellow: { bg: '#fefce8', border: BLOOM.yellowBorder, titleColor: BLOOM.amber },
+    red:    { bg: '#fef2f2', border: #f5c6c6,    titleColor: BLOOM.red },
+    yellow: { bg: '#fefce8', border: #f5cfa0, titleColor: BLOOM.orange },
     blue:   { bg: '#eff6ff', border: '#93bbfd',          titleColor: BLOOM.blue },
-    amber:  { bg: '#fef7e6', border: BLOOM.orangeBorder, titleColor: BLOOM.review },
+    amber:  { bg: '#fef7e6', border: #f5cfa0, titleColor: BLOOM.orange },
   };
   const s = styles[variant];
   return (
@@ -92,7 +92,7 @@ function TimelineItem({ icon, iconBg, iconColor, title, detail, time, chip, chip
           {chip && <Chip label={chip} size="small" sx={{ height: 18, fontSize: '0.625rem', bgcolor: chipColor, color: '#fff' }} />}
         </Box>
         <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mt: 0.25, lineHeight: 1.5 }}>{detail}</Typography>
-        {time && <Typography sx={{ fontSize: '0.625rem', color: BLOOM.textTertiary, mt: 0.25 }}>{time}</Typography>}
+        {time && <Typography sx={{ fontSize: '0.625rem', color: BLOOM.textSecondary, mt: 0.25 }}>{time}</Typography>}
       </Box>
     </Box>
   );
@@ -100,8 +100,8 @@ function TimelineItem({ icon, iconBg, iconColor, title, detail, time, chip, chip
 
 function RecommendationCard({ title, items }: { title: string; items: string[] }) {
   return (
-    <Paper sx={{ p: 2, mb: 1, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: `1px solid ${BLOOM.yellowBorder}` }}>
-      <SectionLabel color={BLOOM.amber}>{title}</SectionLabel>
+    <Paper sx={{ p: 2, mb: 1, background: 'linear-gradient(135deg, #fefce8, #fefdf5)', border: '1px solid #f5cfa0' }}>
+      <SectionLabel color={BLOOM.orange}>{title}</SectionLabel>
       {items.map((item, i) => (
         <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mt: 0.75, fontSize: '0.8125rem', lineHeight: 1.5 }}>
           <Typography sx={{ color: BLOOM.orange, fontSize: '0.875rem', lineHeight: 1.2, flexShrink: 0 }}>▶</Typography>
@@ -137,7 +137,7 @@ function FrictionDetection() {
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
                     {['Negative', 'Neutral', 'Positive'].map(l => (
-                      <Typography key={l} sx={{ fontSize: '0.625rem', color: BLOOM.textTertiary }}>{l}</Typography>
+                      <Typography key={l} sx={{ fontSize: '0.625rem', color: BLOOM.textSecondary }}>{l}</Typography>
                     ))}
                   </Box>
                 </Box>
@@ -156,12 +156,12 @@ function FrictionDetection() {
               { value: '18:02', label: 'Handle' },
               { value: '1', label: 'Open Case', valueColor: BLOOM.red },
             ]} />
-            <Paper sx={{ p: 2.5, mb: 1.5, background: `linear-gradient(135deg, #fef2f2, #fff5f5)`, border: `1px solid ${BLOOM.redBorder}` }}>
+            <Paper sx={{ p: 2.5, mb: 1.5, background: `linear-gradient(135deg, #fef2f2, #fff5f5)`, border: '1px solid #f5c6c6' }}>
               <SectionLabel>Correlated Unresolved Case</SectionLabel>
               <Box sx={{ p: 1.25, bgcolor: BLOOM.redPale, borderRadius: '6px', borderLeft: `3px solid #ef4444`, fontSize: '0.8125rem', lineHeight: 1.6 }}>
                 <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.6 }}>
                   <strong>Claim #CLM-2026-4491</strong> — Water damage, filed 01/29. Status: Under Review (14 days). Adjuster assigned, no inspection scheduled. Docs submitted 02/02 — no ack sent.{' '}
-                  <Chip label="Overdue SLA" size="small" sx={{ bgcolor: BLOOM.redPale, color: BLOOM.red, border: `1px solid ${BLOOM.redBorder}`, height: 20, ml: 0.5 }} />
+                  <Chip label="Overdue SLA" size="small" sx={{ bgcolor: BLOOM.redPale, color: BLOOM.red, border: '1px solid #f5c6c6', height: 20, ml: 0.5 }} />
                 </Typography>
               </Box>
             </Paper>
@@ -198,7 +198,7 @@ function FrictionDetection() {
               <SectionLabel>Escalation Language</SectionLabel>
               {[
                 { date: 'Feb 12', quote: '"No one is helping me"', bg: BLOOM.redPale },
-                { date: 'Feb 8', quote: '"I already sent the documents"', bg: BLOOM.yellowPale },
+                { date: 'Feb 8', quote: '"I already sent the documents"', bg: BLOOM.orangePale },
                 { date: 'Feb 5', quote: '"Just checking on status" (neutral)', bg: BLOOM.canvas },
               ].map((item, i) => (
                 <Box key={i} sx={{ p: 0.875, bgcolor: item.bg, borderRadius: '6px', mb: 0.5 }}>
@@ -231,8 +231,8 @@ function AdaptiveEngagement() {
             </AlertCard>
             <Card>
               <SectionLabel>Routing Timeline</SectionLabel>
-              <TimelineItem icon="📞" iconBg={BLOOM.yellowPale} iconColor={BLOOM.amber} title="Repeat Call Detected" detail="2nd today, 4th this week. Claim #CLM-2026-5102." time="2:14 PM" />
-              <TimelineItem icon="🤖" iconBg={BLOOM.reviewPale} iconColor={BLOOM.review} title="IVR Adapted" detail="Menu skipped. Voice −15%." time="Automatic" />
+              <TimelineItem icon="📞" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Repeat Call Detected" detail="2nd today, 4th this week. Claim #CLM-2026-5102." time="2:14 PM" />
+              <TimelineItem icon="🤖" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="IVR Adapted" detail="Menu skipped. Voice −15%." time="Automatic" />
               <TimelineItem icon="⏱" iconBg={BLOOM.bluePale} iconColor={BLOOM.blue} title="Callback Offered & Accepted" detail="Hold est: 3:20." time="2:15 PM" />
               <TimelineItem icon="👤" iconBg={BLOOM.greenPale} iconColor={BLOOM.green} title="Agent Connected" detail="Lisa Tran (Senior)." time="2:22 PM" chip="Active" chipColor={BLOOM.green} />
             </Card>
@@ -291,9 +291,9 @@ function OmnichannelContinuity() {
             <Card>
               <SectionLabel>Cross-Channel Timeline</SectionLabel>
               <TimelineItem icon="🌐" iconBg={BLOOM.bluePale} iconColor={BLOOM.blue} title="Self-Service Portal" detail="Browsed beneficiaries, downloaded change form." time="10:14 AM" />
-              <TimelineItem icon="🤖" iconBg={BLOOM.reviewPale} iconColor={BLOOM.review} title="Chatbot" detail="Intent: BeneficiaryChange (88%). Escalated on minor question." time="10:19 AM" />
+              <TimelineItem icon="🤖" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Chatbot" detail="Intent: BeneficiaryChange (88%). Escalated on minor question." time="10:19 AM" />
               <TimelineItem icon="👤" iconBg={BLOOM.greenPale} iconColor={BLOOM.green} title="Agent Chat" detail="Guided UTMA custodian requirements." time="10:24 AM" />
-              <TimelineItem icon="📞" iconBg={BLOOM.yellowPale} iconColor={BLOOM.amber} title="Phone" detail="All context carried. No repeat info needed." time="10:31 AM" chip="Active" chipColor={BLOOM.blue} />
+              <TimelineItem icon="📞" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Phone" detail="All context carried. No repeat info needed." time="10:31 AM" chip="Active" chipColor={BLOOM.blue} />
             </Card>
             <Card>
               <SectionLabel>Cross-Channel Sentiment</SectionLabel>
@@ -328,7 +328,7 @@ function OmnichannelContinuity() {
                     </Box>
                   </Box>
                 ))}
-                <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textTertiary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>Agent Sarah Mitchell joined</Box>
+                <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textSecondary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>Agent Sarah Mitchell joined</Box>
                 <Box sx={{ display: 'flex', gap: 0.75, maxWidth: '88%', alignSelf: 'flex-start' }}>
                   <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: BLOOM.blue, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5625rem', fontWeight: 700, flexShrink: 0 }}>SM</Box>
                   <Box sx={{ p: '8px 12px', borderRadius: 2, fontSize: '0.75rem', lineHeight: 1.5, bgcolor: BLOOM.bluePale, border: `1px solid #93bbfd` }}>
@@ -339,7 +339,7 @@ function OmnichannelContinuity() {
                   <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: BLOOM.orange, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.5625rem', fontWeight: 700, flexShrink: 0 }}>RC</Box>
                   <Box sx={{ p: '8px 12px', borderRadius: 2, fontSize: '0.75rem', lineHeight: 1.5, bgcolor: BLOOM.blue, color: '#fff' }}>Yes, can we do a call to finalize?</Box>
                 </Box>
-                <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textTertiary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>Escalated to phone — context transferred</Box>
+                <Box sx={{ textAlign: 'center', fontSize: '0.625rem', color: BLOOM.textSecondary, py: 0.5, display: 'flex', alignItems: 'center', gap: 1, '&::before,&::after': { content: '""', flex: 1, height: '1px', bgcolor: BLOOM.border } }}>Escalated to phone — context transferred</Box>
               </Box>
             </Paper>
             <StatGrid cols={4} stats={[
@@ -379,8 +379,8 @@ function CallbackRecovery() {
               <SectionLabel>Automated Recovery Actions</SectionLabel>
               <TimelineItem icon="⚠" iconBg={BLOOM.redPale} iconColor={BLOOM.red} title="Supervisor Alert" detail="Mike Rodriguez notified. Priority: High." time="2:48 PM" />
               <TimelineItem icon="📱" iconBg={BLOOM.bluePale} iconColor={BLOOM.blue} title="SMS Follow-Up" detail={`"Hi Karen, we apologize. A senior agent will call within 30 min."`} time="2:49 PM" />
-              <TimelineItem icon="📞" iconBg={BLOOM.yellowPale} iconColor={BLOOM.amber} title="Priority Callback Queued" detail="Lisa Tran (Senior). Queue position: 1." time="2:50 PM" />
-              <TimelineItem icon="📧" iconBg={BLOOM.reviewPale} iconColor={BLOOM.review} title="Email Drafted" detail="Personalized apology + claim status." time="Pending" />
+              <TimelineItem icon="📞" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Priority Callback Queued" detail="Lisa Tran (Senior). Queue position: 1." time="2:50 PM" />
+              <TimelineItem icon="📧" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Email Drafted" detail="Personalized apology + claim status." time="Pending" />
             </Card>
           </>
         )}
@@ -444,7 +444,7 @@ function WorkforceOptimization() {
                     </Box>
                     <Typography sx={{ fontSize: '0.6875rem', color: 'text.secondary' }}>{a.role}</Typography>
                   </Box>
-                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, color: a.highlight ? BLOOM.blue : BLOOM.textTertiary }}>{a.score}</Typography>
+                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, color: a.highlight ? BLOOM.blue : BLOOM.textSecondary }}>{a.score}</Typography>
                 </Box>
               ))}
             </Card>
@@ -504,7 +504,7 @@ function LifeEventDetection() {
               <SectionLabel>Detected Events</SectionLabel>
               <Box sx={{ mb: 1.5, display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
                 {[
-                  { label: '💍 Marriage', bg: BLOOM.reviewPale, color: BLOOM.review },
+                  { label: '💍 Marriage', bg: BLOOM.orangePale, color: BLOOM.orange },
                   { label: '🏡 New Home', bg: BLOOM.bluePale, color: BLOOM.blue },
                   { label: '👶 New Dependent', bg: BLOOM.greenPale, color: BLOOM.green },
                 ].map(e => (
@@ -534,7 +534,7 @@ function LifeEventDetection() {
           <>
             <Card>
               <SectionLabel>Coverage Triggers</SectionLabel>
-              <TimelineItem icon="💍" iconBg={BLOOM.reviewPale} iconColor={BLOOM.review} title="Marriage — Bene Update" detail="Add spouse Patricia as primary." />
+              <TimelineItem icon="💍" iconBg={BLOOM.orangePale} iconColor={BLOOM.orange} title="Marriage — Bene Update" detail="Add spouse Patricia as primary." />
               <TimelineItem icon="🏡" iconBg={BLOOM.bluePale} iconColor={BLOOM.blue} title="New Home — Coverage Gap" detail="No homeowners policy. Bundle with auto for 12% discount." />
               <TimelineItem icon="👶" iconBg={BLOOM.greenPale} iconColor={BLOOM.green} title="New Dependent — Life Coverage" detail="$350K term may be low. Offer child rider ($15K, ~$4/mo)." />
             </Card>
