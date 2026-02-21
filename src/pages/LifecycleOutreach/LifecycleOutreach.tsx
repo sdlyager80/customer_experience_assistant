@@ -256,8 +256,11 @@ function WorkQueue({
 
 type CenterTab = 'brief' | 'compose' | 'profile';
 
+const SERVICE_CASE_REF = 'SVC-2025-001234';
+
 function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
   const [tab, setTab] = useState<CenterTab>('brief');
+  const [caseCreated, setCaseCreated] = useState(false);
 
   if (!activeCase) {
     return (
@@ -332,6 +335,40 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
           </Box>
         )}
 
+        {/* Case created success banner */}
+        {caseCreated && (
+          <Box sx={{
+            mb: 1.25, px: 1.5, py: 1, borderRadius: '8px',
+            bgcolor: BLOOM.greenPale, border: `1px solid ${BLOOM.greenBorder}`,
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.375 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Typography sx={{ fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: BLOOM.green }}>
+                  ✓ Service Case Created
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: BLOOM.green }}>{SERVICE_CASE_REF}</Typography>
+              </Box>
+              <Typography sx={{ fontSize: '0.5625rem', color: 'text.secondary' }}>Just now</Typography>
+            </Box>
+            <Typography sx={{ fontSize: '0.6875rem', color: '#334155', lineHeight: 1.5 }}>
+              Customer profile, policy details &amp; AI context transferred to ServiceNow portal · Assigned to Retention Queue
+            </Typography>
+            <Box sx={{ mt: 0.75, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+              {[
+                { label: `Policy: ${c.policy}`, color: BLOOM.blue, bg: BLOOM.bluePale },
+                { label: `Campaign: ${c.campaign}`, color: BLOOM.amber, bg: BLOOM.yellowPale },
+                { label: `Churn: ${c.churnScore}`, color: BLOOM.red, bg: BLOOM.redPale },
+                { label: `Channel: ${c.channel}`, color: BLOOM.textSecondary, bg: BLOOM.canvas },
+              ].map(tag => (
+                <Box key={tag.label} component="span" sx={{
+                  px: 0.875, py: 0.25, borderRadius: '4px', fontSize: '0.5625rem',
+                  fontWeight: 600, bgcolor: tag.bg, color: tag.color,
+                }}>{tag.label}</Box>
+              ))}
+            </Box>
+          </Box>
+        )}
+
         {/* Action buttons */}
         <Box sx={{ display: 'flex', gap: 0.875, mb: 1.5, flexWrap: 'wrap' }}>
           <Button variant="contained" size="small" disableElevation sx={{ fontWeight: 600 }}>📞 Schedule Call</Button>
@@ -339,6 +376,27 @@ function CaseActionPanel({ activeCase }: { activeCase: OutreachCase | null }) {
           <Button variant="outlined" size="small" sx={{ fontWeight: 600 }}>📱 Send SMS</Button>
           <Button variant="outlined" size="small" sx={{ fontWeight: 600 }}>📎 Attach Form</Button>
           <Box sx={{ flex: 1 }} />
+          {!caseCreated ? (
+            <Button
+              size="small"
+              onClick={() => setCaseCreated(true)}
+              sx={{
+                fontWeight: 600, color: BLOOM.blue,
+                border: `1px solid ${BLOOM.blue}`,
+                '&:hover': { bgcolor: BLOOM.bluePale },
+              }}
+            >
+              📋 Create Service Case
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              disabled
+              sx={{ fontWeight: 600, color: `${BLOOM.green} !important`, border: `1px solid ${BLOOM.greenBorder}` }}
+            >
+              ✓ {SERVICE_CASE_REF}
+            </Button>
+          )}
           <Button size="small" sx={{ fontWeight: 600, color: BLOOM.green, border: `1px solid ${BLOOM.greenBorder}` }}>
             ✓ Close Case
           </Button>
