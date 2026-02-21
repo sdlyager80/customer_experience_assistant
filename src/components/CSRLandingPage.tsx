@@ -70,7 +70,7 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1.25, mb: 3 }}>
         {STATS.map(s => (
           <Paper key={s.label} sx={{ p: 2, textAlign: 'center' }}>
-            <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.1, color: s.color || 'text.primary' }}>
+            <Typography sx={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.1, color: 'text.primary' }}>
               {s.value}
             </Typography>
             <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'text.secondary', mt: 0.375 }}>

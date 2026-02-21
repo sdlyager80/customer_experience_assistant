@@ -191,7 +191,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                 <ch.Icon sx={{ fontSize: 18, color: ch.color }} />
               </Box>
               <Box>
-                <Typography sx={{ fontSize: '1.375rem', fontWeight: 800, lineHeight: 1, color: ch.color }}>{ch.value}</Typography>
+                <Typography sx={{ fontSize: '1.375rem', fontWeight: 800, lineHeight: 1, color: 'text.primary' }}>{ch.value}</Typography>
                 <Typography sx={{ ...LBL, mt: 0.25 }}>{ch.label}</Typography>
                 <Typography sx={{ fontSize: '0.4875rem', color: 'text.disabled', mt: 0.125 }}>{ch.delta}</Typography>
               </Box>
@@ -437,7 +437,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               ].map(kpi => (
                 <Box key={kpi.label} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.875 }}>
                   <Typography sx={{ fontSize: '0.5625rem', color: 'text.secondary' }}>{kpi.label}</Typography>
-                  <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: kpi.color }}>{kpi.value}</Typography>
+                  <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'text.primary' }}>{kpi.value}</Typography>
                 </Box>
               ))}
             </Paper>
@@ -492,7 +492,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)' }}>
             {MTD_KPIS.map((kpi, i) => (
               <Box key={kpi.label} sx={{ p: 2, textAlign: 'center', borderRight: i < MTD_KPIS.length - 1 ? `1px solid ${BLOOM.border}` : 'none' }}>
-                <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, lineHeight: 1, color: kpi.color, mb: 0.375 }}>{kpi.value}</Typography>
+                <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, lineHeight: 1, color: 'text.primary', mb: 0.375 }}>{kpi.value}</Typography>
                 <Typography sx={{ ...LBL }}>{kpi.label}</Typography>
               </Box>
             ))}

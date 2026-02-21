@@ -422,7 +422,7 @@ function InsightsTab() {
           { value: '92%',  label: 'FCR',           color: BLOOM.blue,   sub: '1st contact resolve' },
         ].map(s => (
           <Paper key={s.label} sx={{ p: 1.25, textAlign: 'center' }}>
-            <Typography sx={{ fontSize: '1.1875rem', fontWeight: 700, lineHeight: 1.1, color: s.color }}>{s.value}</Typography>
+            <Typography sx={{ fontSize: '1.1875rem', fontWeight: 700, lineHeight: 1.1, color: 'text.primary' }}>{s.value}</Typography>
             <Typography sx={{ fontSize: '0.5625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.4px', color: 'text.secondary', mt: 0.25 }}>{s.label}</Typography>
             <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textSecondary, mt: 0.125 }}>{s.sub}</Typography>
           </Paper>

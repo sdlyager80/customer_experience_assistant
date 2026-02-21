@@ -1351,11 +1351,37 @@ interface EngagementWorkspaceProps {
 }
 
 export default function EngagementWorkspace({ activeScenario, callTime, onEndCall }: EngagementWorkspaceProps) {
+  const [leftOpen, setLeftOpen] = useState(false);
+
   return (
     <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       {/* Left — Engagement Analyzer */}
-      <Box sx={{ width: 272, borderRight: `1px solid ${BLOOM.border}`, flexShrink: 0, bgcolor: 'background.paper', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        <LeftPanel scenario={activeScenario} />
+      <Box sx={{
+        width: leftOpen ? 272 : 32,
+        borderRight: `1px solid ${BLOOM.border}`,
+        flexShrink: 0,
+        bgcolor: 'background.paper',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'width 0.2s ease',
+      }}>
+        {/* Toggle button */}
+        <Box
+          onClick={() => setLeftOpen(o => !o)}
+          title={leftOpen ? 'Collapse panel' : 'Expand Engagement Analyzer'}
+          sx={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            height: 32, flexShrink: 0, cursor: 'pointer',
+            borderBottom: `1px solid ${BLOOM.border}`,
+            color: 'text.secondary', fontSize: '0.75rem',
+            '&:hover': { bgcolor: BLOOM.canvas, color: BLOOM.blue },
+            transition: 'all 0.15s',
+          }}
+        >
+          {leftOpen ? '‹' : '›'}
+        </Box>
+        {leftOpen && <LeftPanel scenario={activeScenario} />}
       </Box>
 
       {/* Center — Policy Workspace */}

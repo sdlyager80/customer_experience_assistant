@@ -95,7 +95,7 @@ function KPIBar() {
     }}>
       {stats.map((s) => (
         <Box key={s.label} sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
-          <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, lineHeight: 1, color: s.color }}>
+          <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, lineHeight: 1, color: 'text.primary' }}>
             {s.value}
           </Typography>
           <Box>
