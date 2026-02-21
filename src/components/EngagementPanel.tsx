@@ -24,10 +24,10 @@ function Card({ children, sx = {} }: { children: React.ReactNode; sx?: object })
 
 function AlertCard({ variant, title, children }: { variant: 'red' | 'yellow' | 'blue' | 'amber'; title: string; children: React.ReactNode }) {
   const styles = {
-    red:    { bg: '#fef2f2', border: #f5c6c6,    titleColor: BLOOM.red },
-    yellow: { bg: '#fefce8', border: #f5cfa0, titleColor: BLOOM.orange },
-    blue:   { bg: '#eff6ff', border: '#93bbfd',          titleColor: BLOOM.blue },
-    amber:  { bg: '#fef7e6', border: #f5cfa0, titleColor: BLOOM.orange },
+    red:    { bg: BLOOM.redPale,    border: '#f5c6c6', titleColor: BLOOM.red    },
+    yellow: { bg: BLOOM.orangePale, border: '#f5cfa0', titleColor: BLOOM.orange },
+    blue:   { bg: BLOOM.bluePale,   border: '#93bbfd', titleColor: BLOOM.blue   },
+    amber:  { bg: BLOOM.orangePale, border: '#f5cfa0', titleColor: BLOOM.orange },
   };
   const s = styles[variant];
   return (
@@ -133,7 +133,7 @@ function FrictionDetection() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
                 <Box sx={{ flex: 1 }}>
                   <Box sx={{ height: 8, bgcolor: BLOOM.canvas, borderRadius: 10, overflow: 'hidden' }}>
-                    <Box sx={{ height: '100%', width: '22%', background: 'linear-gradient(90deg, #ef4444, #fca5a5)', borderRadius: 10 }} />
+                    <Box sx={{ height: '100%', width: '22%', bgcolor: BLOOM.red, borderRadius: 10 }} />
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
                     {['Negative', 'Neutral', 'Positive'].map(l => (
@@ -147,8 +147,8 @@ function FrictionDetection() {
                 </Box>
               </Box>
               <SentimentBar label="Call 1 (Feb 5)" pct={50} color={BLOOM.orange} value="Neutral" />
-              <SentimentBar label="Call 2 (Feb 8)" pct={32} color="#f97316" value="Declining" />
-              <SentimentBar label="Call 3 (Today)" pct={22} color="#ef4444" value="Negative" />
+              <SentimentBar label="Call 2 (Feb 8)" pct={32} color={BLOOM.orange} value="Declining" />
+              <SentimentBar label="Call 3 (Today)" pct={22} color={BLOOM.red}    value="Negative" />
             </Card>
             <StatGrid cols={4} stats={[
               { value: '3', label: 'Calls/5d', valueColor: BLOOM.red },
@@ -156,9 +156,9 @@ function FrictionDetection() {
               { value: '18:02', label: 'Handle' },
               { value: '1', label: 'Open Case', valueColor: BLOOM.red },
             ]} />
-            <Paper sx={{ p: 2.5, mb: 1.5, background: `linear-gradient(135deg, #fef2f2, #fff5f5)`, border: '1px solid #f5c6c6' }}>
+            <Paper sx={{ p: 2.5, mb: 1.5, background: `linear-gradient(135deg, ${BLOOM.redPale}, #fff)`, border: '1px solid #f5c6c6' }}>
               <SectionLabel>Correlated Unresolved Case</SectionLabel>
-              <Box sx={{ p: 1.25, bgcolor: BLOOM.redPale, borderRadius: '6px', borderLeft: `3px solid #ef4444`, fontSize: '0.8125rem', lineHeight: 1.6 }}>
+              <Box sx={{ p: 1.25, bgcolor: BLOOM.redPale, borderRadius: '6px', borderLeft: `3px solid ${BLOOM.red}`, fontSize: '0.8125rem', lineHeight: 1.6 }}>
                 <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.6 }}>
                   <strong>Claim #CLM-2026-4491</strong> — Water damage, filed 01/29. Status: Under Review (14 days). Adjuster assigned, no inspection scheduled. Docs submitted 02/02 — no ack sent.{' '}
                   <Chip label="Overdue SLA" size="small" sx={{ bgcolor: BLOOM.redPale, color: BLOOM.red, border: '1px solid #f5c6c6', height: 20, ml: 0.5 }} />
@@ -183,7 +183,7 @@ function FrictionDetection() {
                   <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>Owner · HO-2024-88312 · Homeowners · Since 2022</Typography>
                 </Box>
               </Box>
-              <Box sx={{ p: 1.25, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid #ef4444` }}>
+              <Box sx={{ p: 1.25, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid ${BLOOM.red}` }}>
                 <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.6 }}>
                   <strong>Risk:</strong> High-friction. 3 contacts/5 days, increasing handle time. Unresolved claim 14 days, SLA breached. <strong>Churn probability: 72%.</strong>
                 </Typography>
@@ -298,7 +298,7 @@ function OmnichannelContinuity() {
             <Card>
               <SectionLabel>Cross-Channel Sentiment</SectionLabel>
               <SentimentBar label="Portal" pct={50} color={BLOOM.orange} value="Neutral" />
-              <SentimentBar label="Chatbot" pct={58} color="#f59e0b" value="Neutral+" />
+              <SentimentBar label="Chatbot" pct={58} color={BLOOM.yellow} value="Neutral+" />
               <SentimentBar label="Agent Chat" pct={72} color={BLOOM.green} value="Positive" />
               <SentimentBar label="Call (live)" pct={75} color={BLOOM.green} value="Positive" />
               <Box sx={{ mt: 0.75, p: 0.875, bgcolor: BLOOM.canvas, borderRadius: '6px' }}>
@@ -388,7 +388,7 @@ function CallbackRecovery() {
           <>
             <Card>
               <SectionLabel>Recovery Playbook</SectionLabel>
-              <Box sx={{ p: 1.5, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid #ef4444`, fontSize: '0.8125rem', lineHeight: 1.6 }}>
+              <Box sx={{ p: 1.5, bgcolor: BLOOM.canvas, borderRadius: '6px', borderLeft: `3px solid ${BLOOM.red}`, fontSize: '0.8125rem', lineHeight: 1.6 }}>
                 <Typography sx={{ fontSize: '0.8125rem', lineHeight: 1.7 }}>
                   <Box component="span" sx={{ bgcolor: BLOOM.redPale, px: 0.5, borderRadius: '3px', fontWeight: 600 }}>Opening:</Box>{' '}
                   "Karen, I am sorry about the wait and disconnection."
@@ -462,7 +462,7 @@ function WorkforceOptimization() {
             <Card>
               <SectionLabel>Coaching Opportunities</SectionLabel>
               {[
-                { init: 'JR', name: 'James Rivera', note: 'Handle time ↑22%. Empathy phrases ↓ in escalated calls.', color: '#f97316' },
+                { init: 'JR', name: 'James Rivera', note: 'Handle time ↑22%. Empathy phrases ↓ in escalated calls.', color: BLOOM.orange },
                 { init: 'KP', name: 'Kim Patel', note: 'FCR ↓15%. Frequent billing transfers.', color: BLOOM.orange },
               ].map((a) => (
                 <Box key={a.init} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1.25, bgcolor: BLOOM.canvas, borderRadius: '6px', mb: 1, borderLeft: `3px solid ${a.color}` }}>

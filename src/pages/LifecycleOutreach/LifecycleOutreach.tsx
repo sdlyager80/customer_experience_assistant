@@ -123,10 +123,10 @@ function KPIBar() {
 type QueueFilter = CasePriority | 'all';
 
 const QUEUE_FILTERS: { key: QueueFilter; label: string }[] = [
-  { key: 'all',    label: 'All (23)' },
+  { key: 'all',    label: 'All (23)'     },
   { key: 'urgent', label: '🔴 Urgent (4)' },
-  { key: 'high',   label: '🟠 High (7)'   },
-  { key: 'medium', label: '🟡 Med (8)'    },
+  { key: 'high',   label: '🔵 High (7)'   },
+  { key: 'medium', label: '🟢 Med (8)'    },
   { key: 'low',    label: '⚪ Low (4)'    },
 ];
 
@@ -628,7 +628,7 @@ function ActivityPanel() {
               </Typography>
               <Typography sx={{
                 fontSize: '0.6rem', fontWeight: 700, flexShrink: 0,
-                color: cb.convRate > 70 ? BLOOM.green : cb.convRate > 40 ? BLOOM.orange : BLOOM.orange,
+                color: cb.convRate > 70 ? BLOOM.green : cb.convRate > 40 ? BLOOM.orange : BLOOM.red,
               }}>
                 {cb.convRate}%
               </Typography>
@@ -651,15 +651,15 @@ function ActivityPanel() {
           </Typography>
           <Box sx={{ height: 8, borderRadius: '4px', overflow: 'hidden', display: 'flex', gap: '1px', mb: 1 }}>
             <Box sx={{ width: '62%', bgcolor: BLOOM.green }} />
-            <Box sx={{ width: '21%', bgcolor: BLOOM.orange }} />
+            <Box sx={{ width: '21%', bgcolor: BLOOM.yellow }} />
             <Box sx={{ width: '12%', bgcolor: BLOOM.orange }} />
             <Box sx={{ width: '5%',  bgcolor: BLOOM.red }} />
           </Box>
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.375 }}>
             {[
               { dot: BLOOM.green,  label: 'Healthy',  count: '29,890' },
-              { dot: BLOOM.orange, label: 'Watch',    count: '10,124' },
-              { dot: BLOOM.orange,  label: 'At-Risk',  count: '5,785'  },
+              { dot: BLOOM.yellow, label: 'Watch',    count: '10,124' },
+              { dot: BLOOM.orange, label: 'At-Risk',  count: '5,785'  },
               { dot: BLOOM.red,    label: 'Critical', count: '2,411'  },
             ].map(s => (
               <Box key={s.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

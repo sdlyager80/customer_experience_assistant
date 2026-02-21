@@ -272,15 +272,15 @@ const SCENARIO_AI: Record<ScenarioId, ScenarioAI> = {
 
 // ─── Styling maps ─────────────────────────────────────────────────────────────
 const ALERT_STYLES: Record<AlertLevel, { leftBorder: string; badgeBg: string; badgeColor: string }> = {
-  red:   { leftBorder: '#ef4444',   badgeBg: '#fef2f2',       badgeColor: '#dc2626'   },
-  amber: { leftBorder: '#f59e0b',   badgeBg: '#fffbeb',       badgeColor: '#b45309'   },
-  blue:  { leftBorder: BLOOM.blue,  badgeBg: BLOOM.bluePale,  badgeColor: BLOOM.blue  },
-  green: { leftBorder: BLOOM.green, badgeBg: BLOOM.greenPale, badgeColor: BLOOM.green },
+  red:   { leftBorder: BLOOM.red,    badgeBg: BLOOM.redPale,    badgeColor: BLOOM.red    },
+  amber: { leftBorder: BLOOM.orange, badgeBg: BLOOM.orangePale, badgeColor: BLOOM.orange },
+  blue:  { leftBorder: BLOOM.blue,   badgeBg: BLOOM.bluePale,   badgeColor: BLOOM.blue   },
+  green: { leftBorder: BLOOM.green,  badgeBg: BLOOM.greenPale,  badgeColor: BLOOM.green  },
 };
 
 const TOPIC_STYLES: Record<TopicType, { bg: string; color: string }> = {
-  alert:   { bg: '#fef2f2',        color: '#dc2626'             },
-  warn:    { bg: '#fffbeb',        color: '#b45309'             },
+  alert:   { bg: BLOOM.redPale,    color: BLOOM.red             },
+  warn:    { bg: BLOOM.orangePale, color: BLOOM.orange          },
   ok:      { bg: BLOOM.greenPale,  color: BLOOM.green           },
   neutral: { bg: BLOOM.canvas,     color: BLOOM.textSecondary   },
 };

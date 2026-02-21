@@ -19,7 +19,7 @@ interface QueueItem {
 
 const PRIORITY_CFG: Record<Priority, { color: string; bg: string; label: string }> = {
   urgent: { color: BLOOM.red,           bg: BLOOM.redPale,   label: 'Urgent' },
-  high:   { color: '#b45309',           bg: '#fffbeb',       label: 'High'   },
+  high:   { color: BLOOM.orange,         bg: BLOOM.orangePale, label: 'High'   },
   medium: { color: BLOOM.blue,          bg: BLOOM.bluePale,  label: 'Medium' },
   low:    { color: BLOOM.textSecondary, bg: BLOOM.canvas,    label: 'Low'    },
 };
@@ -47,7 +47,7 @@ const STATS = [
   { value: '12',   label: 'Handled Today',   sub: '+3 vs yesterday',     color: undefined       },
   { value: '7:42', label: 'Avg Handle Time', sub: '↓ 0:18 below target', color: BLOOM.green     },
   { value: '4.8',  label: 'CSAT (Today)',    sub: '↑ 0.2 from this week',color: BLOOM.green     },
-  { value: '6',    label: 'Queue Depth',     sub: '2 urgent waiting',    color: '#b45309'       },
+  { value: '6',    label: 'Queue Depth',     sub: '2 urgent waiting',    color: BLOOM.orange    },
 ];
 
 interface CSRLandingPageProps { onAccept: (id: ScenarioId) => void; }
@@ -128,7 +128,7 @@ export default function CSRLandingPage({ onAccept }: CSRLandingPageProps) {
                     </Typography>
                   </Box>
                   <Box sx={{ textAlign: 'right', flexShrink: 0, minWidth: 52 }}>
-                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: item.priority === 'urgent' ? BLOOM.red : item.priority === 'high' ? '#b45309' : BLOOM.textSecondary }}>
+                    <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: item.priority === 'urgent' ? BLOOM.red : item.priority === 'high' ? BLOOM.orange : BLOOM.textSecondary }}>
                       {item.wait}
                     </Typography>
                     <Typography sx={{ fontSize: '0.5rem', color: BLOOM.textSecondary, textTransform: 'uppercase', letterSpacing: '0.4px' }}>wait</Typography>

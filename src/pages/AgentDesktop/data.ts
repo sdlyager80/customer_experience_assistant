@@ -14,7 +14,7 @@ export const briefData: Record<Persona, BriefData> = {
     why: 'Policy loan finalization. Robert is ready to execute.',
     body: 'Robert navigated IVR selecting <strong>Existing Policy → Policy Loans → Speak to Agent</strong>. He has been active across 3 channels in the last 30 minutes (Portal → Chatbot → Agent Chat) researching a <strong>$75K policy loan</strong> against his Universal Life. Chat agent already reviewed fixed vs variable rates and death benefit impact. Robert requested phone to finalize. <strong>No information needs to be re-collected.</strong>',
     items: [
-      { text: '<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor — UTMA custodian needed) sent Feb 3, not yet returned.', color: '#946b0e' },
+      { text: '<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor — UTMA custodian needed) sent Feb 3, not yet returned.', color: '#F6921E' },
       { text: '<strong>Recent pattern:</strong> 4 contacts today across 4 channels. Sentiment: Positive. No friction detected.', color: '#37A526' },
       { text: '<strong>Customer profile:</strong> Digital-first, well-researched. Prefers phone for final transactions.', color: '#1B75BB' },
     ],
@@ -24,7 +24,7 @@ export const briefData: Record<Persona, BriefData> = {
     body: 'Robert asked the chatbot about borrowing against his Universal Life. Bot provided cash value (<strong>$187,420</strong>) and max loanable amount (<strong>$168,678</strong>). Robert asked about death benefit impact — chatbot escalated to live agent. <strong>Robert already knows his cash value and max loan amount. He needs: rate options, death benefit impact, and likely wants to proceed.</strong>',
     items: [
       { text: '<strong>Pre-chat activity:</strong> Portal session 5 min ago — downloaded loan request form PDF.', color: '#1B75BB' },
-      { text: '<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor) sent Feb 3, not yet returned.', color: '#946b0e' },
+      { text: '<strong>Open item:</strong> Beneficiary change form (Emily R. Chen, minor) sent Feb 3, not yet returned.', color: '#F6921E' },
       { text: '<strong>Customer profile:</strong> Digital-first, well-researched. Positive sentiment history (82%).', color: '#37A526' },
     ],
   },
@@ -123,7 +123,7 @@ export const historyItems: HistoryItem[] = [
     date: 'Feb 3, 2026', desc: 'Add daughter Emily (minor) as contingent bene. UTMA custodian form sent.',
     sentiment: 'pos',
     detail: {
-      duration: '6:42', agent: 'Lisa Tran (Senior CSR)', resolution: 'Form Needed', resolutionColor: '#946b0e',
+      duration: '6:42', agent: 'Lisa Tran (Senior CSR)', resolution: 'Form Needed', resolutionColor: '#F6921E',
       transcript: [
         { speaker: 'customer', text: "I'd like to add my daughter as a contingent beneficiary." },
         { speaker: 'agent', text: "Since Emily is currently 17, she's a minor. We'll need a UTMA custodian designated." },

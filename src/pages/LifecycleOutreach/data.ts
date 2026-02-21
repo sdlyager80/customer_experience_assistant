@@ -312,13 +312,13 @@ export const CASES: OutreachCase[] = [
 ];
 
 export const ACTIVITY_FEED: ActivityEvent[] = [
-  { campaign: 'Lapse Prevention',      customer: 'Karen Williams', detail: 'Auto-SMS sent — grace period day 32',              timeLabel: '12 min', dotColor: '#ef4444' },
+  { campaign: 'Lapse Prevention',      customer: 'Karen Williams', detail: 'Auto-SMS sent — grace period day 32',              timeLabel: '12 min', dotColor: '#D02E2E' },
   { campaign: 'Cash Value Milestone',  customer: 'Robert Chen',    detail: 'Case updated — $75K loan in progress',             timeLabel: '28 min', dotColor: '#37A526' },
   { campaign: 'RMD Compliance',        customer: 'James Nguyen',   detail: 'Auto-email sent — portal login detected',          timeLabel: '1 hr',   dotColor: '#1B75BB' },
-  { campaign: 'Term Conversion',       customer: 'David Park',     detail: 'Case assigned to Lisa Tran for outreach',          timeLabel: '2 hr',   dotColor: '#946b0e' },
+  { campaign: 'Term Conversion',       customer: 'David Park',     detail: 'Case assigned to Lisa Tran for outreach',          timeLabel: '2 hr',   dotColor: '#F6921E' },
   { campaign: 'Annuity Maturity',      customer: 'Margaret Torres',detail: 'Case closed — 5-yr renewal elected',               timeLabel: '3 hr',   dotColor: '#37A526' },
   { campaign: 'Spousal Coverage Gap',  customer: 'Patricia Nguyen',detail: 'Converted — $250K Term Life enrolled',             timeLabel: '5 hr',   dotColor: '#37A526' },
-  { campaign: 'Surrender Charge Expiry',customer:'Helen Garcia',   detail: 'Urgent case created — churn score 78',             timeLabel: '6 hr',   dotColor: '#ef4444' },
+  { campaign: 'Surrender Charge Expiry',customer:'Helen Garcia',   detail: 'Urgent case created — churn score 78',             timeLabel: '6 hr',   dotColor: '#D02E2E' },
 ];
 
 export const CAMPAIGN_BARS: CampaignBar[] = [

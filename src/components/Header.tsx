@@ -143,7 +143,7 @@ export default function Header({ activeScenario, onScenarioChange, onSwitchToAge
           <IconButton size="small" sx={{ border: `1px solid ${BLOOM.border}`, borderRadius: '6px', width: 36, height: 36 }}>
             <Badge
               variant="dot"
-              sx={{ '& .MuiBadge-dot': { bgcolor: '#ef4444', top: 2, right: 2 } }}
+              sx={{ '& .MuiBadge-dot': { bgcolor: BLOOM.red, top: 2, right: 2 } }}
             >
               <NotificationsOutlinedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
             </Badge>

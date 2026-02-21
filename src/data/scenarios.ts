@@ -116,7 +116,7 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
     coverageNote: 'Water damage claim filed 01/29. Pending adjuster inspection. Est: $18,400.',
     activity: [
       { icon: '📞', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Inbound Call — Claim Status', timestamp: 'Today, 2:48 PM · 18:02 duration', badge: 'Negative', badgeColor: 'negative' },
-      { icon: '📞', iconColor: '#946b0e', iconBg: '#fef9c3', title: 'Inbound Call — Document Follow-Up', timestamp: 'Feb 8, 2026 · 11:45 duration', badge: 'Declining', badgeColor: 'cautionary' },
+      { icon: '📞', iconColor: '#F6921E', iconBg: '#FEF3E7', title: 'Inbound Call — Document Follow-Up', timestamp: 'Feb 8, 2026 · 11:45 duration', badge: 'Declining', badgeColor: 'cautionary' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Documents Submitted', timestamp: 'Feb 2, 2026 · Photos, estimate, police report', badge: 'Received', badgeColor: 'info' },
       { icon: '📞', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Inbound Call — Initial Inquiry', timestamp: 'Feb 5, 2026 · 6:20 duration', badge: 'Neutral', badgeColor: 'positive' },
     ],
@@ -146,7 +146,7 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
     coverageNote: 'Collision claim filed 02/08. Estimate submitted and under review.',
     activity: [
       { icon: '📞', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Callback — Adaptive Routing', timestamp: 'Today, 2:22 PM · Active', badge: 'Active', badgeColor: 'positive' },
-      { icon: '📞', iconColor: '#946b0e', iconBg: '#fef9c3', title: 'Inbound Call — Claim Update', timestamp: 'Today, 10:41 AM · 7:18 duration', badge: 'Neutral', badgeColor: 'cautionary' },
+      { icon: '📞', iconColor: '#F6921E', iconBg: '#FEF3E7', title: 'Inbound Call — Claim Update', timestamp: 'Today, 10:41 AM · 7:18 duration', badge: 'Neutral', badgeColor: 'cautionary' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Estimate Submitted', timestamp: 'Feb 8, 2026 · Body shop estimate $6,240', badge: 'Received', badgeColor: 'info' },
       { icon: '📞', iconColor: '#37A526', iconBg: '#e6f5e0', title: 'Inbound Call — FNOL', timestamp: 'Feb 5, 2026 · 8:42 duration', badge: 'Positive', badgeColor: 'positive' },
     ],
@@ -206,7 +206,7 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
     activity: [
       { icon: '⚠️', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Disconnected — Recovery Initiated', timestamp: 'Today, 2:48 PM · Hold: 8:42', badge: 'Critical', badgeColor: 'negative' },
       { icon: '💬', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'SMS Sent — Apology + Callback ETA', timestamp: 'Today, 2:49 PM · Delivered', badge: 'Sent', badgeColor: 'info' },
-      { icon: '📞', iconColor: '#946b0e', iconBg: '#fef9c3', title: 'Inbound Call — Claim Inquiry', timestamp: 'Feb 11, 2026 · 9:15 duration', badge: 'Negative', badgeColor: 'cautionary' },
+      { icon: '📞', iconColor: '#F6921E', iconBg: '#FEF3E7', title: 'Inbound Call — Claim Inquiry', timestamp: 'Feb 11, 2026 · 9:15 duration', badge: 'Negative', badgeColor: 'cautionary' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Claim Filed — Wind/Hail', timestamp: 'Feb 10, 2026', badge: 'Filed', badgeColor: 'info' },
     ],
   },
@@ -344,7 +344,7 @@ export const SCENARIO_CSR: Record<ScenarioId, CSRData> = {
     activity: [
       { icon: '🚨', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Inbound — Claim Denial Dispute', timestamp: 'Today, 10:18 AM · Cancellation threat', badge: 'Critical', badgeColor: 'negative' },
       { icon: '📬', iconColor: '#b91c1c', iconBg: '#fee2e2', title: 'Denial Letter Sent', timestamp: 'Today, 9:00 AM · CLM-2026-8812', badge: 'Denied', badgeColor: 'negative' },
-      { icon: '🔍', iconColor: '#946b0e', iconBg: '#fef9c3', title: 'Adjuster Inspection', timestamp: 'Feb 14, 2026 · Flood/water damage confirmed', badge: 'Complete', badgeColor: 'cautionary' },
+      { icon: '🔍', iconColor: '#F6921E', iconBg: '#FEF3E7', title: 'Adjuster Inspection', timestamp: 'Feb 14, 2026 · Flood/water damage confirmed', badge: 'Complete', badgeColor: 'cautionary' },
       { icon: '📄', iconColor: '#1B75BB', iconBg: '#e0f0fc', title: 'Claim Filed — Water/Flood Damage', timestamp: 'Feb 10, 2026 · Est. $31,000', badge: 'Filed', badgeColor: 'info' },
     ],
   },

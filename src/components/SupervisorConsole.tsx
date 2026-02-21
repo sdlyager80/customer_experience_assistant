@@ -88,19 +88,19 @@ const AGENT_STATUS = [
 const SENTIMENT = [
   { label: 'Positive', value: 68, color: BLOOM.green,         bg: BLOOM.greenPale  },
   { label: 'Neutral',  value: 21, color: BLOOM.textSecondary, bg: BLOOM.canvas     },
-  { label: 'Negative', value: 11, color: BLOOM.redDark,       bg: BLOOM.redPale    },
+  { label: 'Negative', value: 11, color: BLOOM.red,           bg: BLOOM.redPale    },
 ];
 
 const AI_INSIGHTS = [
-  { icon: '📈', title: 'Spike in Support Requests', metric: '+12.6%', metricColor: '#b45309', detail: 'Support volume elevated vs. prior 7-day average. AI routing prioritising urgent contacts across all channels.' },
-  { icon: '🕐', title: 'Longer Wait Times — Midwest', metric: '−2:04', metricColor: BLOOM.redDark, detail: 'Average wait time in OH, MI, IN is 2:04 above SLA target. 3 agents reassigned from secondary overflow queue.' },
+  { icon: '📈', title: 'Spike in Support Requests', metric: '+12.6%', metricColor: BLOOM.orange, detail: 'Support volume elevated vs. prior 7-day average. AI routing prioritising urgent contacts across all channels.' },
+  { icon: '🕐', title: 'Longer Wait Times — Midwest', metric: '−2:04', metricColor: BLOOM.red,    detail: 'Average wait time in OH, MI, IN is 2:04 above SLA target. 3 agents reassigned from secondary overflow queue.' },
 ];
 
 type Priority = 'critical' | 'high' | 'medium';
 const P_CFG: Record<Priority, { color: string; bg: string; label: string }> = {
-  critical: { color: BLOOM.redDark, bg: BLOOM.redPale,   label: 'Critical' },
-  high:     { color: '#b45309',     bg: '#fffbeb',       label: 'High'     },
-  medium:   { color: BLOOM.blue,    bg: BLOOM.bluePale,  label: 'Medium'   },
+  critical: { color: BLOOM.red,    bg: BLOOM.redPale,    label: 'Critical' },
+  high:     { color: BLOOM.orange, bg: BLOOM.orangePale, label: 'High'     },
+  medium:   { color: BLOOM.blue,   bg: BLOOM.bluePale,   label: 'Medium'   },
 };
 
 interface Escalation { id: ScenarioId; customer: string; initials: string; csr: string; issue: string; detail: string; priority: Priority; wait: string; action: string; }
@@ -175,7 +175,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
             <Box key={k.label} sx={{ textAlign: 'center', px: 1.75, py: 1, borderRadius: '8px', bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(4px)', minWidth: 76 }}>
               <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1, color: '#fff' }}>{k.value}</Typography>
               <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: 'rgba(255,255,255,0.65)', mt: 0.25 }}>{k.label}</Typography>
-              <Typography sx={{ fontSize: '0.4375rem', fontWeight: 600, color: k.up ? BLOOM.lightGreen : '#FFB74D', mt: 0.125 }}>{k.delta}</Typography>
+              <Typography sx={{ fontSize: '0.4375rem', fontWeight: 600, color: k.up ? BLOOM.lightGreen : BLOOM.orange, mt: 0.125 }}>{k.delta}</Typography>
             </Box>
           ))}
         </Box>
@@ -317,10 +317,10 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.125 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <TrendingUpIcon sx={{ fontSize: 13, color: BLOOM.redDark }} />
+                  <TrendingUpIcon sx={{ fontSize: 13, color: BLOOM.red }} />
                   <Typography sx={{ ...LBL }}>Needs Attention</Typography>
                   <Box sx={{ px: 0.875, py: 0.25, borderRadius: '8px', bgcolor: BLOOM.redPale, border: '1px solid #f5c6c6' }}>
-                    <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, color: BLOOM.redDark }}>
+                    <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, color: BLOOM.red }}>
                       {ESCALATIONS.filter(e => e.priority === 'critical').length} CRITICAL
                     </Typography>
                   </Box>
@@ -357,7 +357,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                         </Typography>
                       </Box>
                       <Box sx={{ textAlign: 'right', flexShrink: 0, minWidth: 44 }}>
-                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: item.priority === 'critical' ? BLOOM.redDark : '#b45309' }}>{item.wait}</Typography>
+                        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: item.priority === 'critical' ? BLOOM.red : BLOOM.orange }}>{item.wait}</Typography>
                         <Typography sx={{ fontSize: '0.375rem', color: 'text.disabled', textTransform: 'uppercase', letterSpacing: '0.5px' }}>wait</Typography>
                       </Box>
                       <Button
@@ -432,7 +432,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               {[
                 { label: 'FCR Rate',        value: '74%',  color: BLOOM.green       },
                 { label: 'SLA Compliance',  value: '91%',  color: BLOOM.lightGreen  },
-                { label: 'Escalation Rate', value: '3.2%', color: '#b45309'         },
+                { label: 'Escalation Rate', value: '3.2%', color: BLOOM.orange       },
                 { label: 'Avg CSAT (MTD)',  value: '4.7',  color: BLOOM.green       },
               ].map(kpi => (
                 <Box key={kpi.label} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.875 }}>
@@ -457,7 +457,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               ))}
             </Box>
             {RECENT.map((r, i) => {
-              const sColor = r.sentiment === 'Positive' ? BLOOM.green : r.sentiment === 'Negative' ? BLOOM.redDark : BLOOM.textSecondary;
+              const sColor = r.sentiment === 'Positive' ? BLOOM.green : r.sentiment === 'Negative' ? BLOOM.red : BLOOM.textSecondary;
               const sBg    = r.sentiment === 'Positive' ? BLOOM.greenPale : r.sentiment === 'Negative' ? BLOOM.redPale : BLOOM.canvas;
               return (
                 <Box key={i} sx={{
