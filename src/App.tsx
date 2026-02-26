@@ -36,11 +36,6 @@ function SupervisorHeader({ onSwitch }: { onSwitch: () => void }) {
           <Typography sx={{ fontSize: 19, fontWeight: 700, color: '#333', letterSpacing: '-0.3px' }}>Bloom</Typography>
           <Typography sx={{ fontSize: 19, fontWeight: 400, color: '#555', letterSpacing: '-0.3px' }}>Insurance</Typography>
         </Box>
-        <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
-          <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Customer Engagement Console</Typography>
-          <Box sx={{ fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`, color: '#fff', px: 0.875, py: 0.25, borderRadius: '4px' }}>Smart App</Box>
-        </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box onClick={onSwitch} sx={{ px: 1.75, py: 0.75, borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, border: `1px solid ${BLOOM.border}`, cursor: 'pointer', color: 'text.secondary', transition: 'all 0.15s', '&:hover': { borderColor: BLOOM.blue, color: BLOOM.blue } }}>
@@ -76,11 +71,6 @@ function LifecycleHeader({ onSwitch }: { onSwitch: () => void }) {
         <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
           <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Lifecycle Outreach Manager</Typography>
-          <Box sx={{
-            fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
-            background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
-            color: '#fff', px: 0.875, py: 0.25, borderRadius: '4px',
-          }}>Smart App</Box>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -127,11 +117,6 @@ function AgentDesktopHeader({ onSwitch }: { onSwitch: () => void }) {
         <Box sx={{ width: '1px', height: 24, bgcolor: BLOOM.border, mx: 1.5 }} />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.875 }}>
           <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700 }}>Agent Desktop</Typography>
-          <Box sx={{
-            fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px',
-            background: `linear-gradient(135deg, ${BLOOM.blue}, ${BLOOM.blueLight})`,
-            color: '#fff', px: 0.875, py: 0.25, borderRadius: '4px',
-          }}>Smart App</Box>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>

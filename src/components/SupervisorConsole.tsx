@@ -3,7 +3,6 @@ import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import HeadsetMicOutlinedIcon from '@mui/icons-material/HeadsetMicOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -61,7 +60,6 @@ const CHANNEL_STATS = [
   { label: 'Call Center',    value: '5,493',  delta: '9 in queue', color: BLOOM.blueLight,  Icon: PhoneOutlinedIcon     },
   { label: 'Live Chats',     value: '3,720',  delta: '12 active',  color: BLOOM.green,      Icon: ChatBubbleOutlineIcon },
   { label: 'Email Inbound',  value: '1,720',  delta: '47 pending', color: BLOOM.orange,     Icon: EmailOutlinedIcon     },
-  { label: 'Email Outbound', value: '2,325',  delta: 'Sent today', color: BLOOM.lightGreen, Icon: SendOutlinedIcon      },
 ];
 
 const CHANNEL_SEGMENTS = [
@@ -202,7 +200,7 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
         {/* ── Main 3-column grid ── */}
         <Box sx={{ display: 'grid', gridTemplateColumns: '220px 1fr 248px', gap: 2, mb: 2.5, alignItems: 'start' }}>
 
-          {/* Col 1: Channels + Agent Status */}
+          {/* Col 1: Channels */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
             <Paper sx={{ p: 2 }}>
@@ -222,28 +220,6 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography sx={{ fontSize: '0.5rem', color: 'text.disabled' }}>Filters &amp; Quick Stats</Typography>
                 <Typography sx={{ fontSize: '0.5rem', fontWeight: 600, color: BLOOM.blue, cursor: 'pointer' }}>View All</Typography>
-              </Box>
-            </Paper>
-
-            <Paper sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.25 }}>
-                <Typography sx={{ ...LBL }}>Agent Status</Typography>
-                <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, color: 'text.primary' }}>{totalAgents} total</Typography>
-              </Box>
-              {AGENT_STATUS.map(a => (
-                <Box key={a.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.875, mb: 1 }}>
-                  <a.Icon sx={{ fontSize: 13, color: a.color, flexShrink: 0 }} />
-                  <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', flex: 1 }}>{a.label}</Typography>
-                  <StatBar value={a.count} max={totalAgents} color={a.color} />
-                  <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, color: a.color, minWidth: 18, textAlign: 'right' }}>{a.count}</Typography>
-                </Box>
-              ))}
-              <Divider sx={{ my: 1.25 }} />
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.green,
-                  '@keyframes pulse': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.25 } },
-                  animation: 'pulse 2s ease infinite' }} />
-                <Typography sx={{ fontSize: '0.5rem', color: 'text.disabled' }}>Assure NLP · All systems nominal</Typography>
               </Box>
             </Paper>
           </Box>
@@ -377,30 +353,28 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
             </Box>
           </Box>
 
-          {/* Col 3: Outbound + Sentiment + Performance */}
+          {/* Col 3: Agent Status + Sentiment + Performance */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
             <Paper sx={{ p: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.375 }}>
-                <SendOutlinedIcon sx={{ fontSize: 13, color: BLOOM.blue }} />
-                <Typography sx={{ ...LBL, color: BLOOM.blue }}>Outbound Messaging</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.25 }}>
+                <Typography sx={{ ...LBL }}>Agent Status</Typography>
+                <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, color: 'text.primary' }}>{totalAgents} total</Typography>
               </Box>
-              <Box sx={{ bgcolor: BLOOM.bluePale, borderRadius: '8px', p: 1.5, mb: 1.375, border: `1px solid ${BLOOM.border}` }}>
-                <Typography sx={{ fontSize: '0.6875rem', fontWeight: 700, color: BLOOM.blue, mb: 0.5 }}>
-                  Policyholders over Age 60
-                </Typography>
-                <Typography sx={{ fontSize: '0.5625rem', color: 'text.secondary', lineHeight: 1.6 }}>
-                  Prevent Storm Damage: secure outdoor items and review your annual coverage. Stay safe!{' '}
-                  <Box component="span" sx={{ color: BLOOM.blue, fontWeight: 600, cursor: 'pointer' }}>Learn more</Box>
-                </Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button variant="contained" size="small" fullWidth disableElevation startIcon={<SendOutlinedIcon sx={{ fontSize: 12 }} />} sx={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'none' }}>
-                  Send Message
-                </Button>
-                <Button variant="outlined" size="small" sx={{ fontSize: '0.6875rem', fontWeight: 600, textTransform: 'none', borderColor: BLOOM.border, color: 'text.secondary', whiteSpace: 'nowrap', '&:hover': { borderColor: BLOOM.blue, color: BLOOM.blue } }}>
-                  Preview
-                </Button>
+              {AGENT_STATUS.map(a => (
+                <Box key={a.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.875, mb: 1 }}>
+                  <a.Icon sx={{ fontSize: 13, color: a.color, flexShrink: 0 }} />
+                  <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', flex: 1 }}>{a.label}</Typography>
+                  <StatBar value={a.count} max={totalAgents} color={a.color} />
+                  <Typography sx={{ fontSize: '0.625rem', fontWeight: 700, color: a.color, minWidth: 18, textAlign: 'right' }}>{a.count}</Typography>
+                </Box>
+              ))}
+              <Divider sx={{ my: 1.25 }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: BLOOM.green,
+                  '@keyframes pulse': { '0%,100%': { opacity: 1 }, '50%': { opacity: 0.25 } },
+                  animation: 'pulse 2s ease infinite' }} />
+                <Typography sx={{ fontSize: '0.5rem', color: 'text.disabled' }}>Assure NLP · All systems nominal</Typography>
               </Box>
             </Paper>
 
