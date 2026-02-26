@@ -163,26 +163,35 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
         </Box>
 
         {/* Supervisor KPIs */}
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          {[
-            { value: '234',  label: 'Handled Today',  delta: '+18',  up: true  },
-            { value: '7:18', label: 'Team Avg AHT',   delta: '−0:24',up: true  },
-            { value: '4.7',  label: 'Team CSAT',      delta: '+0.1', up: true  },
-            { value: '9',    label: 'Queue Depth',    delta: '3 esc',up: false },
-          ].map(k => (
-            <Box key={k.label} sx={{ textAlign: 'center', px: 1.75, py: 1, borderRadius: '8px', bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(4px)', minWidth: 76 }}>
-              <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1, color: '#fff' }}>{k.value}</Typography>
-              <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: 'rgba(255,255,255,0.65)', mt: 0.25 }}>{k.label}</Typography>
-              <Typography sx={{ fontSize: '0.4375rem', fontWeight: 600, color: k.up ? BLOOM.lightGreen : BLOOM.orange, mt: 0.125 }}>{k.delta}</Typography>
-            </Box>
-          ))}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.75 }}>
+          <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.45)' }}>
+            Team Summary — Today
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {[
+              { value: '234',  label: 'Handled Today',  delta: '+18',  up: true  },
+              { value: '7:18', label: 'Team Avg AHT',   delta: '−0:24',up: true  },
+              { value: '4.7',  label: 'Team CSAT',      delta: '+0.1', up: true  },
+              { value: '9',    label: 'Queue Depth',    delta: '3 esc',up: false },
+            ].map(k => (
+              <Box key={k.label} sx={{ textAlign: 'center', px: 1.75, py: 1, borderRadius: '8px', bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(4px)', minWidth: 76 }}>
+                <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1, color: '#fff' }}>{k.value}</Typography>
+                <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: 'rgba(255,255,255,0.65)', mt: 0.25 }}>{k.label}</Typography>
+                <Typography sx={{ fontSize: '0.4375rem', fontWeight: 600, color: k.up ? BLOOM.lightGreen : BLOOM.orange, mt: 0.125 }}>{k.delta}</Typography>
+              </Box>
+            ))}
+          </Box>
         </Box>
       </Box>
 
       <Box sx={{ p: 2.5 }}>
 
         {/* ── Channel Stats Strip ── */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 1.25, mb: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Typography sx={{ ...LBL }}>Live Channel Activity</Typography>
+          <Typography sx={{ fontSize: '0.4875rem', color: 'text.disabled' }}>All channels · Updated live</Typography>
+        </Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1.25, mb: 2.5 }}>
           {CHANNEL_STATS.map(ch => (
             <Paper key={ch.label} sx={{ p: 1.625, display: 'flex', alignItems: 'center', gap: 1.5, borderLeft: `3px solid ${ch.color}`, transition: 'box-shadow 0.15s', '&:hover': { boxShadow: `0 4px 16px ${ch.color}22` } }}>
               <Box sx={{ width: 36, height: 36, borderRadius: '8px', flexShrink: 0, bgcolor: `${ch.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
