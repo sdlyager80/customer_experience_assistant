@@ -90,8 +90,9 @@ const SENTIMENT = [
 ];
 
 const AI_INSIGHTS = [
-  { icon: '📈', title: 'Spike in Support Requests', metric: '+12.6%', metricColor: BLOOM.orange, detail: 'Support volume elevated vs. prior 7-day average. AI routing prioritising urgent contacts across all channels.' },
-  { icon: '🕐', title: 'Longer Wait Times — Midwest', metric: '−2:04', metricColor: BLOOM.red,    detail: 'Average wait time in OH, MI, IN is 2:04 above SLA target. 3 agents reassigned from secondary overflow queue.' },
+  { icon: '⚠️', title: 'Missed Payment Trends',           metric: '+18.3%', metricColor: BLOOM.red,    detail: 'Missed premium payments up 18.3% over the prior 30 days. Auto and Homeowners policies most affected. Proactive outreach recommended for 1,240 at-risk accounts.' },
+  { icon: '🔄', title: 'Repeated Service Request Trends', metric: '23.4%',  metricColor: BLOOM.orange, detail: '23.4% of contacts are repeat inquiries within 7 days on the same topic. Billing and claims status are the top repeat drivers — self-service routing under review.' },
+  { icon: '✅', title: 'Additional Benefit Eligibility',  metric: '847',    metricColor: BLOOM.green,  detail: '847 active policyholders identified as eligible for unredeemed benefits or coverage upgrades. Digital outreach to begin this week via portal and email.' },
 ];
 
 type Priority = 'critical' | 'high' | 'medium';
