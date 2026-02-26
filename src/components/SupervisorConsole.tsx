@@ -107,6 +107,7 @@ const ESCALATIONS: Escalation[] = [
   { id: 'escalation', customer: 'Frank Harrison',  initials: 'FH', csr: 'Unassigned',  issue: 'Claim Denial — Escalation Required',  detail: '$31K denied · Cancel threat · 3 policies at risk',           priority: 'critical', wait: '0:18',  action: 'Review'  },
   { id: 'friction',   customer: 'Margaret Torres', initials: 'MT', csr: 'Unassigned',  issue: 'Claim Status — Friction Alert',       detail: '3 contacts in 5 days · Escalation language detected by AI',  priority: 'critical', wait: '0:42',  action: 'Review'  },
   { id: 'callback',   customer: 'Sarah Mitchell',  initials: 'SM', csr: 'Unassigned',  issue: 'Policy Cancellation – Payment Dispute', detail: 'Payment dispute escalated · Cancellation risk · Supervisor review needed', priority: 'high', wait: '00:11', action: 'Monitor' },
+  { id: 'omni',       customer: 'Robert A. Chen',  initials: 'RC', csr: 'S. Mitchell', issue: 'Policy Loan — $75K · Active Call',    detail: 'UL policy · 4 channels today · Bene form outstanding',       priority: 'medium',   wait: '2:14',  action: 'Coach'   },
   { id: 'adaptive',   customer: 'David Park',      initials: 'DP', csr: 'K. Davis',    issue: 'Life Event — Cross-sell Opportunity', detail: 'New dependent · Beneficiary update · Annuity upsell flagged',priority: 'medium',   wait: '1:23',  action: 'Coach'   },
 ];
 
