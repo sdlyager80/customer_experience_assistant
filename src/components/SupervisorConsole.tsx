@@ -158,9 +158,6 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               </Box>
             </Box>
           </Box>
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.75)' }}>
-            Welcome to Your Engagement Hub &nbsp;·&nbsp; Andrea Lopez, Engagement Supervisor &nbsp;·&nbsp; Thursday, February 19, 2026
-          </Typography>
         </Box>
 
       </Box>
