@@ -56,43 +56,43 @@ const LBL = { fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase' as
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const CHANNEL_STATS = [
-  { label: 'Portal Users',   value: '12,507', delta: '+342 today', color: BLOOM.blue,       Icon: PersonOutlineIcon     },
-  { label: 'Call Center',    value: '5,493',  delta: '9 in queue', color: BLOOM.blueLight,  Icon: PhoneOutlinedIcon     },
-  { label: 'Live Chats',     value: '3,720',  delta: '12 active',  color: BLOOM.green,      Icon: ChatBubbleOutlineIcon },
-  { label: 'Email Inbound',  value: '1,720',  delta: '47 pending', color: BLOOM.orange,     Icon: EmailOutlinedIcon     },
+  { label: 'Portal Users',   value: '8,942',  delta: '+214 today',  color: BLOOM.blue,       Icon: PersonOutlineIcon     },
+  { label: 'Call Center',    value: '1,184',  delta: '47 in queue', color: BLOOM.blueLight,  Icon: PhoneOutlinedIcon     },
+  { label: 'Live Chats',     value: '326',    delta: '38 active',   color: BLOOM.green,      Icon: ChatBubbleOutlineIcon },
+  { label: 'Email Inbound',  value: '612',    delta: '129 pending', color: BLOOM.orange,     Icon: EmailOutlinedIcon     },
 ];
 
 const CHANNEL_SEGMENTS = [
-  { label: 'Portal',   value: 42, color: BLOOM.blue      },
-  { label: 'Chat',     value: 23, color: BLOOM.blueLight },
-  { label: 'Call In',  value: 18, color: BLOOM.green     },
-  { label: 'Call Out', value: 9,  color: BLOOM.orange    },
+  { label: 'Portal',   value: 38, color: BLOOM.blue      },
+  { label: 'Chat',     value: 21, color: BLOOM.blueLight },
+  { label: 'Call In',  value: 26, color: BLOOM.green     },
+  { label: 'Call Out', value: 7,  color: BLOOM.orange    },
   { label: 'Email',    value: 8,  color: BLOOM.lightGreen},
 ];
 
 const CONV_SEGMENTS = [
-  { label: 'Automated', value: 23, color: BLOOM.blueLight },
-  { label: 'Triage',    value: 21, color: BLOOM.orange    },
-  { label: 'Specialist',value: 15, color: BLOOM.blue      },
+  { label: 'Automated', value: 34, color: BLOOM.blueLight },
+  { label: 'Triage',    value: 22, color: BLOOM.orange    },
+  { label: 'Specialist',value: 30, color: BLOOM.blue      },
 ];
 
 const AGENT_STATUS = [
-  { label: 'On Call',   count: 18, color: BLOOM.blue,          Icon: HeadsetMicOutlinedIcon  },
-  { label: 'Available', count: 4,  color: BLOOM.green,         Icon: CheckCircleOutlineIcon  },
-  { label: 'Wrap-Up',   count: 3,  color: BLOOM.orange,        Icon: AccessTimeOutlinedIcon  },
-  { label: 'Away',      count: 2,  color: BLOOM.textSecondary, Icon: PauseCircleOutlineIcon  },
+  { label: 'On Call',   count: 19, color: BLOOM.blue,          Icon: HeadsetMicOutlinedIcon  },
+  { label: 'Available', count: 3,  color: BLOOM.green,         Icon: CheckCircleOutlineIcon  },
+  { label: 'Wrap-Up',   count: 4,  color: BLOOM.orange,        Icon: AccessTimeOutlinedIcon  },
+  { label: 'Away',      count: 1,  color: BLOOM.textSecondary, Icon: PauseCircleOutlineIcon  },
 ];
 
 const SENTIMENT = [
-  { label: 'Positive', value: 68, color: BLOOM.green,         bg: BLOOM.greenPale  },
-  { label: 'Neutral',  value: 21, color: BLOOM.textSecondary, bg: BLOOM.canvas     },
-  { label: 'Negative', value: 11, color: BLOOM.red,           bg: BLOOM.redPale    },
+  { label: 'Positive', value: 62, color: BLOOM.green,         bg: BLOOM.greenPale  },
+  { label: 'Neutral',  value: 25, color: BLOOM.textSecondary, bg: BLOOM.canvas     },
+  { label: 'Negative', value: 13, color: BLOOM.red,           bg: BLOOM.redPale    },
 ];
 
 const AI_INSIGHTS = [
-  { icon: '⚠️', title: 'Missed Payment Trends',           metric: '+18.3%', metricColor: BLOOM.red,    detail: 'Missed premium payments up 18.3% over the prior 30 days. Auto and Homeowners policies most affected. Proactive outreach recommended for 1,240 at-risk accounts.' },
-  { icon: '🔄', title: 'Repeated Service Request Trends', metric: '23.4%',  metricColor: BLOOM.orange, detail: '23.4% of contacts are repeat inquiries within 7 days on the same topic. Billing and claims status are the top repeat drivers — self-service routing under review.' },
-  { icon: '✅', title: 'Additional Benefit Eligibility',  metric: '847',    metricColor: BLOOM.green,  detail: '847 active policyholders identified as eligible for unredeemed benefits or coverage upgrades. Digital outreach to begin this week via portal and email.' },
+  { icon: '⚠️', title: 'Missed Payment Trends',           metric: '+6.4%', metricColor: BLOOM.red,    detail: 'Missed premium payments trending upward over the past 30 days. Auto policies most affected. Recommended targeted outreach to 312 at-risk accounts.' },
+  { icon: '🔄', title: 'Repeated Service Request Trends', metric: '14.7%', metricColor: BLOOM.orange, detail: '14.7% of contacts are repeat inquiries within 7 days. Billing clarification and beneficiary updates driving repeat interactions.' },
+  { icon: '✅', title: 'Additional Benefit Eligibility',  metric: '462',   metricColor: BLOOM.green,  detail: '462 policyholders identified as eligible for unused riders or benefit enhancements. Suggested digital outreach campaign.' },
 ];
 
 type Priority = 'critical' | 'high' | 'medium';
@@ -106,7 +106,7 @@ interface Escalation { id: ScenarioId; customer: string; initials: string; csr: 
 const ESCALATIONS: Escalation[] = [
   { id: 'escalation', customer: 'Frank Harrison',  initials: 'FH', csr: 'Unassigned',  issue: 'Claim Denial — Escalation Required',  detail: '$31K denied · Cancel threat · 3 policies at risk',           priority: 'critical', wait: '0:18',  action: 'Review'  },
   { id: 'friction',   customer: 'Margaret Torres', initials: 'MT', csr: 'Unassigned',  issue: 'Claim Status — Friction Alert',       detail: '3 contacts in 5 days · Escalation language detected by AI',  priority: 'critical', wait: '0:42',  action: 'Review'  },
-  { id: 'callback',   customer: 'James Williams',  initials: 'JW', csr: 'S. Mitchell', issue: 'Billing Inquiry — 47 min hold',       detail: 'Callback recovery · Frustration risk · CSAT opportunity',   priority: 'high',     wait: '47:12', action: 'Monitor' },
+  { id: 'callback',   customer: 'Sarah Mitchell',  initials: 'SM', csr: 'Unassigned',  issue: 'Policy Cancellation – Payment Dispute', detail: 'Payment dispute escalated · Cancellation risk · Supervisor review needed', priority: 'high', wait: '00:11', action: 'Monitor' },
   { id: 'adaptive',   customer: 'David Park',      initials: 'DP', csr: 'K. Davis',    issue: 'Life Event — Cross-sell Opportunity', detail: 'New dependent · Beneficiary update · Annuity upsell flagged',priority: 'medium',   wait: '1:23',  action: 'Coach'   },
 ];
 
@@ -217,10 +217,10 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
             {/* Aggregate bar */}
             <Paper sx={{ p: 2.25, borderTop: `3px solid ${BLOOM.blue}` }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <DonutChart segments={CONV_SEGMENTS} size={80} centerLabel="59" centerSub="active" />
+                <DonutChart segments={CONV_SEGMENTS} size={80} centerLabel="86" centerSub="active" />
                 <Box sx={{ flex: 1 }}>
                   <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1, color: BLOOM.blue, mb: 0.375 }}>
-                    59.2 Active Conversations
+                    86 Active Conversations
                   </Typography>
                   <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', mb: 1.125 }}>Across all agents and channels</Typography>
                   <Box sx={{ display: 'flex', gap: 2.5 }}>
@@ -236,11 +236,11 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                 </Box>
                 <Box sx={{ textAlign: 'right', flexShrink: 0, pl: 2.5, borderLeft: `1px solid ${BLOOM.border}` }}>
                   <Typography sx={{ ...LBL, mb: 0.5 }}>Avg Handling Time</Typography>
-                  <Typography sx={{ fontSize: '1.875rem', fontWeight: 800, lineHeight: 1, color: BLOOM.green }}>
-                    6<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>m </Typography>
-                    14<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>s</Typography>
+                  <Typography sx={{ fontSize: '1.875rem', fontWeight: 800, lineHeight: 1, color: BLOOM.orange }}>
+                    7<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>m </Typography>
+                    42<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>s</Typography>
                   </Typography>
-                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.green, mt: 0.5, fontWeight: 600 }}>↓ On Target</Typography>
+                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.orange, mt: 0.5, fontWeight: 600 }}>↑ Slightly Above Target</Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1.75, pt: 1.5, borderTop: `1px solid ${BLOOM.border}` }}>
@@ -384,16 +384,16 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
               ))}
               <Divider sx={{ my: 1.25 }} />
               <Typography sx={{ fontSize: '0.5rem', color: 'text.disabled', lineHeight: 1.6 }}>
-                ↑ 1.4M+ trend events · Positive feedback on digital portal
+                ↑ 1.4M+ trend events · Slight negative uptick aligns with payment trend
               </Typography>
             </Paper>
 
             <Paper sx={{ p: 2, borderLeft: `3px solid ${BLOOM.blue}` }}>
               <Typography sx={{ ...LBL, color: BLOOM.blue, mb: 1 }}>Team Performance</Typography>
               {[
-                { label: 'FCR Rate',        value: '74%',  color: BLOOM.green       },
-                { label: 'SLA Compliance',  value: '91%',  color: BLOOM.lightGreen  },
-                { label: 'Escalation Rate', value: '3.2%', color: BLOOM.orange       },
+                { label: 'FCR Rate',        value: '78%',  color: BLOOM.green       },
+                { label: 'SLA Compliance',  value: '93%',  color: BLOOM.lightGreen  },
+                { label: 'Escalation Rate', value: '4.1%', color: BLOOM.orange       },
                 { label: 'Avg CSAT (MTD)',  value: '4.7',  color: BLOOM.green       },
               ].map(kpi => (
                 <Box key={kpi.label} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.875 }}>
