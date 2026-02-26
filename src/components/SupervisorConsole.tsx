@@ -56,24 +56,24 @@ const LBL = { fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase' as
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const CHANNEL_STATS = [
-  { label: 'Portal Users',   value: '8,942',  delta: '+214 today',  color: BLOOM.blue,       Icon: PersonOutlineIcon     },
-  { label: 'Call Center',    value: '1,184',  delta: '47 in queue', color: BLOOM.blueLight,  Icon: PhoneOutlinedIcon     },
-  { label: 'Live Chats',     value: '326',    delta: '38 active',   color: BLOOM.green,      Icon: ChatBubbleOutlineIcon },
-  { label: 'Email Inbound',  value: '612',    delta: '129 pending', color: BLOOM.orange,     Icon: EmailOutlinedIcon     },
+  { label: 'Portal Sessions',      value: '9,842',  delta: '+214 today',  color: BLOOM.blue,       Icon: PersonOutlineIcon     },
+  { label: 'Call Center Contacts', value: '1,276',  delta: '52 in queue', color: BLOOM.blueLight,  Icon: PhoneOutlinedIcon     },
+  { label: 'Live Chat Sessions',   value: '418',    delta: '36 active',   color: BLOOM.green,      Icon: ChatBubbleOutlineIcon },
+  { label: 'Email Received',       value: '693',    delta: '148 pending', color: BLOOM.orange,     Icon: EmailOutlinedIcon     },
 ];
 
 const CHANNEL_SEGMENTS = [
   { label: 'Portal',   value: 38, color: BLOOM.blue      },
-  { label: 'Chat',     value: 21, color: BLOOM.blueLight },
+  { label: 'Chat',     value: 22, color: BLOOM.blueLight },
   { label: 'Call In',  value: 26, color: BLOOM.green     },
-  { label: 'Call Out', value: 7,  color: BLOOM.orange    },
+  { label: 'Call Out', value: 6,  color: BLOOM.orange    },
   { label: 'Email',    value: 8,  color: BLOOM.lightGreen},
 ];
 
 const CONV_SEGMENTS = [
-  { label: 'Automated', value: 34, color: BLOOM.blueLight },
-  { label: 'Triage',    value: 22, color: BLOOM.orange    },
-  { label: 'Specialist',value: 30, color: BLOOM.blue      },
+  { label: 'Automated', value: 31, color: BLOOM.blueLight },
+  { label: 'Triage',    value: 19, color: BLOOM.orange    },
+  { label: 'Specialist',value: 32, color: BLOOM.blue      },
 ];
 
 const AGENT_STATUS = [
@@ -218,10 +218,10 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
             {/* Aggregate bar */}
             <Paper sx={{ p: 2.25, borderTop: `3px solid ${BLOOM.blue}` }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <DonutChart segments={CONV_SEGMENTS} size={80} centerLabel="86" centerSub="active" />
+                <DonutChart segments={CONV_SEGMENTS} size={80} centerLabel="82" centerSub="active" />
                 <Box sx={{ flex: 1 }}>
                   <Typography sx={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1, color: BLOOM.blue, mb: 0.375 }}>
-                    86 Active Conversations
+                    82 Active Conversations
                   </Typography>
                   <Typography sx={{ fontSize: '0.625rem', color: 'text.secondary', mb: 1.125 }}>Across all agents and channels</Typography>
                   <Box sx={{ display: 'flex', gap: 2.5 }}>
@@ -237,11 +237,11 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
                 </Box>
                 <Box sx={{ textAlign: 'right', flexShrink: 0, pl: 2.5, borderLeft: `1px solid ${BLOOM.border}` }}>
                   <Typography sx={{ ...LBL, mb: 0.5 }}>Avg Handling Time</Typography>
-                  <Typography sx={{ fontSize: '1.875rem', fontWeight: 800, lineHeight: 1, color: BLOOM.orange }}>
+                  <Typography sx={{ fontSize: '1.875rem', fontWeight: 800, lineHeight: 1, color: BLOOM.green }}>
                     7<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>m </Typography>
-                    42<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>s</Typography>
+                    38<Typography component="span" sx={{ fontSize: '1rem', fontWeight: 400, color: 'text.secondary' }}>s</Typography>
                   </Typography>
-                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.orange, mt: 0.5, fontWeight: 600 }}>↑ Slightly Above Target</Typography>
+                  <Typography sx={{ fontSize: '0.5rem', color: BLOOM.green, mt: 0.5, fontWeight: 600 }}>↓ On Target</Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1.75, pt: 1.5, borderTop: `1px solid ${BLOOM.border}` }}>
