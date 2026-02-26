@@ -163,26 +163,6 @@ export default function SupervisorConsole({ onReview }: SupervisorConsoleProps) 
           </Typography>
         </Box>
 
-        {/* Supervisor KPIs */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.75 }}>
-          <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.45)' }}>
-            Team Summary — Today
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {[
-              { value: '234',  label: 'Handled Today',  delta: '+18',  up: true  },
-              { value: '7:18', label: 'Team Avg AHT',   delta: '−0:24',up: true  },
-              { value: '4.7',  label: 'Team CSAT',      delta: '+0.1', up: true  },
-              { value: '9',    label: 'Queue Depth',    delta: '3 esc',up: false },
-            ].map(k => (
-              <Box key={k.label} sx={{ textAlign: 'center', px: 1.75, py: 1, borderRadius: '8px', bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(4px)', minWidth: 76 }}>
-                <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, lineHeight: 1, color: '#fff' }}>{k.value}</Typography>
-                <Typography sx={{ fontSize: '0.4375rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: 'rgba(255,255,255,0.65)', mt: 0.25 }}>{k.label}</Typography>
-                <Typography sx={{ fontSize: '0.4375rem', fontWeight: 600, color: k.up ? BLOOM.lightGreen : BLOOM.orange, mt: 0.125 }}>{k.delta}</Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
       </Box>
 
       <Box sx={{ p: 2.5 }}>
